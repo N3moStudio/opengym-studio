@@ -68,3 +68,45 @@ jobs:
           path: frontend/ios/App/build/archive.log
           if-no-files-found: ignore
           retention-days: 1
+
+  release:
+    name: Publish unsigned IPA
+    needs: ios
+    if: github.event.repository.private == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      actions: read
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Download verified build
+        run: |
+          gh run download "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --name OpenGym-Studio-unsigned --dir release-assets
+          cd release-assets
+          sha256sum --check OpenGym-Studio-unsigned.ipa.sha256
+          test "$(cat ci-commit.txt)" = "$GITHUB_SHA"
+      - name: Publish release
+        run: |
+          tag="studio-build-${GITHUB_RUN_NUMBER}"
+          cat > release-notes.md <<'NOTES'
+          OpenGym Studio community fork: customizable Home cards, appearance settings, offline exercise illustrations, widgets, Live Activities, and Apple Watch targets.
+
+          This IPA is unsigned. Sign it with a compatible sideloading setup before installation. Device functionality and extension entitlements still need physical-device verification.
+
+          App source is AGPL-3.0; exercise media retains its separate non-commercial restrictions. See NOTICE.md and docs/STUDIO_BUILD.md in the source attached to this release.
+          NOTES
+          printf '\nSource commit: `%s`\n' "$GITHUB_SHA" >> release-notes.md
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$tag" --repo "$GITHUB_REPOSITORY" --clobber \
+              release-assets/OpenGym-Studio-unsigned.ipa \
+              release-assets/OpenGym-Studio-unsigned.ipa.sha256 release-assets/ci-commit.txt
+          else
+            gh release create "$tag" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+              --title "OpenGym Studio build ${GITHUB_RUN_NUMBER}" --prerelease \
+              --notes-file release-notes.md \
+              release-assets/OpenGym-Studio-unsigned.ipa \
+              release-assets/OpenGym-Studio-unsigned.ipa.sha256 release-assets/ci-commit.txt
+          fi

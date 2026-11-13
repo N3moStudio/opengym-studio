@@ -12,7 +12,7 @@ The `Studio iOS build` workflow uses the standard `macos-26` GitHub-hosted runne
 
 The workflow installs dependencies, checks navigation and Home customization, builds the mobile frontend, adds the existing WidgetKit, Live Activity, Apple Watch and asset-downloader targets, then archives a real iPhone build. Packaging checks the bundle identifiers, native extensions and bundled exercise illustrations. Compiler failures fail the job.
 
-Download the **OpenGym-Studio-unsigned** artifact from the successful run. It contains `OpenGym-Studio-unsigned.ipa`, its SHA-256 checksum and the exact source commit. Artifacts expire after one day to limit storage use. Public standard-runner compute is free; artifact storage and GitHub usage policies still apply. This workflow does not select paid larger runners or publish to an app store.
+Successful builds are published as prereleases under the repository’s **Releases** page, with the unsigned IPA, its SHA-256 checksum, and the exact source commit. These release assets remain available after the temporary Actions artifact expires. You can also download the **OpenGym-Studio-unsigned** artifact from the successful run. It contains `OpenGym-Studio-unsigned.ipa`, its SHA-256 checksum and the exact source commit. Artifacts expire after one day to limit storage use. Public standard-runner compute is free; artifact storage and GitHub usage policies still apply. This workflow does not select paid larger runners or publish to an app store.
 
 ## Installation and capabilities
 
