@@ -1,0 +1,202 @@
+/* openGym Studio. Content stays opaque; optional glass belongs only to navigation.
+   All spacing is shared across the existing screens. No workout data or logic lives here. */
+:root {
+  --r-sm:12px;--r-md:18px;--r-lg:24px;--r-xl:30px;--r-card:24px;--pad:20px;
+  --studio-line:rgba(255,255,255,.07);--studio-shadow:0 8px 28px rgba(0,0,0,.12);
+  --studio-wash:#a399cc;--studio-ease:cubic-bezier(.2,.8,.2,1);
+  --label-2:#b8b4c2;--label-dim:#b8b4c2;
+  --press-scale:.98;--press-scale-sm:.94;--press-scale-card:.99;
+  --fast:160ms;--med:240ms;
+}
+:root[data-studio-palette="bloom"] {
+  --bg:#101015;--bg-el:#18171f;--surface:#1d1c25;--surface-2:#292732;
+  --surface-3:#36333f;--surface-raised:#292732;--studio-wash:#b9a7e9;
+}
+:root[data-studio-palette="glacier"] {
+  --bg:#0e141a;--bg-el:#161e26;--surface:#1b252f;--surface-2:#263441;
+  --surface-3:#344454;--surface-raised:#263441;--studio-wash:#8bc9e4;
+}
+:root[data-studio-palette="titanium"] {
+  --bg:#131414;--bg-el:#1c1e1e;--surface:#222424;--surface-2:#303332;
+  --surface-3:#40433f;--surface-raised:#303332;--studio-wash:#c5bd9f;
+}
+:root[data-theme="light"] {
+  --studio-line:rgba(26,27,38,.07);--studio-shadow:0 6px 24px rgba(24,24,48,.045);
+  --label-2:#62606b;--label-dim:#62606b;
+}
+:root[data-theme="light"][data-studio-palette="bloom"] {
+  --bg:#f3f1f7;--bg-el:#fbfaff;--surface:#fff;--surface-2:#eeebf4;
+  --surface-3:#e1dce9;--surface-raised:#fff;--studio-wash:#8a6eba;
+}
+:root[data-theme="light"][data-studio-palette="glacier"] {
+  --bg:#edf3f7;--bg-el:#f9fcff;--surface:#fff;--surface-2:#e7eff5;
+  --surface-3:#d6e3ed;--surface-raised:#fff;--studio-wash:#397ea0;
+}
+:root[data-theme="light"][data-studio-palette="titanium"] {
+  --bg:#f2f2ef;--bg-el:#fbfbf9;--surface:#fff;--surface-2:#ebebe6;
+  --surface-3:#ddddd5;--surface-raised:#fff;--studio-wash:#777254;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.45}
+#app{max-width:620px;padding-top:calc(var(--sat) + var(--conn) + 16px);padding-bottom:calc(112px + var(--sab))}
+.hdr{margin:8px 0 26px;align-items:center;gap:16px}
+.hdr h1,.sp-root-title{font-family:ui-rounded,-apple-system,BlinkMacSystemFont,sans-serif;font-weight:750;letter-spacing:-.035em}
+.hdr .sub{margin-top:6px;line-height:1.4}
+.hdr>.iconbtn,.hdr-actions>.iconbtn{width:44px;height:44px;background:var(--surface);border:1px solid var(--studio-line);border-radius:50%}
+.card{padding:20px;margin-bottom:18px;border:1px solid var(--studio-line);box-shadow:var(--studio-shadow)}
+.card-head-title{font-size:var(--fs-callout);font-weight:650;line-height:1.35}
+.card-head+*{margin-top:16px}
+.card-head-g{width:32px;height:32px}
+.card .big{font-family:ui-rounded,-apple-system,sans-serif;font-variant-numeric:tabular-nums;font-size:2.1rem}
+.sect{margin-top:24px;margin-bottom:24px}
+.sect-b{border:1px solid var(--studio-line);border-radius:22px}
+.lrow{min-height:54px;padding-block:13px;gap:12px}
+.lrow-i{border-radius:10px}
+.lrow-s{line-height:1.45;margin-top:3px}
+.lrow-m{min-width:0}
+.lrow-t{overflow-wrap:break-word}
+.btn{min-height:48px;border-radius:16px;font-weight:600;transition:transform var(--fast) var(--studio-ease),background-color var(--fast)}
+.btn.sm{min-height:40px;border-radius:13px}
+.iconbtn{transition:transform var(--fast) var(--studio-ease),background-color var(--fast)}
+.iconbtn:active{transform:scale(.94)}
+.btn:focus-visible,.iconbtn:focus-visible,button:focus-visible,[role="button"]:focus-visible{outline:3px solid var(--acc-ink);outline-offset:3px}
+.searchf .field,.search .input{min-height:48px;border-radius:16px;border:1px solid var(--studio-line)}
+.seg{border-radius:15px;padding:4px;background:var(--surface-2)}
+.seg-sel{border-radius:11px}
+.seg>button{min-height:38px}
+.seg-inline>button{min-height:32px}
+.tag,.chip{border-radius:10px}
+.list{gap:12px}
+.item{border:1px solid var(--studio-line);padding:15px 16px;min-height:76px}
+.item .tt{font-weight:600;line-height:1.35}
+.item .ss{margin-top:5px;line-height:1.4}
+
+/* Home: one clear action, then a compact calendar. DOM and visual order agree. */
+.studio-home-hero{padding:0;overflow:hidden;background:var(--surface)}
+.studio-home-hero .today-row{margin:0;padding:26px 22px 22px;border:0;align-items:flex-start;min-height:150px;gap:14px}
+.studio-home-hero .today-row>.row:first-child{align-items:flex-start;gap:14px!important;flex:1}
+.studio-home-hero .today-row .lrow-i{width:42px;height:42px;border-radius:14px;flex:none;margin-top:3px}
+.studio-home-hero .today-row .ttl{font-family:ui-rounded,-apple-system,sans-serif;font-size:var(--fs-title2);font-weight:700;line-height:1.2;letter-spacing:-.025em;margin-top:7px;overflow-wrap:anywhere}
+.studio-home-hero .today-row .ss{margin-top:10px;line-height:1.45}
+.studio-home-hero .today-row .lbl2{font-size:var(--fs-footnote);letter-spacing:0;text-transform:none;color:var(--label-2)}
+.studio-home-hero .today-row>.tag,.studio-home-hero .today-row>.row:last-child{align-self:flex-end}
+.studio-home-hero .today-row .bm-mini-wrap{display:none}
+.studio-home-hero .today-row .tag{padding:10px 14px;border-radius:15px;font-size:var(--fs-footnote)}
+.studio-home-calendar{padding:16px 18px 18px;border-top:1px solid var(--studio-line);background:var(--bg-el)}
+.studio-home-calendar .wday{border-radius:16px;min-height:72px}
+.studio-home-calendar .wday.today{background:var(--acc-soft)}
+.studio-home-calendar .wday.today .num{background:none;color:var(--acc-ink);font-weight:700}
+.studio-home-calendar .wkleft{margin-top:12px;text-align:center}
+.studio-home-alternate{text-align:center;padding:0 16px 16px}
+.studio-home-alternate .btn{font-size:var(--fs-footnote)}
+.studio-home-customize{display:flex;justify-content:center;padding:8px 0 18px}
+.studio-home-customize .btn{color:var(--label-2)}
+.studio-home-edit-intro{color:var(--label-2);font-size:var(--fs-subhead);margin:0 0 20px;line-height:1.5}
+
+/* A quiet dock; the primary workout action remains distinct from the four destinations. */
+#tabbar{
+  inset-inline:12px;bottom:max(10px,var(--sab));max-width:576px;margin-inline:auto;
+  padding:7px 6px;min-height:74px;align-items:center;border:1px solid var(--studio-line);border-radius:28px;
+  background:var(--bg-el);box-shadow:0 10px 32px rgba(0,0,0,.19);-webkit-backdrop-filter:none;backdrop-filter:none;
+}
+:root[data-theme="light"] #tabbar{background:var(--bg-el)}
+:root[data-studio-surface="glass"] #tabbar{background:color-mix(in srgb,var(--bg-el) 94%,transparent);-webkit-backdrop-filter:saturate(130%) blur(16px);backdrop-filter:saturate(130%) blur(16px)}
+#tabbar button{position:relative;min-width:0;min-height:58px;justify-content:center;gap:3px;padding:4px 0;border-radius:20px;font-size:max(11px,.68rem);line-height:1.2;transition:background-color var(--fast),color var(--fast),transform var(--fast)}
+#tabbar button.on:not(.start){background:var(--acc-soft)}
+#tabbar button:active{transform:scale(.95)}
+#tabbar button .icn{font-size:23px}
+#tabbar button.start{margin-top:0;flex:0 0 62px}
+#tabbar button.start .cir{width:40px;height:40px;border-radius:15px;box-shadow:none}
+#tabbar button.start .cir .icn{font-size:22px}
+#tabbar button.start span{font-size:max(11px,.68rem)}
+#tabbar button.start.rec .cir{box-shadow:none}
+#tabbar button.start.rec .cir::after{display:none}
+body.resting #app{padding-bottom:calc(192px + var(--sab))}
+#timer{border-radius:24px;box-shadow:var(--studio-shadow)}
+body:not(.no-tabbar) #timer{bottom:calc(96px + var(--sab))}
+
+/* Plans, library and workouts share the same rhythm, without moving any training controls. */
+.plan-views{margin-bottom:22px}
+.plan-routine{min-height:96px;padding:20px}
+.plan-routine .lrow-i{width:42px;height:42px;border-radius:14px;background:var(--acc-soft);color:var(--acc-ink)}
+.plan-routine .tt{font-family:ui-rounded,-apple-system,sans-serif;font-size:var(--fs-title3);letter-spacing:-.02em}
+.plan-routine .ss{font-size:var(--fs-footnote)}
+.plan-routines .swrow{border-radius:var(--r-card)}
+.lib-hdr{margin-bottom:20px}
+.exhd{padding-block:4px 10px;gap:10px}
+.whdr{margin-bottom:20px}
+.whdr-bar{margin-bottom:12px;gap:10px}
+.whdr-name{font-family:ui-rounded,-apple-system,sans-serif;font-weight:700;letter-spacing:-.02em}
+.whdr-finish{min-height:42px;border-radius:15px}
+.whdr.stick{background:var(--bg)}
+.setrow{min-height:56px;padding-block:6px}
+.sethead{padding-bottom:10px}
+.setrow .stp{border-radius:12px;min-height:42px}
+.setrow .stp input{font-variant-numeric:tabular-nums}
+.setrow .ck{border-radius:12px}
+.exnote{line-height:1.5}
+.focus-view .focus-card{border-radius:24px;padding:22px;border:1px solid var(--studio-line);box-shadow:none}
+.focus-view .focus-card-header{padding-bottom:18px}
+.focus-view .focus-context{gap:8px;margin-top:16px}
+.focus-view .focus-prescription{margin-block:20px;gap:8px}
+.focus-view .focus-badge{font-size:var(--fs-footnote)}
+.sp-nav{min-height:50px;margin-bottom:16px}
+.sp-root-title{margin-bottom:22px}
+.sp-back{min-height:44px}
+.sp-search{margin-bottom:24px}
+.sp-root-row .lrow-i{background:var(--surface-2);color:var(--label-2)}
+.sp-acct{padding-block:20px}
+.sp-avatar{border-radius:18px}
+.sheet{border-start-start-radius:30px;border-start-end-radius:30px}
+
+/* Appearance previews are CSS shapes, deliberately not another working view hierarchy. */
+.studio-settings-link{position:relative;display:flex;width:100%;min-height:182px;text-align:start;overflow:hidden;border:1px solid var(--studio-line);border-radius:26px;background:var(--surface);padding:24px;margin:24px 0;color:var(--label);gap:18px}
+.studio-settings-copy{flex:1;min-width:0;display:flex;align-items:flex-start;flex-direction:column;gap:8px}
+.studio-settings-copy>.icn{font-size:24px;color:var(--acc-ink);margin-bottom:4px}
+.studio-settings-copy .lbl2{font-size:var(--fs-caption);letter-spacing:0;text-transform:none;color:var(--label-2)}
+.studio-settings-copy strong{font-family:ui-rounded,-apple-system,sans-serif;font-size:var(--fs-title2);line-height:1.2;letter-spacing:-.025em}
+.studio-settings-link>.studio-mini{width:88px;flex:none;transform:rotate(8deg) translateY(12px)}
+.studio-settings-chevron{align-self:center;color:var(--label-2)}
+.studio-appearance{margin:0 0 28px;padding:20px;border:1px solid var(--studio-line);background:var(--surface);border-radius:26px}
+.studio-appearance-head{display:flex;gap:9px;align-items:center;font-size:var(--fs-footnote);font-weight:600;margin-bottom:20px;color:var(--label-2)}
+.studio-palettes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.studio-palette{display:flex;flex-direction:column;gap:12px;min-width:0;text-align:start;border-radius:18px;color:var(--label)}
+.studio-palette .studio-mini{width:100%;outline:2px solid transparent;outline-offset:4px;transition:outline-color var(--fast),transform var(--fast)}
+.studio-palette.selected .studio-mini{outline-color:var(--acc-ink)}
+.studio-palette:active .studio-mini{transform:scale(.97)}
+.studio-palette-label{display:flex;justify-content:space-between;align-items:center;gap:3px;font-size:var(--fs-footnote);font-weight:600}
+.studio-palette-label .icn{color:var(--acc-ink);flex:none}
+.studio-mini{display:flex;flex-direction:column;position:relative;aspect-ratio:.58;padding:12% 9%;border-radius:14px;gap:5%;background:var(--mini-bg);border:1px solid var(--mini-line);box-shadow:0 8px 15px rgba(0,0,0,.12);overflow:hidden}
+.studio-mini-bloom{--mini-bg:#191621;--mini-fg:#e8ddfa;--mini-fill:#332b43;--mini-accent:#bd9ee8;--mini-line:#5c4f70}
+.studio-mini-glacier{--mini-bg:#edf4f9;--mini-fg:#274656;--mini-fill:#d7e7f1;--mini-accent:#3483ac;--mini-line:#c8d7e2}
+.studio-mini-titanium{--mini-bg:#222423;--mini-fg:#e8e7df;--mini-fill:#383c39;--mini-accent:#c6b98e;--mini-line:#575a50}
+.sm-title,.sm-sub,.sm-row{height:5%;width:64%;border-radius:4px;background:var(--mini-fg)}
+.sm-sub{height:3%;width:48%;opacity:.5}
+.sm-hero{margin-top:7%;height:30%;border-radius:9px;background:var(--mini-fill);padding:12%;display:flex;flex-direction:column;gap:14%}
+.sm-hero>span{height:15%;width:80%;border-radius:2px;background:var(--mini-fg)}
+.sm-hero>span+span{width:54%;opacity:.5}
+.sm-hero>i{height:28%;width:36%;background:var(--mini-accent);border-radius:5px;margin-top:auto}
+.sm-days{display:flex;justify-content:space-between;margin:8% 0}
+.sm-days i{width:8%;aspect-ratio:1;border-radius:50%;background:var(--mini-fg);opacity:.4}
+.sm-days i:nth-child(4){opacity:1;background:var(--mini-accent)}
+.sm-row{width:100%;height:9%;background:var(--mini-fill)}
+.sm-dock{display:flex;align-items:center;justify-content:space-around;margin-top:auto;height:14%;padding:4%;border-radius:20px;background:var(--mini-fill)}
+.sm-dock i{width:8%;aspect-ratio:1;border-radius:3px;background:var(--mini-fg)}
+.sm-dock b{width:18%;aspect-ratio:1;border-radius:5px;background:var(--mini-accent)}
+.studio-surfaces{display:flex;gap:8px;margin-top:24px;padding:4px;border-radius:16px;background:var(--surface-2)}
+.studio-surfaces button{display:flex;align-items:center;justify-content:center;gap:8px;flex:1;min-height:44px;border-radius:12px;font-size:var(--fs-subhead);color:var(--label-2)}
+.studio-surfaces button[aria-pressed="true"]{background:var(--surface);color:var(--label);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+
+/* Small lateral transitions express hierarchy. Root tabs don't impersonate back navigation. */
+#app>.page.vtab-next{animation:studio-next 220ms var(--studio-ease)}
+#app>.page.vtab-prev{animation:studio-prev 220ms var(--studio-ease)}
+#app>.page.edge-back-page{animation:none}
+@keyframes studio-next{from{opacity:.3;transform:translateX(22px)}to{opacity:1;transform:none}}
+@keyframes studio-prev{from{opacity:.3;transform:translateX(-22px)}to{opacity:1;transform:none}}
+[dir="rtl"] #app>.page.vtab-next{animation-name:studio-prev}
+[dir="rtl"] #app>.page.vtab-prev{animation-name:studio-next}
+@media(max-width:360px){:root{--pad:16px}.card{padding:16px}.studio-home-hero{padding:0}.studio-home-hero .today-row{padding:22px 16px}.studio-palettes{gap:12px}.studio-palette-label{font-size:var(--fs-caption)}#tabbar{inset-inline:8px}}
+@media(min-width:700px){#app{padding-top:calc(var(--sat) + var(--conn) + 28px)}.hdr{margin-bottom:32px}.card{padding:24px}.studio-home-hero{padding:0}}
+@media(prefers-reduced-transparency:reduce){:root[data-studio-surface] #tabbar{background:var(--bg-el);-webkit-backdrop-filter:none;backdrop-filter:none}}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){:root[data-studio-surface] #tabbar{background:var(--bg-el)}}
+@media(prefers-contrast:more){:root{--studio-line:currentColor}.card,.item,.studio-appearance{box-shadow:none}#tabbar{border-width:2px}}
+@media(prefers-reduced-motion:reduce){#app>.page[class]{animation:none!important}.studio-palette .studio-mini,#tabbar button,.btn,.iconbtn{transition:none}.studio-palette:active .studio-mini,#tabbar button:active,.btn:active,.iconbtn:active{transform:none}}

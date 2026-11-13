@@ -239,8 +239,8 @@ describe('the page underneath', () => {
     expect(document.querySelector('.edge-back-shade').style.opacity).toBe(String(0.5 * 0.35))
     expect(top.classList.contains('edge-back-page')).toBe(true)
     row.dispatchEvent(ptr('pointerup', 6 + W / 2))
-    expect(under.style.transform).toBe('translateX(0px)')                   // slides fully in
-    vi.advanceTimersByTime(261)
+    expect(under.style.transform).toBe(`translateX(${-0.3 * 0.5 * W}px)`)    // no jump on release
+    vi.advanceTimersByTime(280)
     expect(events.at(-1)).toEqual({ commit: '/plan' })                      // App restores its scroll
     expect(back.onclick).toHaveBeenCalledTimes(1)
     expect(top.style.transform).toBe(`translateX(${W}px)`)                  // stays out: no flash back
@@ -257,7 +257,7 @@ describe('the page underneath', () => {
     row.dispatchEvent(ptr('pointermove', 30))
     row.dispatchEvent(ptr('pointermove', 60))
     row.dispatchEvent(ptr('pointerup', 60))
-    expect(document.querySelector('.page.under').style.transform).toBe(`translateX(${-0.3 * W}px)`)
+    expect(document.querySelector('.page.under').style.transform).toBe(`translateX(${-0.3 * (W - 54)}px)`)
     vi.advanceTimersByTime(300)
     expect(events.at(-1)).toEqual({ path: null })
     expect(document.querySelector('.page.under')).toBeNull()

@@ -14,8 +14,8 @@
 // before any of them sees it (a capture listener on the window), and given back by no one: a
 // set row under the thumb at the very edge does not open while the page goes back.
 //
-// The page follows the finger over a dimmed backdrop (the previous page is not rendered, so
-// the backdrop stands in for it); past a third of the width, or flicked, it goes; otherwise it
+// The page follows the finger over a preview of its parent; past a third of the width, or
+// flicked, it goes; otherwise it
 // springs back. With reduced motion nothing moves: the same decision, then just the navigation.
 // Right-to-left languages mirror all of it: the right edge, swiping left.
 import { MOBILE, nativePlatform } from './mobile.js'
@@ -59,6 +59,7 @@ export function lockOf(dx, dy, slop = SLOP_PX) {
 /** On release: 'back' past COMMIT_FRACTION of the width or with a flick, 'cancel' otherwise. */
 export function releaseOf({ dx, width, vx }) {
   if (dx <= 0) return 'cancel'
+  if (vx <= -FLICK_PX_PER_MS) return 'cancel' // a deliberate reversal wins over distance
   if (dx >= width * COMMIT_FRACTION) return 'back'
   if (vx >= FLICK_PX_PER_MS && dx > SLOP_PX) return 'back'
   return 'cancel'
@@ -97,7 +98,17 @@ export function installEdgeSwipeBack(win = window, opts = {}) {
     else enabled = edgeSwipeEnabled({ mobile: false, ios, standalone })
   }
 
-  let g = null   // { id, x0, y0, lastX, lastT, vx, rtl, width, target, path, lock, page, under, shade }
+  let g = null
+  let disposed = false
+  const raf = win.requestAnimationFrame.bind(win)
+  const caf = win.cancelAnimationFrame.bind(win)
+  const frames = new Set()
+  const nextFrame = fn => {
+    const id = raf(time => { frames.delete(id); if (!disposed) fn(time) })
+    frames.add(id)
+    return id
+  }
+  const cancelFrame = id => { if (id != null) { caf(id); frames.delete(id) } }
 
   // The page it goes back to (App.jsx renders it underneath while asked to; `path` null ends
   // that), and, as the swipe lands, where it is returning, so App restores its scroll position.
@@ -106,21 +117,21 @@ export function installEdgeSwipeBack(win = window, opts = {}) {
   const underlay = () => (g && (g.under || (g.under = doc.querySelector('#app > .page.under')))) || null
 
   // transform and opacity only, so the frames stay on the compositor
-  const paint = (dx, ms = 0) => {
+  const paint = dx => {
     if (!g || !g.page) return
     const p = Math.min(1, Math.max(0, dx) / g.width)
+    g.dx = p * g.width
     const dir = g.rtl ? -1 : 1
-    const tr = prop => (ms ? `${prop} ${ms}ms cubic-bezier(.32,.72,0,1)` : 'none')
-    g.page.style.transition = tr('transform')
+    g.page.style.transition = 'none'
     g.page.style.transform = p ? `translateX(${p * g.width * dir}px)` : ''
     const under = underlay()
     if (under) {
       under.style.visibility = 'visible'
-      under.style.transition = tr('transform')
+      under.style.transition = 'none'
       under.style.transform = `translateX(${-PARALLAX * (1 - p) * g.width * dir}px)`
     }
     if (g.shade) {
-      g.shade.style.transition = ms ? `opacity ${ms}ms linear` : 'none'
+      g.shade.style.transition = 'none'
       g.shade.style.opacity = String((1 - p) * SHADE)
     }
   }
@@ -144,43 +155,84 @@ export function installEdgeSwipeBack(win = window, opts = {}) {
   }
   // Cancelled: everything back as it was, and the page underneath goes away.
   const endVisual = gesture => {
+    cancelFrame(gesture.frame)
     if (gesture.page) {
       gesture.page.style.transition = ''; gesture.page.style.transform = ''
       for (const v of ['--eb-l', '--eb-r', '--eb-t', '--eb-b']) gesture.page.style.removeProperty(v)
       gesture.page.classList.remove('edge-back-page')
     }
     gesture.shade?.remove()
+    if (gesture.under) { gesture.under.style.transform = ''; gesture.under.style.transition = '' }
     if (gesture.path) preview(null)
   }
   // Landed: the page underneath is the page now (App keeps it, same element). The page that
   // slid out stays where it went until React has taken it away, so nothing flashes back.
   const landed = gesture => {
+    // A sheet, route change, or unmount during the settle must never click a stale back button.
+    if (!gesture.target.isConnected || backTarget(doc) !== gesture.target) {
+      endVisual(gesture); if (g === gesture) g = null; return
+    }
+    gesture.phase = 'landed'
     if (gesture.path) committing(gesture.path)
     gesture.target.click()
-    const raf = win.requestAnimationFrame || (f => win.setTimeout(f, 16))
-    raf(() => raf(() => {
+    nextFrame(() => nextFrame(() => {
       gesture.shade?.remove()
       if (gesture.page?.isConnected) endVisual({ ...gesture, path: null })
+      if (g === gesture) g = null
     }))
   }
 
+  // A bounded Hermite settle retains release velocity, and keeps a real presentation position
+  // each frame. A new edge touch can take it over without jumping to a CSS target transform.
+  const settle = (gesture, go) => {
+    gesture.phase = 'settling'; gesture.id = null
+    const start = gesture.dx || 0, end = go ? gesture.width : 0
+    const distance = end - start
+    const tangent = Math.sign(distance) * Math.min(Math.abs(distance) * 3,
+      Math.max(0, gesture.vx * Math.sign(distance)) * SETTLE_MS)
+    const began = win.performance.now()
+    const tick = now => {
+      if (g !== gesture) return
+      const p = Math.min(1, (now - began) / SETTLE_MS)
+      const p2 = p * p, p3 = p2 * p
+      paint(start + distance * (3 * p2 - 2 * p3) + tangent * (p3 - 2 * p2 + p))
+      if (p < 1) gesture.frame = nextFrame(tick)
+      else if (go) landed(gesture)
+      else { endVisual(gesture); g = null }
+    }
+    gesture.frame = nextFrame(tick)
+  }
+
+  const cancel = () => { const old = g; g = null; if (old) endVisual(old) }
+
   const onDown = e => {
-    if (!enabled || g || (e.pointerType && e.pointerType !== 'touch' && e.pointerType !== 'pen')) return
+    if (!enabled || disposed || (g && g.phase !== 'settling') || (e.pointerType && e.pointerType !== 'touch' && e.pointerType !== 'pen')) return
+    if (e.target?.closest?.('input,textarea,select,[contenteditable="true"],[role="slider"]')) return
     const rtl = isRtl(doc)
     const width = win.innerWidth || doc.documentElement.clientWidth
-    if (!startsAtEdge(e.clientX, width, rtl)) return
+    const edge = g ? (rtl ? width - g.dx : g.dx) : (rtl ? width : 0)
+    if (!startsAtEdge(e.clientX, width, rtl) && !(g && Math.abs(e.clientX - edge) <= EDGE_PX)) return
     const target = backTarget(doc)
     if (!target) return
     // Claimed: nothing under the edge (a set row, a card) starts its own swipe from this touch.
     e.stopPropagation()
+    if (g) {
+      if (g.target !== target) cancel()
+      else {
+        cancelFrame(g.frame)
+        Object.assign(g, { phase: 'tracking', id: e.pointerId, x0: e.clientX - (rtl ? -g.dx : g.dx),
+          y0: e.clientY, lastX: e.clientX, lastT: e.timeStamp || Date.now(), vx: 0, lock: 'go' })
+        return
+      }
+    }
     // The page underneath starts mounting now, hidden, so it is there by the time the finger has
     // moved far enough to show it. Not with reduced motion: nothing slides, nothing to show.
     const path = reducedMotion(win) ? null : (target.getAttribute('data-back') || null)
-    g = { id: e.pointerId, x0: e.clientX, y0: e.clientY, lastX: e.clientX, lastT: e.timeStamp || Date.now(), vx: 0, rtl, width, target, path, lock: null }
+    g = { phase: 'tracking', dx: 0, id: e.pointerId, x0: e.clientX, y0: e.clientY, lastX: e.clientX, lastT: e.timeStamp || Date.now(), vx: 0, rtl, width, target, path, lock: null }
     if (path) preview(path)
   }
   const onMove = e => {
-    if (!g || e.pointerId !== g.id) return
+    if (!g || g.phase !== 'tracking' || e.pointerId !== g.id) return
     e.stopPropagation()
     const dx = progressOf(g.x0, e.clientX, g.rtl)
     const now = e.timeStamp || Date.now()
@@ -196,35 +248,45 @@ export function installEdgeSwipeBack(win = window, opts = {}) {
     paint(dx)
   }
   const onUp = e => {
-    if (!g || e.pointerId !== g.id) return
+    if (!g || g.phase !== 'tracking' || e.pointerId !== g.id) return
     e.stopPropagation()
     const done = g
-    g = null
-    if (done.lock !== 'go') { endVisual(done); return }
+    if (done.lock !== 'go') { cancel(); return }
     const dx = progressOf(done.x0, e.clientX, done.rtl)
+    if ((e.timeStamp || Date.now()) - done.lastT > 100) done.vx = 0
     const go = releaseOf({ dx, width: done.width, vx: done.vx }) === 'back' && e.type !== 'pointercancel'
-    if (!done.page) { if (go) landed(done); else endVisual(done); return }
-    g = done   // for paint
-    paint(go ? done.width : 0, SETTLE_MS)
-    g = null
-    win.setTimeout(() => { if (go) landed(done); else endVisual(done) }, SETTLE_MS)
+    if (!done.page) { if (go) landed(done); else cancel(); return }
+    paint(dx)
+    settle(done, go)
   }
   // A claimed touch must not scroll the page under it: pointer events alone do not stop a WebKit
   // scroll, and a scroll that starts in the slop cancels the pointer. Only touches that began in
   // the back edge of a page with a back button are held like this.
-  const onTouchMove = e => { if (g && e.cancelable) e.preventDefault() }
+  const onTouchMove = e => { if (g?.phase === 'tracking' && e.cancelable) e.preventDefault() }
+  const onVisibility = () => { if (doc.hidden) cancel() }
+  const motion = win.matchMedia?.('(prefers-reduced-motion: reduce)')
+  const onMotion = () => { if (motion?.matches) cancel() }
 
   win.addEventListener('pointerdown', onDown, true)
   win.addEventListener('pointermove', onMove, true)
   win.addEventListener('pointerup', onUp, true)
   win.addEventListener('pointercancel', onUp, true)
   doc.addEventListener('touchmove', onTouchMove, { passive: false })
+  win.addEventListener('resize', cancel)
+  doc.addEventListener('visibilitychange', onVisibility)
+  motion?.addEventListener?.('change', onMotion)
   return () => {
+    disposed = true
     win.removeEventListener('pointerdown', onDown, true)
     win.removeEventListener('pointermove', onMove, true)
     win.removeEventListener('pointerup', onUp, true)
     win.removeEventListener('pointercancel', onUp, true)
     doc.removeEventListener('touchmove', onTouchMove)
-    if (g) { endVisual(g); g = null }
+    win.removeEventListener('resize', cancel)
+    doc.removeEventListener('visibilitychange', onVisibility)
+    motion?.removeEventListener?.('change', onMotion)
+    cancel()
+    for (const id of frames) caf(id)
+    frames.clear()
   }
 }

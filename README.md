@@ -1,3 +1,15 @@
+# OpenGym Studio
+
+A non-commercial community fork of [openGym](https://github.com/DuarteSantos8/openGym), with a calmer, customizable interface. The source code remains AGPL-3.0; exercise media has separate licensing described in [NOTICE.md](NOTICE.md).
+
+Studio adds customizable Home cards, three palettes, solid or translucent surfaces, and directional navigation with an interruptible edge swipe. Existing workout logging, routine import/export, exercise library and native extension sources are retained.
+
+**[Build and sideload Studio](docs/STUDIO_BUILD.md)** · Public repositories can use the included **Studio iOS build** workflow on a standard macOS runner. The artifact is an unsigned IPA that must be signed before installation. Native build/device verification is still pending.
+
+The original project's documentation follows. Links to official releases, stores and infrastructure below belong to upstream, not this fork.
+
+---
+
 <div align="center">
 
 <p>

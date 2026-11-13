@@ -1,5 +1,15 @@
 // Russian UI strings. Keys are the English source strings (see lib/i18n.js).
 export default {
+  // Studio appearance and optional Home cards.
+  "Surface style": "Стиль поверхности",
+  "Solid": "Непрозрачный",
+  "Glass": "Стекло",
+  "Customize Home": "Настроить главный экран",
+  "Home layout": "Вид главного экрана",
+  "Keep it simple": "Оставить простым",
+  "Show all": "Показать всё",
+  "Choose the cards you want on Home. Your features and data stay available in the app.": "Выберите карточки для главного экрана. Функции и данные останутся доступны в приложении.",
+
   "Same muscle and exercise type. The movement may differ.": "Та же мышца и тип упражнения. Движение может отличаться.",
   "Related muscles and exercise type. The movement may differ.": "Связанные мышцы и тот же тип упражнения. Движение может отличаться.",
   "Same muscle, different exercise type. Check suitability.": "Та же мышца, другой тип упражнения. Проверьте, подходит ли оно.",

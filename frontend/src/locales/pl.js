@@ -1,5 +1,15 @@
 // Polish UI strings. Keys are the English source strings (see lib/i18n.js).
 export default {
+  // Studio appearance and optional Home cards.
+  "Surface style": "Styl powierzchni",
+  "Solid": "Nieprzezroczysty",
+  "Glass": "Szkło",
+  "Customize Home": "Dostosuj ekran główny",
+  "Home layout": "Układ ekranu głównego",
+  "Keep it simple": "Zachowaj prostotę",
+  "Show all": "Pokaż wszystko",
+  "Choose the cards you want on Home. Your features and data stay available in the app.": "Wybierz karty widoczne na ekranie głównym. Funkcje i dane pozostają dostępne w aplikacji.",
+
   "Same muscle and exercise type. The movement may differ.": "Ten sam mięsień i typ ćwiczenia. Ruch może się różnić.",
   "Related muscles and exercise type. The movement may differ.": "Powiązane mięśnie i ten sam typ ćwiczenia. Ruch może się różnić.",
   "Same muscle, different exercise type. Check suitability.": "Ten sam mięsień, inny typ ćwiczenia. Sprawdź, czy jest odpowiednie.",

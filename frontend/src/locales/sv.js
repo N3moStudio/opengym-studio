@@ -1,5 +1,15 @@
 // Swedish UI strings. Keys are the English source strings (see lib/i18n.js).
 export default {
+  // Studio appearance and optional Home cards.
+  "Surface style": "Ytstil",
+  "Solid": "Ogenomskinlig",
+  "Glass": "Glas",
+  "Customize Home": "Anpassa Hem",
+  "Home layout": "Hemlayout",
+  "Keep it simple": "Håll det enkelt",
+  "Show all": "Visa allt",
+  "Choose the cards you want on Home. Your features and data stay available in the app.": "Välj vilka kort du vill se på Hem. Dina funktioner och data finns kvar i appen.",
+
   'Same muscle and exercise type. The movement may differ.': 'Samma muskel och övningstyp. Rörelsen kan skilja sig.',
   'Related muscles and exercise type. The movement may differ.': 'Närliggande muskler och samma övningstyp. Rörelsen kan skilja sig.',
   'Same muscle, different exercise type. Check suitability.': 'Samma muskel, annan övningstyp. Kolla att den passar.',

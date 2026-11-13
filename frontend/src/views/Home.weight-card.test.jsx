@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createRoot } from 'react-dom/client'
 import { useStore } from '../store/useStore.js'
 import Home from './Home.jsx'
+import { setAppearance, HOME_CARDS } from '../lib/studio-appearance.js'
 
 vi.mock('react-router-dom', () => ({ useNavigate: () => vi.fn() }))
 vi.mock('../sheets.jsx', () => ({
@@ -13,6 +14,8 @@ vi.mock('../sheets.jsx', () => ({
 
 let host, root
 beforeEach(() => {
+  // These legacy card tests explicitly opt into the expanded Home.
+  setAppearance({ home: Object.fromEntries(Object.keys(HOME_CARDS).map(key => [key, true])) })
   globalThis.IS_REACT_ACT_ENVIRONMENT = true
   host = document.createElement('div')
   document.body.appendChild(host)

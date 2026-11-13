@@ -7,6 +7,7 @@ import { createRoot } from 'react-dom/client'
 import { useStore } from '../store/useStore.js'
 import { presetModules } from '../lib/modules.js'
 import Home from './Home.jsx'
+import { setAppearance, HOME_CARDS } from '../lib/studio-appearance.js'
 
 vi.mock('react-router-dom', () => ({ useNavigate: () => vi.fn() }))
 vi.mock('../sheets.jsx', () => ({
@@ -16,6 +17,8 @@ vi.mock('../sheets.jsx', () => ({
 
 let host, root
 beforeEach(() => {
+  // These legacy card tests explicitly opt into the expanded Home.
+  setAppearance({ home: Object.fromEntries(Object.keys(HOME_CARDS).map(key => [key, true])) })
   globalThis.IS_REACT_ACT_ENVIRONMENT = true
   host = document.createElement('div')
   document.body.appendChild(host)
@@ -35,6 +38,19 @@ const mountWith = (modules, extra = {}) => {
 const heads = () => [...host.querySelectorAll('.card-head-title')].map(el => el.textContent)
 
 describe('Home follows the modules', () => {
+  it('a simple Home hides optional cards without removing the underlying data or modules', () => {
+    setAppearance({ home: HOME_CARDS })
+    mountWith(undefined)
+    const before = structuredClone(useStore.getState().S)
+    expect(heads()).not.toContain('Body weight')
+    expect(heads()).not.toContain('Check in')
+    expect(host.querySelector('[data-tour="today"]')).toBeTruthy()
+    expect(host.textContent).toContain('Customize Home')
+    act(() => setAppearance({ home: { body: true } }))
+    expect(heads()).toContain('Body weight')
+    expect(useStore.getState().S).toEqual(before)
+  })
+
   it('Everything: the weight card, the check-in and the streak are there', () => {
     mountWith(undefined)
     expect(heads()).toContain('Body weight')

@@ -1,5 +1,15 @@
 // Simplified Chinese UI strings. Keys are the English source strings (see lib/i18n.js).
 export default {
+  // Studio appearance and optional Home cards.
+  "Surface style": "表面样式",
+  "Solid": "不透明",
+  "Glass": "玻璃",
+  "Customize Home": "自定义主页",
+  "Home layout": "主页布局",
+  "Keep it simple": "保持简洁",
+  "Show all": "显示全部",
+  "Choose the cards you want on Home. Your features and data stay available in the app.": "选择要在主页显示的卡片。所有功能和数据仍可在应用中使用。",
+
   "Same muscle and exercise type. The movement may differ.": "相同肌群和动作类型。运动方式可能不同。",
   "Related muscles and exercise type. The movement may differ.": "相关肌群和相同动作类型。运动方式可能不同。",
   "Same muscle, different exercise type. Check suitability.": "相同肌群，不同动作类型。请确认是否合适。",

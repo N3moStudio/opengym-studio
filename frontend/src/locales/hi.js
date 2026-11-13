@@ -1,5 +1,15 @@
 // Hindi UI strings. Keys are the English source strings (see lib/i18n.js).
 export default {
+  // Studio appearance and optional Home cards.
+  "Surface style": "सतह की शैली",
+  "Solid": "अपारदर्शी",
+  "Glass": "काँच",
+  "Customize Home": "होम अनुकूलित करें",
+  "Home layout": "होम का लेआउट",
+  "Keep it simple": "सरल रखें",
+  "Show all": "सभी दिखाएँ",
+  "Choose the cards you want on Home. Your features and data stay available in the app.": "होम पर दिखने वाले कार्ड चुनें। आपकी सुविधाएँ और डेटा ऐप में उपलब्ध रहेंगे।",
+
   "Same muscle and exercise type. The movement may differ.": "समान मांसपेशी और व्यायाम का प्रकार। गति अलग हो सकती है।",
   "Related muscles and exercise type. The movement may differ.": "संबंधित मांसपेशियाँ और समान व्यायाम प्रकार। गति अलग हो सकती है।",
   "Same muscle, different exercise type. Check suitability.": "समान मांसपेशी, अलग व्यायाम प्रकार। उपयुक्तता जाँचें।",

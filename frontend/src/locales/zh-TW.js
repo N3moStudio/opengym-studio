@@ -1,4 +1,14 @@
 export default {
+  // Studio appearance and optional Home cards.
+  "Surface style": "表面樣式",
+  "Solid": "不透明",
+  "Glass": "玻璃",
+  "Customize Home": "自訂首頁",
+  "Home layout": "首頁配置",
+  "Keep it simple": "保持簡潔",
+  "Show all": "顯示全部",
+  "Choose the cards you want on Home. Your features and data stay available in the app.": "選擇要在首頁顯示的卡片。所有功能和資料仍可在 App 中使用。",
+
   "Same muscle and exercise type. The movement may differ.": "相同肌群與動作類型。運動方式可能不同。",
   "Related muscles and exercise type. The movement may differ.": "相關肌群與相同動作類型。運動方式可能不同。",
   "Same muscle, different exercise type. Check suitability.": "相同肌群，不同動作類型。請確認是否合適。",

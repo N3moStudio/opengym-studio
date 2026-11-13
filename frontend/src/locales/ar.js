@@ -1,5 +1,15 @@
 // Arabic UI strings. Keys are the English source strings (see lib/i18n.js).
 export default {
+  // Studio appearance and optional Home cards.
+  "Surface style": "نمط السطح",
+  "Solid": "معتم",
+  "Glass": "زجاجي",
+  "Customize Home": "تخصيص الرئيسية",
+  "Home layout": "تخطيط الرئيسية",
+  "Keep it simple": "إبقاء العرض بسيطًا",
+  "Show all": "إظهار الكل",
+  "Choose the cards you want on Home. Your features and data stay available in the app.": "اختر البطاقات التي تريدها في الرئيسية. تبقى ميزاتك وبياناتك متاحة في التطبيق.",
+
   "Same muscle and exercise type. The movement may differ.": "نفس العضلة ونوع التمرين. قد تختلف الحركة.",
   "Related muscles and exercise type. The movement may differ.": "عضلات مرتبطة ونفس نوع التمرين. قد تختلف الحركة.",
   "Same muscle, different exercise type. Check suitability.": "نفس العضلة ونوع تمرين مختلف. تحقق من الملاءمة.",

@@ -1,5 +1,15 @@
 // German UI strings. Keys are the English source strings (see lib/i18n.js).
 export default {
+  // Studio appearance and optional Home cards.
+  "Surface style": "Oberflächenstil",
+  "Solid": "Deckend",
+  "Glass": "Glas",
+  "Customize Home": "Startseite anpassen",
+  "Home layout": "Startseitenlayout",
+  "Keep it simple": "Einfach halten",
+  "Show all": "Alle anzeigen",
+  "Choose the cards you want on Home. Your features and data stay available in the app.": "Wähle die Karten für deine Startseite. Deine Funktionen und Daten bleiben in der App verfügbar.",
+
   "Same muscle and exercise type. The movement may differ.": "Gleicher Muskel und Übungstyp. Die Bewegung kann abweichen.",
   "Related muscles and exercise type. The movement may differ.": "Verwandte Muskeln und gleicher Übungstyp. Die Bewegung kann abweichen.",
   "Same muscle, different exercise type. Check suitability.": "Gleicher Muskel, anderer Übungstyp. Prüfe die Eignung.",

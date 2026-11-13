@@ -4,6 +4,16 @@
 import pt from './pt.js'
 
 export const PT_BR_OVERRIDES = {
+  // Studio appearance and optional Home cards.
+  "Surface style": "Estilo de superfície",
+  "Solid": "Opaco",
+  "Glass": "Vidro",
+  "Customize Home": "Personalizar Início",
+  "Home layout": "Layout do Início",
+  "Keep it simple": "Manter simples",
+  "Show all": "Mostrar tudo",
+  "Choose the cards you want on Home. Your features and data stay available in the app.": "Escolha os cartões que quer ver no Início. Os recursos e dados continuam disponíveis no app.",
+
   'The search finds it by these too. Separate them with commas.': 'A busca também encontra o exercício por estes. Separe com vírgulas.',
   'Save names': 'Salvar nomes',
   'Handy when you compare with another app. Records ignore warm-ups either way.': 'Ajuda quando você compara com outro app. Os recordes ignoram o aquecimento de qualquer jeito.',

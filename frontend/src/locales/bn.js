@@ -1,5 +1,15 @@
 // Bengali UI strings. Keys are the English source strings (see lib/i18n.js).
 export default {
+  // Studio appearance and optional Home cards.
+  "Surface style": "সারফেসের ধরন",
+  "Solid": "অস্বচ্ছ",
+  "Glass": "কাচ",
+  "Customize Home": "হোম সাজান",
+  "Home layout": "হোমের বিন্যাস",
+  "Keep it simple": "সহজ রাখুন",
+  "Show all": "সব দেখান",
+  "Choose the cards you want on Home. Your features and data stay available in the app.": "হোমে কোন কার্ড দেখতে চান তা বেছে নিন। আপনার ফিচার ও ডেটা অ্যাপে পাওয়া যাবে।",
+
   "Same muscle and exercise type. The movement may differ.": "একই পেশি ও ব্যায়ামের ধরন। নড়াচড়া ভিন্ন হতে পারে।",
   "Related muscles and exercise type. The movement may differ.": "সম্পর্কিত পেশি ও একই ব্যায়ামের ধরন। নড়াচড়া ভিন্ন হতে পারে।",
   "Same muscle, different exercise type. Check suitability.": "একই পেশি, ভিন্ন ব্যায়ামের ধরন। উপযুক্ত কি না যাচাই করুন।",

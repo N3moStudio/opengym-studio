@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState, forwardRef, useSyncExternalStore } from 'react'
 import { useNavigate, useParams, useLocation, Navigate } from 'react-router-dom'
 import { useStore, DEF, hasData } from '../store/useStore.js'
+import StudioAppearance, { StudioSettingsLink } from '../components/StudioAppearance.jsx'
+import { customizeHome } from '../components/CustomizeHome.jsx'
+import { useAppearance, setAppearance } from '../lib/studio-appearance.js'
 import { healthStatus, loadHealth, enableHealth, disableHealth, openHealthConnect, onHealthChange, enableRead, disableRead } from '../lib/health-sync.js'
 import { phoneSessionSupported } from '../lib/phone-workout.js'
 import { workoutControls } from '../lib/workout-controls.js'
@@ -129,6 +132,7 @@ const APPLE_UA = typeof navigator !== 'undefined' && /iPhone|iPad|iPod|Macintosh
 export default function Settings({ page = null, find = null, via = null, entryKey = null }) {
   const nav = useNavigate()
   const S = useStore(s => s.S)
+  const studio = useAppearance()
   const user = useStore(s => s.user)
   const sync = useStore(s => s.sync)
   const coachLocal = useStore(s => s.coachLocal)
@@ -940,6 +944,8 @@ export default function Settings({ page = null, find = null, via = null, entryKe
     equipment: () => <EquipmentCard S={S} update={update} />,
 
     look: () => <>
+      <StudioAppearance update={update} />
+      <Section><Row icon="house" title={t('Customize Home')} accessory="chevron" onClick={customizeHome} /></Section>
       <Section footer={DEMO || MOBILE || !user ? undefined : t('synced with your profile')}>
         <Row icon="moon" iconTint="var(--indigo)" title={t('Theme')}>
           <Segmented
@@ -999,20 +1005,20 @@ export default function Settings({ page = null, find = null, via = null, entryKe
         {/* The Home summary is optional; hiding it leaves weight logging, history and Stats intact. */}
         {on('body') && <Row icon="scale" iconTint="var(--green)" title={t('Body weight')}
           subtitle={t('Show the body weight card on Home.')}>
-          <Switch checked={S.showWeightCard !== false} onChange={v => update(s => { s.showWeightCard = v })} />
+          <Switch checked={studio.home.body && S.showWeightCard !== false} onChange={v => { if (v) update(s => { s.showWeightCard = true }); setAppearance({ home: { body: v } }) }} />
         </Row>}
         {/* A small card when a muscle is still recovering or has been left out a while
             (lib/recovery-hint.js). One at a time, and it can be put away for the day. */}
         {on('health') && <Row icon="figureStrength" iconTint="var(--green)" title={t('Recovery tips')}
           subtitle={t('A small hint on Home about what has rested and what is still recovering.')}>
-          <Switch aria-label={t('Recovery tips')} checked={S.recoveryHint !== false} onChange={v => update(s => { s.recoveryHint = v })} />
+          <Switch aria-label={t('Recovery tips')} checked={studio.home.recovery && S.recoveryHint !== false} onChange={v => { if (v) update(s => { s.recoveryHint = true }); setAppearance({ home: { recovery: v } }) }} />
         </Row>}
         {/* Three goals a month on Home, sized to how you train (lib/challenges.js). Off: no card,
             no Stats progress; badges already earned stay on the shelf. */}
         {/* Monday's Your week and the 1st's Your month (lib/recap.js). On unless switched off. */}
         {on('motivation') && <Row icon="chart" iconTint="var(--purple)" title={t('Week and month recap')}
           subtitle={t('A small card when a new week or month starts: what the last one added up to.')}>
-          <Switch aria-label={t('Week and month recap')} checked={S.recap !== false} onChange={v => update(s => { s.recap = v })} />
+          <Switch aria-label={t('Week and month recap')} checked={studio.home.recap && S.recap !== false} onChange={v => { if (v) update(s => { s.recap = true }); setAppearance({ home: { recap: v } }) }} />
         </Row>}
         {/* This week's sets for the muscle with the most room, under the streak (components/WeeklySets.jsx). */}
         <Row icon="figureStrength" iconTint="var(--teal)" title={t('Weekly sets on Home')}
@@ -1021,7 +1027,7 @@ export default function Settings({ page = null, find = null, via = null, entryKe
         </Row>
         {on('motivation') && <Row icon="target" iconTint="var(--orange)" title={t('Monthly challenges')}
           subtitle={t('Three goals a month on Home, sized to how you train.')}>
-          <Switch aria-label={t('Monthly challenges')} checked={S.monthlyChallenges !== false} onChange={v => update(s => { s.monthlyChallenges = v })} />
+          <Switch aria-label={t('Monthly challenges')} checked={studio.home.challenges && S.monthlyChallenges !== false} onChange={v => { if (v) update(s => { s.monthlyChallenges = true }); setAppearance({ home: { challenges: v } }) }} />
         </Row>}
         {/* The bar at the top that says the app is offline, kept local, or not synced (#369, #330).
             Here and not under Server & sync, which a phone kept local never shows. Switching it on
@@ -1298,7 +1304,7 @@ function SettingsRoot({ ctx, preview, open, user, sync, home, go, entryKey }) {
   // it the admin dashboard has no Coach card to land on.
   const config = useStore(s => s.config)
   const adminCoach = !MOBILE && !DEMO && !!user?.admin && coachAvailable(config, user) && (!ctx.mod || ctx.mod('coach'))
-  return <div className="narrow">
+  return <div className="narrow settings-studio">
     <div className="sp-nav">
       <button className="sp-back" data-back="/home" onClick={home} aria-label={t('Home')}><Icon name="chevronLeft" /><span>{t('Home')}</span></button>
     </div>
@@ -1319,9 +1325,10 @@ function SettingsRoot({ ctx, preview, open, user, sync, home, go, entryKey }) {
           <Icon name="chevronRight" className="lrow-c" />
         </button>
       </Section>
+      <StudioSettingsLink onClick={() => open('look')} />
       {ROOT_GROUPS.map(g => g.filter(id => pageVisible(id, ctx))).filter(g => g.length).map(g => (
         <Section key={g[0]}>
-          {g.map(id => <Row key={id} icon={PAGES[id].icon} iconTint={PAGES[id].tint} title={t(PAGES[id].title)}
+          {g.map(id => id === 'look' ? null : <Row key={id} icon={PAGES[id].icon} iconTint={PAGES[id].tint} title={t(PAGES[id].title)}
             value={preview[id]?.() || null} accessory="chevron" onClick={() => open(id)} className="sp-root-row" tour={'settings-' + id} />)}
           {/* The phone app sets up its own Coach on the Coach page beside Look; in a hosted app the
               Coach is the server's, set up by an admin on the admin dashboard. Its admins get the

@@ -30,11 +30,14 @@ import { WrappedHomeCard } from '../components/WrappedEntry.jsx'
 import RecoveryHint from '../components/RecoveryHint.jsx'
 import { ChallengesCard } from '../components/Challenges.jsx'
 import { isOn } from '../lib/modules.js'
+import { useAppearance } from '../lib/studio-appearance.js'
+import { customizeHome } from '../components/CustomizeHome.jsx'
 
 // Home = what to do now + a quick glance. Deep charts & history live in Stats.
 export default function Home() {
   const nav = useNavigate()
   const S = useStore(s => s.S)
+  const { home } = useAppearance()
   const user = useStore(s => s.user)
   // The banner switched off and the sync stuck: a dot on the gear (Settings → Show connection status).
   const trouble = useConnectionTrouble()
@@ -123,34 +126,14 @@ export default function Home() {
   const progChip = programmeChip(S)
   const onQueueStart = id => { if (S.active) nav('/workout'); else startFlow([id]) }
 
-  return <div className="narrow">
+  return <div className="narrow studio-home">
     <div className="hdr">
       <SeasonDeco spot="header-bats" />
       <div><h1>{user ? t('Hi {0}', user.name) : 'openGym'}</h1><div className="sub">{today.toLocaleDateString(dateLocale(), { weekday: 'long', day: 'numeric', month: 'long' })}</div></div>
       <button className="iconbtn" data-tour="settings-gear" onClick={() => nav('/settings')} aria-label={trouble ? t('Settings') + ', ' + t('Connection problem') : t('Settings')}><Icon name="gear" />{trouble && <span className="tab-dot" aria-hidden="true" />}</button>
     </div>
 
-    <div className="card">
-      {/* A running programme (lib/programmes.js) wrote this week's plan: where it stands, one tap from its screen. */}
-      {progChip && <button type="button" className="chip ichip prog-chip" onClick={() => nav('/plan/programmes')}><Icon name="calendar" /><span>{progChip}</span></button>}
-      {/* A coach week runs by order, not by weekday, so its progress row stands in for the
-          seven dots (components/QueueRow.jsx). The today row below stays as it is: the queue's
-          next session reaches it through effectiveRoutineIds like any planned routine. */}
-      {rotating ? (queue ? <QueueRow S={S} today={todayISO()} onStart={onQueueStart} managed={managedQueue} /> : <div className="empty">
-        {t('No rotation yet. Add routines to it in Plan.')}
-        <div style={{ marginTop: 10 }}><Button size="sm" variant="tinted" onClick={() => nav('/plan')}>{t('Set up in Plan')}</Button></div>
-      </div>) : <>
-        <div className="row between" style={{ marginBottom: 8 }}>
-          <button className="iconbtn" style={{ width: 30, height: 30, fontSize: 'var(--fs-subhead)' }} onClick={() => setWeekOffset(w => w - 1)} aria-label={t('Previous week')}><Icon name="chevronLeft" /></button>
-          <div className="small muted" style={{ fontWeight: 500 }}>{wkLabel}</div>
-          <button className="iconbtn" style={{ width: 30, height: 30, fontSize: 'var(--fs-subhead)' }} onClick={() => setWeekOffset(w => w + 1)} aria-label={t('Next week')}><Icon name="chevronRight" /></button>
-        </div>
-        <div className="week">{strip}</div>
-      </>}
-      {/* The week's plan as a countdown (#753, lib/week-left.js): "2 of 4 left this week". */}
-      {left && <div className={'small dim wkleft' + (left.left > 0 ? '' : ' done')}>
-        {left.left > 0 ? tn('{0} of {1} left this week', '{0} of {1} left this week', left.left, left.of) : t('All done this week. Nice.')}
-      </div>}
+    <div className="card studio-home-hero">
       {/* Once today's session is logged the row stops asking for it. The week strip already
           knew (its dot goes 'done'); this row did not, so a finished day kept showing the
           routine name behind a green Start tag and read as still outstanding (issue #4).
@@ -177,13 +160,35 @@ export default function Home() {
           : routine ? <span className="row" style={{ gap: 8 }}><MiniBodyMap routines={todayRoutines} body={S.body} /><span className="tag acc">{t('Start')}</span></span>
           : <Icon name="plus" className="chev" />}
       </div>
+      <div className="studio-home-calendar">
+        {/* A running programme (lib/programmes.js) wrote this week's plan: where it stands, one tap from its screen. */}
+        {progChip && <button type="button" className="chip ichip prog-chip" onClick={() => nav('/plan/programmes')}><Icon name="calendar" /><span>{progChip}</span></button>}
+        {/* A coach week runs by order, not by weekday, so its progress row stands in for the
+            seven dots (components/QueueRow.jsx). The today row above stays as it is: the queue's
+            next session reaches it through effectiveRoutineIds like any planned routine. */}
+        {rotating ? (queue ? <QueueRow S={S} today={todayISO()} onStart={onQueueStart} managed={managedQueue} /> : <div className="empty">
+          {t('No rotation yet. Add routines to it in Plan.')}
+          <div style={{ marginTop: 10 }}><Button size="sm" variant="tinted" onClick={() => nav('/plan')}>{t('Set up in Plan')}</Button></div>
+        </div>) : <>
+          <div className="row between" style={{ marginBottom: 8 }}>
+            <button className="iconbtn" style={{ width: 30, height: 30, fontSize: 'var(--fs-subhead)' }} onClick={() => setWeekOffset(w => w - 1)} aria-label={t('Previous week')}><Icon name="chevronLeft" /></button>
+            <div className="small muted" style={{ fontWeight: 500 }}>{wkLabel}</div>
+            <button className="iconbtn" style={{ width: 30, height: 30, fontSize: 'var(--fs-subhead)' }} onClick={() => setWeekOffset(w => w + 1)} aria-label={t('Next week')}><Icon name="chevronRight" /></button>
+          </div>
+          <div className="week">{strip}</div>
+        </>}
+        {/* The week's plan as a countdown (#753, lib/week-left.js): "2 of 4 left this week". */}
+        {left && <div className={'small dim wkleft' + (left.left > 0 ? '' : ' done')}>
+          {left.left > 0 ? tn('{0} of {1} left this week', '{0} of {1} left this week', left.left, left.of) : t('All done this week. Nice.')}
+        </div>}
+      </div>
       {/* The row above starts today's plan in one tap, and so does the Start button in the tab
           bar — which is the whole problem when you want something else. Both jump straight into
           the planned session whenever there is one, so the Start screen (a freestyle session,
           and your other routines) is only reachable on a day with nothing planned. The one other
           way in, "Choose a different workout" on the weigh-in sheet, does not exist when the
           weigh-in is switched off. This is that door, and it starts nothing on its own. */}
-      {!S.active && <div style={{ display: 'flex', justifyContent: 'center', marginTop: 4 }}>
+      {!S.active && <div className="studio-home-alternate">
         <Button size="sm" variant="ghost" className="dim" icon="swap" onClick={() => nav('/workout')}>
           {t('Choose a different workout')}
         </Button>
@@ -192,23 +197,23 @@ export default function Home() {
     </div>
 
     {/* Monday: Your week; the 1st: Your month (lib/recap.js). Off in Settings → Look & Home. */}
-    <RecapHomeCard S={S} />
+    {home.recap && <RecapHomeCard S={S} />}
 
     {/* Christmas (lib/seasonal.js): the advent calendar's card, 1 to 24 December, from the theme's chunk. */}
-    <SeasonDeco spot="home-advent" />
+    {home.seasonal && <SeasonDeco spot="home-advent" />}
 
     {/* December and January: the year in openGym is ready (lib/wrapped.js homeCardYear). */}
-    {on('motivation') && <WrappedHomeCard S={S} />}
+    {home.recap && on('motivation') && <WrappedHomeCard S={S} />}
 
     {/* What has rested and what is still recovering, kindly (lib/recovery-hint.js). */}
-    {on('health') && <RecoveryHint S={S} />}
+    {home.recovery && on('health') && <RecoveryHint S={S} />}
 
     {/* This month's three challenges and how far you are (lib/challenges.js). */}
-    <ChallengesCard S={S} />
+    {home.challenges && <ChallengesCard S={S} />}
 
     {/* Jump to the gym check-in cards (QR membership codes). Shown here as a quick tap on
         arrival at the gym; folds away per user via the "Gym check-in" switch in Settings. */}
-    {on('checkin') && (
+    {home.checkin && on('checkin') && (
       <div className="card tap-host checkin-card">
         <CardHead icon="qr" tint="var(--blue)" eyebrow={t('At the gym')} title={t('Check in')} open={{ onClick: () => nav('/checkin') }}
           action={<Icon name="chevronRight" className="chev" />} />
@@ -223,7 +228,7 @@ export default function Home() {
       </div>
     )}
 
-    {on('body') && S.showWeightCard !== false && <div className="card">
+    {home.body && on('body') && S.showWeightCard !== false && <div className="card">
       {/* one trailing action, Log; the goal lives with the goal line and the weigh-ins below (P2) */}
       <CardHead icon="scale" tint="var(--teal)" title={t('Body weight')} className="bw-head"
         action={<Button size="sm" icon="plus" onClick={() => bwSheet()}>{t('Log')}</Button>} />
@@ -263,7 +268,7 @@ export default function Home() {
 
     {/* The streak opens its calendar from its text (CardHead open); the weekly-sets line and the
         party banner are buttons of their own beside it, not inside a card that is a button. */}
-    {on('motivation') ? <div className="card tap-host streak-card">
+    {home.streak && on('motivation') ? <div className="card tap-host streak-card">
       <SeasonDeco spot="home-streak" />
       {/* in season, a Santa hat on the flame (components/Seasonal.jsx) */}
       <CardHead className="streak-head" glyph={<span className="streak-flame-wrap"><StreakFlame lit={streak.current > 0} /><SeasonDeco spot="streak-flame" /></span>}
@@ -279,5 +284,6 @@ export default function Home() {
     </div>
       // Motivation off: no streak card, but the weekly sets line it carried keeps a card of its own.
       : S.homeMuscleSets === true && <div className="card wsets-solo"><WeeklySetsHomeLine S={S} onOpen={() => nav('/stats?section=lifts')} /></div>}
+    <div className="studio-home-customize"><Button size="sm" variant="ghost" icon="gear" onClick={customizeHome}>{t('Customize Home')}</Button></div>
   </div>
 }

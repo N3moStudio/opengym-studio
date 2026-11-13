@@ -1,5 +1,15 @@
 // Turkish UI strings. Keys are the English source strings (see lib/i18n.js).
 export default {
+  // Studio appearance and optional Home cards.
+  "Surface style": "Yüzey stili",
+  "Solid": "Opak",
+  "Glass": "Cam",
+  "Customize Home": "Ana ekranı özelleştir",
+  "Home layout": "Ana ekran düzeni",
+  "Keep it simple": "Sade tut",
+  "Show all": "Tümünü göster",
+  "Choose the cards you want on Home. Your features and data stay available in the app.": "Ana ekranda görmek istediğin kartları seç. Özelliklerin ve verilerin uygulamada kullanılabilir olmaya devam eder.",
+
   "Same muscle and exercise type. The movement may differ.": "Aynı kas ve egzersiz türü. Hareket farklı olabilir.",
   "Related muscles and exercise type. The movement may differ.": "İlgili kaslar ve aynı egzersiz türü. Hareket farklı olabilir.",
   "Same muscle, different exercise type. Check suitability.": "Aynı kas, farklı egzersiz türü. Uygunluğunu kontrol edin.",

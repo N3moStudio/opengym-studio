@@ -14,7 +14,7 @@ import { retapTab } from '../lib/scroll-top.js'
 // state it took with it is the DOM node itself: focus, the :active tint, any in-flight transition.
 function Tab({ active, icon, label, onClick, dot, tour }) {
   return (
-    <button className={active ? 'on' : ''} onClick={onClick} data-tour={tour} aria-label={dot ? label + ', ' + t('Connection problem') : undefined}>
+    <button className={active ? 'on' : ''} aria-current={active ? 'page' : undefined} onClick={onClick} data-tour={tour} aria-label={dot ? label + ', ' + t('Connection problem') : undefined}>
       <span className="tab-ic"><Icon name={icon} />{dot && <span className="tab-dot" aria-hidden="true" />}</span><span>{label}</span>
     </button>
   )
@@ -54,7 +54,7 @@ export default function TabBar({ onStart }) {
   }
 
   return (
-    <nav id="tabbar">
+    <nav id="tabbar" aria-label="openGym">
       <Tab active={on('home')} icon="house" label={t('Home')} dot={trouble} onClick={() => switchTab('/home')} tour="tab-home" />
       <Tab active={on('plan')} icon="calendar" label={t('Plan')} onClick={() => switchTab('/plan')} tour="tab-plan" />
       {/* On the workout screen itself there is nothing to resume, so the button reads as the

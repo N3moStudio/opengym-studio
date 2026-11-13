@@ -1,5 +1,15 @@
 // Thai UI strings. Keys are the English source strings (see lib/i18n.js).
 export default {
+  // Studio appearance and optional Home cards.
+  "Surface style": "รูปแบบพื้นผิว",
+  "Solid": "ทึบ",
+  "Glass": "กระจก",
+  "Customize Home": "ปรับแต่งหน้าหลัก",
+  "Home layout": "เค้าโครงหน้าหลัก",
+  "Keep it simple": "ให้เรียบง่าย",
+  "Show all": "แสดงทั้งหมด",
+  "Choose the cards you want on Home. Your features and data stay available in the app.": "เลือกการ์ดที่ต้องการให้แสดงในหน้าหลัก ฟีเจอร์และข้อมูลยังคงใช้งานได้ในแอป",
+
   "Same muscle and exercise type. The movement may differ.": "กล้ามเนื้อและประเภทการออกกำลังกายเดียวกัน การเคลื่อนไหวอาจต่างกัน",
   "Related muscles and exercise type. The movement may differ.": "กล้ามเนื้อที่เกี่ยวข้องและประเภทการออกกำลังกายเดียวกัน การเคลื่อนไหวอาจต่างกัน",
   "Same muscle, different exercise type. Check suitability.": "กล้ามเนื้อเดียวกัน แต่ประเภทการออกกำลังกายต่างกัน โปรดตรวจสอบความเหมาะสม",
