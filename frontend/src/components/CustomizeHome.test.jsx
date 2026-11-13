@@ -17,13 +17,13 @@ beforeEach(() => {
   host = document.createElement('div'); document.body.append(host); root = createRoot(host)
 })
 afterEach(() => { act(() => root.unmount()); host.remove(); localStorage.removeItem('opengym.studio.v1') })
-const button = label => [...host.querySelectorAll('button')].find(b => b.textContent === label)
+const button = label => [...host.querySelectorAll('button')].find(b => (b.getAttribute('aria-label') || b.textContent) === label)
 
 it('defaults to a simple Home and sanitizes unknown or corrupt choices', () => {
   expect(readAppearance().home.body).toBe(false)
   expect(readAppearance().home.streak).toBe(true)
   expect(normalizeAppearance({ palette: 'bogus', surface: 'bad', home: { body: 'yes', recovery: true } }))
-    .toEqual({ palette: 'bloom', surface: 'glass', home: { ...HOME_CARDS, recovery: true } })
+    .toEqual({ palette: 'bloom', surface: 'solid', home: { ...HOME_CARDS, recovery: true } })
 })
 
 it('shows and hides cards without changing routines, logs, measurements or modules', () => {
