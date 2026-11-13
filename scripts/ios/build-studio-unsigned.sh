@@ -17,6 +17,7 @@ fi
 cd "$project"
 xcodebuild -workspace App.xcworkspace -scheme App -configuration Release \
   -destination 'generic/platform=iOS' -archivePath "$archive" \
+  CURRENT_PROJECT_VERSION="${GITHUB_RUN_NUMBER:-1}" \
   CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY='' \
   archive 2>&1 | tee "$build/archive.log"
 

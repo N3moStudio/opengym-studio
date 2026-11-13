@@ -11,7 +11,6 @@ import LineChart from '../components/LineChart.jsx'
 import Icon from '../components/Icon.jsx'
 import CardHead from '../components/CardHead.jsx'
 import QueueRow from '../components/QueueRow.jsx'
-import MiniBodyMap from '../components/MiniBodyMap.jsx'
 import { queueOf, queueView, weekTally, pinState } from '../lib/queue.js'
 import { workoutsLeft } from '../lib/week-left.js'
 import { WeeklySetsHomeLine } from '../components/WeeklySets.jsx'
@@ -127,73 +126,44 @@ export default function Home() {
   const onQueueStart = id => { if (S.active) nav('/workout'); else startFlow([id]) }
 
   return <div className="narrow studio-home">
-    <div className="hdr">
-      <SeasonDeco spot="header-bats" />
-      <div><h1>{user ? t('Hi {0}', user.name) : 'openGym'}</h1><div className="sub">{today.toLocaleDateString(dateLocale(), { weekday: 'long', day: 'numeric', month: 'long' })}</div></div>
+    <header className="hdr studio-masthead">
+      <div><div className="studio-wordmark">OPEN GYM <span>STUDIO</span></div>
+        <h1>{user ? t('Hi {0}', user.name) : t('Today')}</h1>
+        <div className="sub">{today.toLocaleDateString(dateLocale(), { weekday: 'long', day: 'numeric', month: 'long' })}</div>
+      </div>
       <button className="iconbtn" data-tour="settings-gear" onClick={() => nav('/settings')} aria-label={trouble ? t('Settings') + ', ' + t('Connection problem') : t('Settings')}><Icon name="gear" />{trouble && <span className="tab-dot" aria-hidden="true" />}</button>
-    </div>
+    </header>
 
-    <div className="card studio-home-hero">
-      {/* Once today's session is logged the row stops asking for it. The week strip already
-          knew (its dot goes 'done'); this row did not, so a finished day kept showing the
-          routine name behind a green Start tag and read as still outstanding (issue #4).
-          An in-progress session still wins — that one is happening right now. Tapping the
-          row keeps working, so a second session in one day is a tap away, just not urged. */}
-      <div className="today-row" data-tour="today" {...tappable(onToday)}>
-        <div className="row" style={{ gap: 9, minWidth: 0 }}>
-          <span className="lrow-i" style={{ background: S.active ? 'var(--orange)' : doneToday ? 'var(--surface-3)' : routine ? 'var(--acc)' : 'var(--surface-3)',
-            // the rest day's moon on the grey square: white on #e3e3e8 vanished in the light theme
-            ...(!S.active && !doneToday && !routine ? { color: 'var(--label-2)' } : {}) }}>
-            <Icon name={S.active ? (editingSaved ? 'pencil' : 'play') : doneToday ? 'checkCircle' : routine ? glyphOf(routine.emoji) : 'moon'}
-              style={doneToday && !S.active ? { color: 'var(--green)' } : undefined} />
-          </span>
-          <div style={{ minWidth: 0 }}>
-            <div className="lbl2">{t('Today')}</div>
-            <div className="ttl">{S.active ? (editingSaved ? S.active.name : t('{0} (in progress)', S.active.name))
-              : doneToday ? (doneToday.name ? t('{0} (done)', doneToday.name) : t('Workout done'))
-              : routine ? todayName : t('Rest day')}{todayOvr && routine && !doneToday ? ' · ' + t('rescheduled') : ''}</div>
-            {next && !doneToday && <div className="ss">{t('Next session: {0}, {1}', t(DAYN[next.weekday]), next.routine.name)}</div>}
-          </div>
-        </div>
-        {S.active ? <span className="tag" style={{ color: 'var(--orange)', background: 'color-mix(in srgb,var(--orange) 16%,transparent)' }}>{editingSaved ? t('Edit') : t('Resume')}</span>
-          : doneToday ? <span className="tag" style={{ color: 'var(--green)', background: 'color-mix(in srgb,var(--green) 16%,transparent)' }}>{t('Done')}</span>
-          : routine ? <span className="row" style={{ gap: 8 }}><MiniBodyMap routines={todayRoutines} body={S.body} /><span className="tag acc">{t('Start')}</span></span>
-          : <Icon name="plus" className="chev" />}
-      </div>
-      <div className="studio-home-calendar">
-        {/* A running programme (lib/programmes.js) wrote this week's plan: where it stands, one tap from its screen. */}
-        {progChip && <button type="button" className="chip ichip prog-chip" onClick={() => nav('/plan/programmes')}><Icon name="calendar" /><span>{progChip}</span></button>}
-        {/* A coach week runs by order, not by weekday, so its progress row stands in for the
-            seven dots (components/QueueRow.jsx). The today row above stays as it is: the queue's
-            next session reaches it through effectiveRoutineIds like any planned routine. */}
-        {rotating ? (queue ? <QueueRow S={S} today={todayISO()} onStart={onQueueStart} managed={managedQueue} /> : <div className="empty">
-          {t('No rotation yet. Add routines to it in Plan.')}
-          <div style={{ marginTop: 10 }}><Button size="sm" variant="tinted" onClick={() => nav('/plan')}>{t('Set up in Plan')}</Button></div>
-        </div>) : <>
-          <div className="row between" style={{ marginBottom: 8 }}>
-            <button className="iconbtn" style={{ width: 30, height: 30, fontSize: 'var(--fs-subhead)' }} onClick={() => setWeekOffset(w => w - 1)} aria-label={t('Previous week')}><Icon name="chevronLeft" /></button>
-            <div className="small muted" style={{ fontWeight: 500 }}>{wkLabel}</div>
-            <button className="iconbtn" style={{ width: 30, height: 30, fontSize: 'var(--fs-subhead)' }} onClick={() => setWeekOffset(w => w + 1)} aria-label={t('Next week')}><Icon name="chevronRight" /></button>
-          </div>
-          <div className="week">{strip}</div>
-        </>}
-        {/* The week's plan as a countdown (#753, lib/week-left.js): "2 of 4 left this week". */}
-        {left && <div className={'small dim wkleft' + (left.left > 0 ? '' : ' done')}>
-          {left.left > 0 ? tn('{0} of {1} left this week', '{0} of {1} left this week', left.left, left.of) : t('All done this week. Nice.')}
-        </div>}
-      </div>
-      {/* The row above starts today's plan in one tap, and so does the Start button in the tab
-          bar — which is the whole problem when you want something else. Both jump straight into
-          the planned session whenever there is one, so the Start screen (a freestyle session,
-          and your other routines) is only reachable on a day with nothing planned. The one other
-          way in, "Choose a different workout" on the weigh-in sheet, does not exist when the
-          weigh-in is switched off. This is that door, and it starts nothing on its own. */}
-      {!S.active && <div className="studio-home-alternate">
-        <Button size="sm" variant="ghost" className="dim" icon="swap" onClick={() => nav('/workout')}>
-          {t('Choose a different workout')}
-        </Button>
-      </div>}
-      <SeasonDeco spot="home-hero" />
+    <section className="studio-session-wrap" aria-label={t('Today')}>
+      <button type="button" className={'studio-session' + (!S.active && !routine ? ' is-rest' : '')} data-tour="today" onClick={onToday}>
+        <span className="studio-session-art" aria-hidden="true"><i /><i /><i /></span>
+        <span className="studio-session-top"><span className="studio-session-symbol"><Icon name={S.active ? (editingSaved ? 'pencil' : 'play') : doneToday ? 'checkCircle' : routine ? glyphOf(routine.emoji) : 'moon'} /></span>
+          <span>{S.active ? t('Workout') : t('Today')}</span></span>
+        <span className="studio-session-title">{S.active ? (editingSaved ? S.active.name : t('{0} (in progress)', S.active.name))
+          : doneToday ? (doneToday.name ? t('{0} (done)', doneToday.name) : t('Workout done'))
+          : routine ? todayName : t('Rest day')}{todayOvr && routine && !doneToday ? ' · ' + t('rescheduled') : ''}</span>
+        {next && !doneToday && <span className="studio-session-sub">{t('Next session: {0}, {1}', t(DAYN[next.weekday]), next.routine.name)}</span>}
+        {routine && !doneToday && !S.active && <span className="studio-session-sub">{todayRoutines.reduce((n, r) => n + (r.ex?.length || 0), 0)} {t('Exercises')}</span>}
+        <span className="studio-session-bottom"><span className="studio-session-action">{S.active ? (editingSaved ? t('Edit') : t('Resume')) : doneToday ? t('Done') : routine ? t('Start') : t('Plan')}<Icon name="chevronRight" /></span></span>
+      </button>
+      {!S.active && <Button size="sm" variant="ghost" className="studio-other-session" icon="swap" onClick={() => nav('/workout')}>{t('Choose a different workout')}</Button>}
+    </section>
+
+    <section className="studio-week" aria-label={t('This week')}>
+      <div className="studio-section-heading"><h2>{wkLabel}</h2><div className="studio-week-controls">
+        {!rotating && <><button className="iconbtn" onClick={() => setWeekOffset(w => w - 1)} aria-label={t('Previous week')}><Icon name="chevronLeft" /></button>
+          <button className="iconbtn" onClick={() => setWeekOffset(w => w + 1)} aria-label={t('Next week')}><Icon name="chevronRight" /></button></>}
+      </div></div>
+      {progChip && <button type="button" className="chip ichip prog-chip" onClick={() => nav('/plan/programmes')}><Icon name="calendar" /><span>{progChip}</span></button>}
+      {rotating ? (queue ? <QueueRow S={S} today={todayISO()} onStart={onQueueStart} managed={managedQueue} /> : <div className="empty">
+        {t('No rotation yet. Add routines to it in Plan.')}<div style={{ marginTop: 12 }}><Button size="sm" variant="tinted" onClick={() => nav('/plan')}>{t('Set up in Plan')}</Button></div>
+      </div>) : <div className="week">{strip}</div>}
+      {left && <div className={'small dim wkleft' + (left.left > 0 ? '' : ' done')}>{left.left > 0 ? tn('{0} of {1} left this week', '{0} of {1} left this week', left.left, left.of) : t('All done this week. Nice.')}</div>}
+    </section>
+
+    <div className="studio-destinations">
+      <button type="button" onClick={() => nav('/plan')}><Icon name="calendar" /><span><strong>{t('Plan')}</strong><small>{S.routines.length} {t('Routines')}</small></span><Icon name="chevronRight" /></button>
+      <button type="button" onClick={() => nav('/stats')}><Icon name="chart" /><span><strong>{t('Stats')}</strong><small>{tn('{0} workout total', '{0} workouts total', S.workouts.length)}</small></span><Icon name="chevronRight" /></button>
     </div>
 
     {/* Monday: Your week; the 1st: Your month (lib/recap.js). Off in Settings → Look & Home. */}

@@ -33,6 +33,10 @@ jobs:
         working-directory: frontend
         run: >-
           npm test --
+          src/components/StudioAppearance.test.jsx
+          src/views/Home.modules.test.jsx
+          src/views/Home.weight-card.test.jsx
+          src/views/Home.weight-chart.test.jsx
           src/components/CustomizeHome.test.jsx
           src/lib/page-motion.test.js
           src/lib/edge-swipe-back.test.js
@@ -41,6 +45,14 @@ jobs:
       - name: Build app and bundle exercise illustrations
         working-directory: frontend
         run: npm run build:mobile
+      - name: Save interface preview
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+        with:
+          name: Studio-interface-preview
+          path: |
+            frontend/dist
+            !frontend/dist/exercise-media/**
+          retention-days: 1
       - name: Add native extensions and Watch app
         working-directory: frontend
         run: |
@@ -92,7 +104,7 @@ jobs:
         run: |
           tag="studio-build-${GITHUB_RUN_NUMBER}"
           cat > release-notes.md <<'NOTES'
-          OpenGym Studio community fork: customizable Home cards, appearance settings, offline exercise illustrations, widgets, Live Activities, and Apple Watch targets.
+          OpenGym Studio: redesigned Today screen, eight calm appearance palettes, more generous spacing, configurable Home cards, offline exercise illustrations, widgets, Live Activities, and Apple Watch targets.
 
           This IPA is unsigned. Sign it with a compatible sideloading setup before installation. Device functionality and extension entitlements still need physical-device verification.
 

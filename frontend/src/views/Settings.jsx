@@ -959,12 +959,6 @@ export default function Settings({ page = null, find = null, via = null, entryKe
             onChange={v => update(s => { s.theme = v })}
           />
         </Row>
-        <div className="lrow" style={{ flexWrap: 'wrap', rowGap: 12, paddingBottom: 14 }}>
-          <span className="lrow-i" style={{ '--tint': 'var(--purple)' }}><Icon name="palette" /></span>
-          <span className="lrow-m"><span className="lrow-t">{t('Accent color')}</span></span>
-          <span className="lrow-v">{accentLabel(S)}</span>
-          <AccentSwatches S={S} update={update} />
-        </div>
         {/* The home-screen icon: the phone's own, not synced; in the phone app only. */}
         {MOBILE && platformNow() && <AppIconRow />}
         {/* How the muscle map is drawn. The exercise drawings follow it until they are set below. */}

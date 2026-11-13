@@ -4,8 +4,8 @@ import { useSyncExternalStore } from 'react'
 const KEY = 'opengym.studio.v1'
 const EVENT = 'opengym:studio'
 export const HOME_CARDS = Object.freeze({ recap: false, recovery: false, checkin: false, body: false, streak: true, challenges: false, seasonal: false })
-const DEFAULT = Object.freeze({ palette: 'bloom', surface: 'glass', home: HOME_CARDS })
-export const STUDIO_PALETTES = ['bloom', 'glacier', 'titanium']
+const DEFAULT = Object.freeze({ palette: 'bloom', surface: 'solid', home: HOME_CARDS })
+export const STUDIO_PALETTES = ['bloom', 'glacier', 'afterhours', 'porcelain', 'ion', 'ember', 'blueprint', 'titanium']
 let cachedText, cachedValue = DEFAULT
 
 export function normalizeAppearance(value) {
