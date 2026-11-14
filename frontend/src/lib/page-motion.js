@@ -5,11 +5,11 @@
 export function pageMotion(from, to, navType) {
   // The tabs are the top level: Home is '/', not the parent of every other tab.
   if (!from || from === to || from === '/' || to === '/') return 'fade'
-  const tabs = ['/home', '/plan', '/stats', '/library']
-  if (tabs.includes(from) && tabs.includes(to)) return tabs.indexOf(to) > tabs.indexOf(from) ? 'tab-next' : 'tab-prev'
-  // Settings belongs to Home, even though its URL is not nested under /home.
-  if (from === '/home' && to === '/settings' && navType !== 'POP') return 'push'
-  if (from === '/settings' && to === '/home') return 'pop'
+  const tabs = { '/home': 0, '/plan': 1, '/library': 1, '/stats': 2, '/settings': 3 }
+  if (from in tabs && to in tabs) {
+    if (tabs[from] === tabs[to]) return 'fade'
+    return tabs[to] > tabs[from] ? 'tab-next' : 'tab-prev'
+  }
   const deeper = to.startsWith(from.endsWith('/') ? from : from + '/')
   const upper = from.startsWith(to.endsWith('/') ? to : to + '/')
   if (deeper && navType !== 'POP') return 'push'

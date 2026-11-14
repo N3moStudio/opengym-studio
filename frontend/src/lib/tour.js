@@ -48,7 +48,7 @@ export const STEPS = [
   { id: 'go-library', route: '/plan', anchor: 'tab-library', go: '/library' },
   { id: 'lib-search', route: '/library', anchor: 'lib-search' },
   { id: 'lib-filters', route: '/library', anchor: 'lib-filters' },
-  { id: 'start', route: '/library', anchor: 'start', intercept: true },
+  { id: 'start', route: '/home', anchor: 'today', intercept: true },
   { id: 'set', route: '/workout', anchor: 'set', sandbox: 'practice' },
   { id: 'tick', route: '/workout', anchor: 'tick', sandbox: 'practice', tap: true },
   { id: 'rest', route: '/workout', anchor: 'rest', sandbox: 'practice', when: c => c.rest, optional: true },
@@ -99,7 +99,7 @@ const PLAN = [
 const madeEx = c => (c.S?.customEx?.length || 0) > (c.entry.customEx || 0)
 const CUSTOM = [
   { id: 'c-intro', route: null, anchor: null },
-  { id: 'c-go', route: null, anchor: 'tab-library', go: '/library' },
+  { id: 'c-go', route: '/plan', anchor: 'tab-library', go: '/library' },
   { id: 'c-new', route: '/library', anchor: 'lib-new', open: true, until: c => c.sheets > 0 },
   { id: 'c-name', route: '/library', anchor: 'cx-name', open: true, sheet: true, lost: c => !c.sheets, back: 'c-new' },
   { id: 'c-bp', route: '/library', anchor: 'cx-bp', open: true, sheet: true, lost: c => !c.sheets, back: 'c-new' },

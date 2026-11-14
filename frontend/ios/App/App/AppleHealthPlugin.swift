@@ -7,7 +7,7 @@ import UIKit
  * Apple Health on the iPhone, the same calls as HealthConnectPlugin.java (lib/health-sync.js):
  * finished workouts and weigh-ins go to Apple Health, each with a sync identifier of its own
  * ('opengym-w-<id>', 'opengym-bw-<day>'), so writing one again replaces it and removing finds
- * exactly what openGym wrote. It asks to read the heart rate and the body weight too, for the
+ * exactly what Gymaura wrote. It asks to read the heart rate and the body weight too, for the
  * Apple Watch app's workout session, and keeps the switch where the watch link reads it
  * (App Group "healthEnabled").
  *
@@ -77,7 +77,7 @@ public class AppleHealthPlugin: CAPPlugin, CAPBridgedPlugin {
     }
 
     @objc func setEnabled(_ call: CAPPluginCall) {
-        OpenGymGroup.defaults.set(call.getBool("on") ?? false, forKey: AppleHealthPlugin.enabledKey)
+        GymauraGroup.defaults.set(call.getBool("on") ?? false, forKey: AppleHealthPlugin.enabledKey)
         call.resolve()
     }
 

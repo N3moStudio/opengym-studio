@@ -295,7 +295,8 @@ export default function FocusView({
     ],
   })
 
-  return <div className="focus-view" data-testid="focus-view">
+  return <div className="focus-view aura-focus" data-testid="focus-view">
+    <div className="aura-focus-position"><span>{t('Your next set')}</span><strong>{t('Set {0}', setIdx + 1)} <span>/ {entry.sets.length}</span></strong></div>
     <div className="focus-card">
       {unit.length > 1 && <div className="focus-superset-inline">
         <Icon name="reset" />
@@ -315,7 +316,7 @@ export default function FocusView({
         <button className="iconbtn" aria-label={t('More')} onClick={openExerciseMenu}><Icon name="more" /></button>
       </header>
 
-      <div className="focus-context">
+      <details className="focus-context aura-focus-details"><summary>{t('Exercise notes & guidance')}<Icon name="chevronDown" /></summary>
         <div className="focus-tags">
           {mode === 'cardio' && <span className="tag acc">{t('Cardio')}</span>}
           {isSideSet(set) && <span className="tag acc">{t('Per side')}</span>}
@@ -327,7 +328,7 @@ export default function FocusView({
         {entry.note && <div className="focus-note">{entry.note}</div>}
         {last && <div className="focus-last">{t('Last time')} · {fmtDate(last.d)}</div>}
         {guidance && <button className="focus-guidance" onClick={onProgressionSettings}><Icon name="lightbulb" />{t(guidance.policyLabel)}</button>}
-      </div>
+      </details>
       <Prescription entry={entry} setIdx={setIdx} unit={S.unit} fallbackRest={S.restSec}>
         <PlanBadge entry={entry} mode={mode} />
         <PlateBadge S={S} entry={entry} set={set} />
@@ -379,7 +380,7 @@ export default function FocusView({
           style={effortTint ? { color: effortTint, borderColor: effortTint, background: `color-mix(in srgb, ${effortTint} 20%, var(--surface-2))` } : undefined}
           aria-label={t(EFFORT[effort].hd)} disabled={readOnly} onClick={openEffort}>{effortValue == null ? t(EFFORT[effort].hd) : fmtNum(effortValue)}</button>}
       </div>
-      <Button variant="primary" icon="check" data-tour="tick" aria-label={t('Complete set')} onClick={complete}>{set.done ? t('Completed') : t('Complete')}</Button>
+      <Button variant="primary" icon="check" data-tour="tick" aria-label={t('Complete set')} disabled={locked} onClick={complete}>{set.done ? t('Completed') : t('Complete set')}</Button>
       <div className="focus-secondary">
         <button className="focus-skip" aria-label={t('Skip set')} disabled={setIdx >= entry.sets.length - 1} onClick={() => selectSet(setIdx + 1)}>
           <Icon name="play" />{t('Skip')}
@@ -393,7 +394,7 @@ export default function FocusView({
       <div className="focus-dots">
         {entry.sets.map((row, index) => <button key={index} aria-label={t('Set {0}', index + 1)}
           className={(index === setIdx ? 'active ' : '') + (row.done ? 'done' : '')}
-          onClick={() => selectSet(index)} />)}
+          aria-current={index === setIdx ? 'step' : undefined} onClick={() => selectSet(index)}>{row.done ? <Icon name="check" /> : index + 1}</button>)}
       </div>
       <button aria-label={t('Next set')} disabled={setIdx === entry.sets.length - 1} onClick={() => selectSet(setIdx + 1)}><Icon name="chevronRight" /></button>
     </footer>

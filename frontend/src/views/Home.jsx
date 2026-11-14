@@ -1,3 +1,4 @@
+import { AuraHeader, AuraMark, AuraStat, AuraLink } from '../components/GymauraUI.jsx'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
@@ -29,7 +30,7 @@ import { WrappedHomeCard } from '../components/WrappedEntry.jsx'
 import RecoveryHint from '../components/RecoveryHint.jsx'
 import { ChallengesCard } from '../components/Challenges.jsx'
 import { isOn } from '../lib/modules.js'
-import { useAppearance } from '../lib/studio-appearance.js'
+import { useAppearance } from '../lib/gymaura-appearance.js'
 import { customizeHome } from '../components/CustomizeHome.jsx'
 
 // Home = what to do now + a quick glance. Deep charts & history live in Stats.
@@ -125,32 +126,31 @@ export default function Home() {
   const progChip = programmeChip(S)
   const onQueueStart = id => { if (S.active) nav('/workout'); else startFlow([id]) }
 
-  return <div className="narrow studio-home">
-    <header className="hdr studio-masthead">
-      <div><div className="studio-wordmark">OPEN GYM <span>STUDIO</span></div>
-        <h1>{user ? t('Hi {0}', user.name) : t('Today')}</h1>
-        <div className="sub">{today.toLocaleDateString(dateLocale(), { weekday: 'long', day: 'numeric', month: 'long' })}</div>
-      </div>
-      <button className="iconbtn" data-tour="settings-gear" onClick={() => nav('/settings')} aria-label={trouble ? t('Settings') + ', ' + t('Connection problem') : t('Settings')}><Icon name="gear" />{trouble && <span className="tab-dot" aria-hidden="true" />}</button>
-    </header>
-
-    <section className="studio-session-wrap" aria-label={t('Today')}>
-      <button type="button" className={'studio-session' + (!S.active && !routine ? ' is-rest' : '')} data-tour="today" onClick={onToday}>
-        <span className="studio-session-art" aria-hidden="true"><i /><i /><i /></span>
-        <span className="studio-session-top"><span className="studio-session-symbol"><Icon name={S.active ? (editingSaved ? 'pencil' : 'play') : doneToday ? 'checkCircle' : routine ? glyphOf(routine.emoji) : 'moon'} /></span>
-          <span>{S.active ? t('Workout') : t('Today')}</span></span>
-        <span className="studio-session-title">{S.active ? (editingSaved ? S.active.name : t('{0} (in progress)', S.active.name))
-          : doneToday ? (doneToday.name ? t('{0} (done)', doneToday.name) : t('Workout done'))
-          : routine ? todayName : t('Rest day')}{todayOvr && routine && !doneToday ? ' · ' + t('rescheduled') : ''}</span>
-        {next && !doneToday && <span className="studio-session-sub">{t('Next session: {0}, {1}', t(DAYN[next.weekday]), next.routine.name)}</span>}
-        {routine && !doneToday && !S.active && <span className="studio-session-sub">{todayRoutines.reduce((n, r) => n + (r.ex?.length || 0), 0)} {t('Exercises')}</span>}
-        <span className="studio-session-bottom"><span className="studio-session-action">{S.active ? (editingSaved ? t('Edit') : t('Resume')) : doneToday ? t('Done') : routine ? t('Start') : t('Plan')}<Icon name="chevronRight" /></span></span>
-      </button>
-      {!S.active && <Button size="sm" variant="ghost" className="studio-other-session" icon="swap" onClick={() => nav('/workout')}>{t('Choose a different workout')}</Button>}
+  return <div className="narrow gymaura-home">
+    <AuraHeader title={t('Today')} subtitle={today.toLocaleDateString(dateLocale(), { weekday: 'long', day: 'numeric', month: 'long' })}>
+      <button type="button" className="iconbtn" data-tour="settings-gear" onClick={() => nav('/settings')} aria-label={trouble ? t('Settings') + ', ' + t('Connection problem') : t('Settings')}><Icon name="personCircle" />{trouble && <span className="tab-dot" />}</button>
+    </AuraHeader>
+    <section className="aura-hero" aria-label={t('Today')}>
+      <span className="aura-orbit" aria-hidden="true" />
+      <div className="aura-hero-top"><span className="aura-eyebrow">{t(S.active ? (editingSaved ? 'Editing workout' : 'In progress') : doneToday ? 'Workout done' : routine ? 'Up next' : 'Rest day')}</span><AuraMark /></div>
+      <h2>{S.active ? S.active.name : doneToday ? (doneToday.name || t('Workout done')) : routine ? todayName : t('Room to recover.')}</h2>
+      <p>{S.active ? (editingSaved ? t('Review and edit your saved session.') : t('Pick up where you left off.')) : doneToday ? t('Your session is saved. Take a moment for yourself.')
+        : routine ? t('{0} exercises. One focused session.', todayRoutines.reduce((n, r) => n + (r.ex?.length || 0), 0))
+        : next ? t('Next session: {0}, {1}', t(DAYN[next.weekday]), next.routine.name) : t('Make space for your next session.')}</p>
+      <Button variant="primary" icon={doneToday && !S.active ? 'checkCircle' : 'play'} data-tour="today"
+        onClick={doneToday && !S.active ? () => nav('/history') : onToday}>
+        {S.active ? (editingSaved ? t('Edit workout') : t('Resume workout')) : doneToday ? t('View session') : routine ? t('Begin session') : t('Plan a session')}
+      </Button>
+      {!S.active && <div className="aura-hero-footer"><button type="button" onClick={() => nav('/workout')}>{t('Choose a different workout')}</button></div>}
     </section>
+    <div className="aura-metrics" aria-label={t('Your week at a glance')}>
+      <AuraStat label={t('This week')} value={doneThisWeek} detail={t('Workouts')} />
+      <AuraStat label={t('Your plan')} value={S.routines.length} detail={t('Routines')} />
+      <AuraStat label={t('All time')} value={S.workouts.length} detail={t('Workouts')} />
+    </div>
 
-    <section className="studio-week" aria-label={t('This week')}>
-      <div className="studio-section-heading"><h2>{wkLabel}</h2><div className="studio-week-controls">
+    <section className="gymaura-week" aria-label={t('This week')}>
+      <div className="aura-section-head"><h2>{wkLabel}</h2><div className="gymaura-week-controls">
         {!rotating && <><button className="iconbtn" onClick={() => setWeekOffset(w => w - 1)} aria-label={t('Previous week')}><Icon name="chevronLeft" /></button>
           <button className="iconbtn" onClick={() => setWeekOffset(w => w + 1)} aria-label={t('Next week')}><Icon name="chevronRight" /></button></>}
       </div></div>
@@ -161,9 +161,10 @@ export default function Home() {
       {left && <div className={'small dim wkleft' + (left.left > 0 ? '' : ' done')}>{left.left > 0 ? tn('{0} of {1} left this week', '{0} of {1} left this week', left.left, left.of) : t('All done this week. Nice.')}</div>}
     </section>
 
-    <div className="studio-destinations">
-      <button type="button" onClick={() => nav('/plan')}><Icon name="calendar" /><span><strong>{t('Plan')}</strong><small>{S.routines.length} {t('Routines')}</small></span><Icon name="chevronRight" /></button>
-      <button type="button" onClick={() => nav('/stats')}><Icon name="chart" /><span><strong>{t('Stats')}</strong><small>{tn('{0} workout total', '{0} workouts total', S.workouts.length)}</small></span><Icon name="chevronRight" /></button>
+    <div className="aura-section-head"><h2>{t('Make it your own')}</h2></div>
+    <div className="aura-quick-links">
+      <AuraLink icon="dumbbell" title={t('Your training')} subtitle={t('Routines, exercises and programmes')} onClick={() => nav('/plan')} />
+      <AuraLink icon="chart" title={t('Your progress')} subtitle={t('Every session adds up.')} onClick={() => nav('/stats')} />
     </div>
 
     {/* Monday: Your week; the 1st: Your month (lib/recap.js). Off in Settings → Look & Home. */}
@@ -172,7 +173,7 @@ export default function Home() {
     {/* Christmas (lib/seasonal.js): the advent calendar's card, 1 to 24 December, from the theme's chunk. */}
     {home.seasonal && <SeasonDeco spot="home-advent" />}
 
-    {/* December and January: the year in openGym is ready (lib/wrapped.js homeCardYear). */}
+    {/* December and January: the year in Gymaura is ready (lib/wrapped.js homeCardYear). */}
     {home.recap && on('motivation') && <WrappedHomeCard S={S} />}
 
     {/* What has rested and what is still recovering, kindly (lib/recovery-hint.js). */}
@@ -254,6 +255,6 @@ export default function Home() {
     </div>
       // Motivation off: no streak card, but the weekly sets line it carried keeps a card of its own.
       : S.homeMuscleSets === true && <div className="card wsets-solo"><WeeklySetsHomeLine S={S} onOpen={() => nav('/stats?section=lifts')} /></div>}
-    <div className="studio-home-customize"><Button size="sm" variant="ghost" icon="gear" onClick={customizeHome}>{t('Customize Home')}</Button></div>
+    <div className="gymaura-home-customize"><Button size="sm" variant="ghost" icon="gear" onClick={customizeHome}>{t('Customize Home')}</Button></div>
   </div>
 }

@@ -1,15 +1,12 @@
-# OpenGym Studio
+# Gymaura
 
-A non-commercial community fork of [openGym](https://github.com/DuarteSantos8/openGym), with a calmer, customizable interface. The source code remains AGPL-3.0; exercise media has separate licensing described in [NOTICE.md](NOTICE.md).
+A calmer training companion with a redesigned glass interface. Today, Train, Progress, and You keep daily actions separate from detailed training tools.
 
-Studio adds customizable Home cards, three palettes, solid or translucent surfaces, and directional navigation with an interruptible edge swipe. Existing workout logging, routine import/export, exercise library and native extension sources are retained.
+See [Gymaura design and build notes](docs/GYMAURA.md). The iOS workflow validates navigation and appearance before packaging the iPhone app, widgets, Live Activities, and Watch app into an unsigned IPA for personal sideloading.
 
-**[Build and sideload Studio](docs/STUDIO_BUILD.md)** · Public repositories can use the included **Studio iOS build** workflow on a standard macOS runner. The artifact is an unsigned IPA that must be signed before installation. Native build/device verification is still pending.
-
-The original project's documentation follows. Links to official releases, stores and infrastructure below belong to upstream, not this fork.
+Gymaura is a fork of openGym, licensed under AGPL-3.0-or-later. Original attribution, exercise media restrictions, and contributor notices remain in [NOTICE.md](NOTICE.md). The upstream documentation follows; links to official stores and infrastructure belong to upstream.
 
 ---
-
 <div align="center">
 
 <p>

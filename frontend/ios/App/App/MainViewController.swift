@@ -48,7 +48,7 @@ class MainViewController: CAPBridgeViewController {
      * is what iOS really has pending, not what the page meant to schedule. Never shown otherwise:
      * nothing but XCUIApplication.launchArguments passes the argument.
      */
-    static let pendingProbeArgument = "-OpenGymUITestPending"
+    static let pendingProbeArgument = "-GymauraUITestPending"
 
     private func showPendingProbe() {
         // On the window, not inside the web view: what a WKWebView holds is its page as far as

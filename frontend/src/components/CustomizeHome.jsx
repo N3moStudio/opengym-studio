@@ -1,4 +1,4 @@
-import { HOME_CARDS, setAppearance, useAppearance } from '../lib/studio-appearance.js'
+import { HOME_CARDS, setAppearance, useAppearance } from '../lib/gymaura-appearance.js'
 import { useUI } from '../store/useUI.js'
 import { useStore } from '../store/useStore.js'
 import { isOn } from '../lib/modules.js'
@@ -32,8 +32,8 @@ export function CustomizeHomePanel({ close }) {
   }
   return <>
     <h3>{t('Customize Home')}</h3>
-    <p className="studio-home-edit-intro">{t('Choose the cards you want on Home. Your features and data stay available in the app.')}</p>
-    <div className="studio-surfaces" role="group" aria-label={t('Home layout')}>
+    <p className="gymaura-home-edit-intro">{t('Choose the cards you want on Home. Your features and data stay available in the app.')}</p>
+    <div className="gymaura-surfaces" role="group" aria-label={t('Home layout')}>
       <button type="button" onClick={() => setAppearance({ home: HOME_CARDS })}>{t('Keep it simple')}</button>
       <button type="button" onClick={showAll}>{t('Show all')}</button>
     </div>

@@ -6,7 +6,7 @@ import UIKit
 /*
  * Siri, the Shortcuts app and Spotlight (v1.4.4, lib/voice.js). Four App Shortcuts, iOS 16 and up:
  *
- *   Start my workout     opens the app at opengym://start?today=1: today's plan through the same
+ *   Start my workout     opens the app at gymaura://start?today=1: today's plan through the same
  *                        path as the widget's Start, or the workout already running (never a second).
  *   Log my weight        asks for the number, in the profile's unit, and leaves it in the App Group
  *                        without opening the app. The page brings it in when it next starts or comes
@@ -56,14 +56,14 @@ enum VoicePending {
     }
 
     private static func read() -> [[String: Any]] {
-        guard let data = OpenGymGroup.defaults.data(forKey: key),
+        guard let data = GymauraGroup.defaults.data(forKey: key),
               let list = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else { return [] }
         return list
     }
 
     private static func write(_ list: [[String: Any]]) {
         if let data = try? JSONSerialization.data(withJSONObject: list) {
-            OpenGymGroup.defaults.set(data, forKey: key)
+            GymauraGroup.defaults.set(data, forKey: key)
         }
     }
 }
@@ -107,7 +107,7 @@ struct VoiceSnapshot: Decodable {
     var streakInfo: Streak?
 
     static func load() -> VoiceSnapshot? {
-        guard let url = OpenGymGroup.container?.appendingPathComponent(WidgetBridgePlugin.fileName),
+        guard let url = GymauraGroup.container?.appendingPathComponent(WidgetBridgePlugin.fileName),
               let data = try? Data(contentsOf: url) else { return nil }
         return try? JSONDecoder().decode(VoiceSnapshot.self, from: data)
     }
@@ -139,7 +139,7 @@ enum VoiceWords {
     static func today(_ snap: VoiceSnapshot?, now: Date = Date()) -> String {
         let iso = VoiceSnapshot.isoDay(now)
         guard let snap = snap, let day = snap.days.first(where: { $0.iso == iso }) else {
-            return say("Open openGym once, then ask me again.")
+            return say("Open Gymaura once, then ask me again.")
         }
         if snap.today == iso, let active = snap.active {
             if let name = active.name, !name.isEmpty { return say("You’re in the middle of %@.", name) }
@@ -159,7 +159,7 @@ enum VoiceWords {
 
     /// The week streak, from the snapshot as of `now`.
     static func streak(_ snap: VoiceSnapshot?, now: Date = Date()) -> String {
-        guard let snap = snap else { return say("Open openGym once, then ask me again.") }
+        guard let snap = snap else { return say("Open Gymaura once, then ask me again.") }
         let iso = VoiceSnapshot.isoDay(now)
         let n = snap.streakInfo?.current ?? snap.streak ?? 0
         // A snapshot from an earlier week says nothing about this one.
@@ -183,9 +183,9 @@ struct StartWorkoutIntent: AppIntent {
     @MainActor
     func perform() async throws -> some IntentResult {
         // The widget's Start, with today's plan as the app has it: a running workout wins there
-        // (lib/widget-links.js). Handed on as any opengym:// link is, so a cold start finds it as
+        // (lib/widget-links.js). Handed on as any gymaura:// link is, so a cold start finds it as
         // the launch URL and a running app gets appUrlOpen.
-        if let url = URL(string: "opengym://start?today=1") {
+        if let url = URL(string: "gymaura://start?today=1") {
             _ = ApplicationDelegateProxy.shared.application(UIApplication.shared, open: url, options: [:])
         }
         return .result()
@@ -195,7 +195,7 @@ struct StartWorkoutIntent: AppIntent {
 @available(iOS 16.0, *)
 struct LogWeightIntent: AppIntent {
     static let title: LocalizedStringResource = "Log weight"
-    static let description = IntentDescription("Logs your body weight without opening openGym.")
+    static let description = IntentDescription("Logs your body weight without opening Gymaura.")
     static let openAppWhenRun = false
 
     @Parameter(title: "Weight", requestValueDialog: IntentDialog("What’s your weight?"))
@@ -206,7 +206,7 @@ struct LogWeightIntent: AppIntent {
     func perform() async throws -> some IntentResult & ProvidesDialog {
         // The unit is the profile's, as the app last wrote it; before that there is none to go by.
         guard let snap = VoiceSnapshot.load() else {
-            return .result(dialog: IntentDialog(stringLiteral: VoiceWords.say("Open openGym once, then ask me again.")))
+            return .result(dialog: IntentDialog(stringLiteral: VoiceWords.say("Open Gymaura once, then ask me again.")))
         }
         let unit = snap.weightUnit
         let w = (weight * 10).rounded() / 10
@@ -244,7 +244,7 @@ struct StreakIntent: AppIntent {
 /// What Siri, Spotlight and the Shortcuts app offer without any setup. The phrases in other
 /// languages: <lang>.lproj/AppShortcuts.strings (ios/ci/voice-strings.mjs).
 @available(iOS 16.0, *)
-struct OpenGymShortcuts: AppShortcutsProvider {
+struct GymauraShortcuts: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
         AppShortcut(intent: StartWorkoutIntent(), phrases: [
             "Start my workout in \(.applicationName)",

@@ -41,7 +41,7 @@ const COPY = {
   'go-library': () => [t('The exercise library'), t('Every exercise is one tap away. Tap Exercises.')],
   'lib-search': () => [t('Find any exercise'), t('Search thousands of exercises in your language. Star your favourites and they float to the top.')],
   'lib-filters': () => [t('Filter it down'), t('Narrow the list by body part, type or the equipment you have.')],
-  start: () => [t('The big Start button'), t('It starts today’s plan, or lets you pick something else. Tap it for a practice run.')],
+  start: () => [t('Your session button'), t('It starts today’s plan, or lets you pick something else. Tap it for a practice run.')],
   set: () => [t('A practice workout'), t('This one is pretend, nothing gets saved. Each row is a set: weight, then reps. Tap a number to change it.')],
   tick: () => [t('Tick it off'), t('Done with a set? Tick it. Go on, try it.')],
   rest: () => [t('Catch your breath'), t('The rest timer starts by itself. Add time, or skip it if you feel heroic.')],
@@ -114,7 +114,7 @@ const COPY = {
   'b-import': () => [t('Restore a backup'), t('Pick a backup file and it’s all back.')],
   'b-apps': () => [t('Moving in?'), t('Strong, Hevy, FitNotes, GymMane or Apple Health body weight: import their export here.')],
   'b-up2': () => [t('One more'), t('Syncing lives under your account. Tap back to Settings.')],
-  'b-sync': () => [t('Your own server'), t('Syncing your devices through your own openGym server lives under your account. No server? Everything still works on this device.')],
+  'b-sync': () => [t('Your own server'), t('Syncing your devices through your own Gymaura server lives under your account. No server? Everything still works on this device.')],
   'b-done': () => [t('That’s the lot'), t('Your data, your call. Back it up now and then, future you will be grateful.')],
 }
 

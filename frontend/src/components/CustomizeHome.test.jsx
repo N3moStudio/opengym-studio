@@ -10,20 +10,20 @@ import StudioAppearance from './StudioAppearance.jsx'
 let host, root
 beforeEach(() => {
   globalThis.IS_REACT_ACT_ENVIRONMENT = true
-  localStorage.removeItem('opengym.studio.v1')
+  localStorage.removeItem('gymaura.appearance.v1')
   setAppearance({ palette: 'bloom', surface: 'glass', home: HOME_CARDS })
   useStore.setState(({ S }) => ({ S: { ...S, modules: {}, showWeightCard: true, monthlyChallenges: true,
     routines: [{ id: 'r', name: 'Upper A', ex: [] }], workouts: [], bodyweight: [] } }))
   host = document.createElement('div'); document.body.append(host); root = createRoot(host)
 })
-afterEach(() => { act(() => root.unmount()); host.remove(); localStorage.removeItem('opengym.studio.v1') })
+afterEach(() => { act(() => root.unmount()); host.remove(); localStorage.removeItem('gymaura.appearance.v1') })
 const button = label => [...host.querySelectorAll('button')].find(b => (b.getAttribute('aria-label') || b.textContent) === label)
 
 it('defaults to a simple Home and sanitizes unknown or corrupt choices', () => {
   expect(readAppearance().home.body).toBe(false)
   expect(readAppearance().home.streak).toBe(true)
   expect(normalizeAppearance({ palette: 'bogus', surface: 'bad', home: { body: 'yes', recovery: true } }))
-    .toEqual({ palette: 'bloom', surface: 'solid', home: { ...HOME_CARDS, recovery: true } })
+    .toEqual({ palette: 'bloom', surface: 'glass', home: { ...HOME_CARDS, recovery: true } })
 })
 
 it('shows and hides cards without changing routines, logs, measurements or modules', () => {
@@ -53,6 +53,6 @@ it('changing a palette and surface keeps all custom Home choices', () => {
   act(() => button('Glacier').click())
   act(() => button('Solid').click())
   expect(readAppearance()).toMatchObject({ palette: 'glacier', surface: 'solid', home: { body: true, streak: false } })
-  expect(document.documentElement.dataset.studioPalette).toBe('glacier')
+  expect(document.documentElement.dataset.gymauraPalette).toBe('glacier')
   expect(useStore.getState().S.routines[0].name).toBe('Upper A')
 })

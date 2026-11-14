@@ -1,6 +1,6 @@
 {
-  "name": "openGym",
-  "short_name": "openGym",
+  "name": "Gymaura",
+  "short_name": "Gymaura",
   "description": "Personal gym & body weight tracker",
   "start_url": "./",
   "scope": "./",

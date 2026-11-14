@@ -304,7 +304,7 @@ final class PhoneWorkoutSession: NSObject, HKWorkoutSessionDelegate, HKLiveWorko
         // the builder ends and saves, then the session ends. Not waited for longer than a few
         // seconds: a session that never reports it is saved all the same.
         var meta: [String: Any] = [:]
-        if let title = title, !title.isEmpty { meta["OpenGymTitle"] = title }
+        if let title = title, !title.isEmpty { meta["GymauraTitle"] = title }
         let finish = {
             b.endCollection(withEnd: endAt) { _, _ in
                 b.addMetadata(meta) { _, _ in

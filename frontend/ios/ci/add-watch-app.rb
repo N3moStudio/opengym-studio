@@ -12,7 +12,7 @@
 # WATCH_WIDGET_PROFILE.
 require 'xcodeproj'
 
-NAME = 'OpenGymWatch'
+NAME = 'GymauraWatch'
 BUNDLE_ID = 'org.opengymstudio.app.watchkitapp'
 DIR = 'Watch'
 
@@ -76,9 +76,9 @@ file = embed.add_file_reference(watch.product_reference, true)
 file.settings = { 'ATTRIBUTES' => ['RemoveHeadersOnCopy'] }
 
 # The complications and the Smart Stack widget (ios/App/WatchWidgets), a WidgetKit extension in the
-# watch app (OpenGymWatch.app/PlugIns), reading the state the app writes (Watch/WidgetState.swift,
+# watch app (GymauraWatch.app/PlugIns), reading the state the app writes (Watch/WidgetState.swift,
 # compiled into both) through the App Group group.org.opengymstudio.app.
-WIDGET = 'OpenGymWatchWidgets'
+WIDGET = 'GymauraWatchWidgets'
 WIDGET_DIR = 'WatchWidgets'
 widget = proj.new_target(:app_extension, WIDGET, :watchos, '10.0')
 wgroup = proj.main_group.new_group(WIDGET_DIR, WIDGET_DIR)

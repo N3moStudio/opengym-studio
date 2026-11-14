@@ -1,15 +1,15 @@
-name: Studio iOS build
+name: Gymaura iOS build
 
 on:
   workflow_dispatch:
   push:
-    branches: [main, studio]
+    branches: [gymaura-redesign]
 
 permissions:
   contents: read
 
 concurrency:
-  group: studio-ios-${{ github.ref }}
+  group: gymaura-ios-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -20,7 +20,7 @@ jobs:
     runs-on: macos-26
     timeout-minutes: 60
     env:
-      APP_BUILD: studio.${{ github.run_number }}
+      APP_BUILD: gymaura.${{ github.run_number }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
@@ -34,6 +34,11 @@ jobs:
         run: >-
           npm test --
           src/components/StudioAppearance.test.jsx
+          src/components/TabBar.navigation.test.jsx
+          src/components/TabBar.retap.test.jsx
+          src/views/Home.startdoor.test.jsx
+          src/views/Stats.redesign.test.jsx
+          src/lib/widget-links.test.js
           src/views/Home.modules.test.jsx
           src/views/Home.weight-card.test.jsx
           src/views/Home.weight-chart.test.jsx
@@ -48,11 +53,11 @@ jobs:
       - name: Save interface preview
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
         with:
-          name: Studio-interface-preview
+          name: Gymaura-interface-preview
           path: |
             frontend/dist
             !frontend/dist/exercise-media/**
-          retention-days: 1
+          retention-days: 7
       - name: Add native extensions and Watch app
         working-directory: frontend
         run: |
@@ -60,65 +65,23 @@ jobs:
           ruby ios/ci/add-watch-app.rb
           ruby ios/ci/add-widgets.rb
       - name: Archive and package unsigned IPA
-        run: bash scripts/ios/build-studio-unsigned.sh
+        run: bash scripts/ios/build-gymaura-unsigned.sh
       - name: Save IPA
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
-          name: OpenGym-Studio-unsigned
+          name: Gymaura-unsigned
           path: |
-            frontend/ios/App/build/OpenGym-Studio-unsigned.ipa
-            frontend/ios/App/build/OpenGym-Studio-unsigned.ipa.sha256
+            frontend/ios/App/build/Gymaura-unsigned.ipa
+            frontend/ios/App/build/Gymaura-unsigned.ipa.sha256
             frontend/ios/App/build/ci-commit.txt
           if-no-files-found: error
           compression-level: 0
-          retention-days: 1
+          retention-days: 7
       - name: Save build log
         if: failure()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
-          name: studio-ios-build-log
+          name: gymaura-ios-build-log
           path: frontend/ios/App/build/archive.log
           if-no-files-found: ignore
-          retention-days: 1
-
-  release:
-    name: Publish unsigned IPA
-    needs: ios
-    if: github.event.repository.private == false
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    permissions:
-      actions: read
-      contents: write
-    env:
-      GH_TOKEN: ${{ github.token }}
-    steps:
-      - name: Download verified build
-        run: |
-          gh run download "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" \
-            --name OpenGym-Studio-unsigned --dir release-assets
-          cd release-assets
-          sha256sum --check OpenGym-Studio-unsigned.ipa.sha256
-          test "$(cat ci-commit.txt)" = "$GITHUB_SHA"
-      - name: Publish release
-        run: |
-          tag="studio-build-${GITHUB_RUN_NUMBER}"
-          cat > release-notes.md <<'NOTES'
-          OpenGym Studio: redesigned Today screen, eight calm appearance palettes, more generous spacing, configurable Home cards, offline exercise illustrations, widgets, Live Activities, and Apple Watch targets.
-
-          This IPA is unsigned. Sign it with a compatible sideloading setup before installation. Device functionality and extension entitlements still need physical-device verification.
-
-          App source is AGPL-3.0; exercise media retains its separate non-commercial restrictions. See NOTICE.md and docs/STUDIO_BUILD.md in the source attached to this release.
-          NOTES
-          printf '\nSource commit: `%s`\n' "$GITHUB_SHA" >> release-notes.md
-          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            gh release upload "$tag" --repo "$GITHUB_REPOSITORY" --clobber \
-              release-assets/OpenGym-Studio-unsigned.ipa \
-              release-assets/OpenGym-Studio-unsigned.ipa.sha256 release-assets/ci-commit.txt
-          else
-            gh release create "$tag" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
-              --title "OpenGym Studio build ${GITHUB_RUN_NUMBER}" --prerelease \
-              --notes-file release-notes.md \
-              release-assets/OpenGym-Studio-unsigned.ipa \
-              release-assets/OpenGym-Studio-unsigned.ipa.sha256 release-assets/ci-commit.txt
-          fi
+          retention-days: 7

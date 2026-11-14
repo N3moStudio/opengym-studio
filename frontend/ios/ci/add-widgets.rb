@@ -1,4 +1,4 @@
-# Adds the widget extension (ios/App/OpenGymWidgets: the Home Screen and Lock Screen widgets and
+# Adds the widget extension (ios/App/GymauraWidgets: the Home Screen and Lock Screen widgets and
 # the workout's Live Activity) to App.xcodeproj and embeds it in the app (App.app/PlugIns), in the
 # style of add-asset-downloader.rb. Two files of the app are compiled into it too: what the Live
 # Activity carries and its Done button (App/WorkoutActivity.swift) and the views
@@ -13,7 +13,7 @@
 # script signs the extension with (scripts/ios/finish-ipa.sh, WIDGETS_PROFILE).
 require 'xcodeproj'
 
-NAME = 'OpenGymWidgets'
+NAME = 'GymauraWidgets'
 BUNDLE_ID = 'org.opengymstudio.app.widgets'
 SHARED = %w[WorkoutActivity.swift WidgetViews.swift].freeze
 

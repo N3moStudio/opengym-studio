@@ -1,5 +1,6 @@
+import { AuraHeader } from '../components/GymauraUI.jsx'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
 import { dayPhotosOf } from '../lib/day-photos.js'
 import { EXIDX, matchExercise, betterWeight, isAssisted } from '../lib/exercises.js'
@@ -495,63 +496,12 @@ export function ExerciseTimeCard({ S }) {
 // is rewritten with replaceState, not a router navigation, so the app's own scroll restore for a
 // route change never fights the scroll the tap just started.
 const sectionOfHash = () => (/[?&]section=([a-z]+)/.exec(typeof window === 'undefined' ? '' : window.location.hash || '') || [])[1] || ''
-export function StatsIndex({ sections }) {
-  const asked = sectionOfHash()
-  const [cur, setCur] = useState(sections.some(x => x.value === asked) ? asked : 'overview')
-  const quietUntil = useRef(0)   // the scroll a tap started is not the reader's: hold the spy
-  const go = (v, smooth = true) => {
-    setCur(v)
-    quietUntil.current = Date.now() + 900
-    const behavior = smooth ? 'smooth' : 'auto'
-    if (v === 'overview') window.scrollTo?.({ top: 0, behavior })
-    else document.getElementById('stats-' + v)?.scrollIntoView?.({ block: 'start', behavior })
-    try {
-      const base = (window.location.hash || '#/stats').split('?')[0]
-      window.history.replaceState(window.history.state, '', base + (v === 'overview' ? '' : '?section=' + v))
-    } catch { /* a sandboxed frame: the scroll is what matters */ }
-  }
-  useEffect(() => {
-    if (!asked || asked === 'overview' || !sections.some(x => x.value === asked)) return
-    // Once now, and once more when the cards above have drawn their charts and grown: the first
-    // jump alone landed a screen short. Not again if the reader has started scrolling by then.
-    const frame = window.requestAnimationFrame(() => go(asked, false))
-    let moved = false
-    const mark = () => { moved = true }
-    window.addEventListener('touchstart', mark, { passive: true, once: true })
-    window.addEventListener('wheel', mark, { passive: true, once: true })
-    const settle = window.setTimeout(() => { if (!moved) go(asked, false) }, 450)
-    return () => { window.cancelAnimationFrame(frame); window.clearTimeout(settle); window.removeEventListener('touchstart', mark); window.removeEventListener('wheel', mark) }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    let raf = 0
-    const spy = () => {
-      raf = 0
-      if (Date.now() < quietUntil.current) return
-      // A sheet pins the body (Modals.jsx): scrollY is 0 and the page as tall as the screen, which
-      // read as "at the very bottom" and moved the highlight to Effort behind every sheet opened
-      // from Stats (Ranges, About you). The pinned page has not moved; leave the highlight.
-      if (document.body.style.position === 'fixed') return
-      const bar = document.querySelector('.stats-index')
-      const line = (bar ? bar.getBoundingClientRect().bottom : 0) + 24
-      let on = 'overview'
-      for (const x of sections) {
-        const el = document.getElementById('stats-' + x.value)
-        if (el && el.getBoundingClientRect().top <= line) on = x.value
-      }
-      // the last part may be too short to reach the line: at the very bottom it is the one read
-      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) on = sections[sections.length - 1].value
-      setCur(c => (c === on ? c : on))
-    }
-    const onScroll = () => { if (!raf) raf = window.requestAnimationFrame(spy) }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => { window.removeEventListener('scroll', onScroll); if (raf) window.cancelAnimationFrame(raf) }
-  }, [sections.length]) // eslint-disable-line react-hooks/exhaustive-deps
-  return <nav className="stats-index" aria-label={t('Stats')}>
-    <Segmented className="stats-index-seg" value={cur} onChange={v => go(v)} options={sections} />
-  </nav>
-}
-
 export default function Stats() {
+  const location = useLocation()
+  const requestedSection = new URLSearchParams(location.search).get('section') || (new URLSearchParams(location.search).get('focus') === 'weekly-volume' ? 'lifts' : 'overview')
+  const [pane, setPane] = useState(requestedSection)
+  useEffect(() => { setPane(requestedSection) }, [requestedSection])
+
   const nav = useNavigate()
   const S = useStore(s => s.S)
   const [range, setRange] = useState(90)
@@ -871,18 +821,19 @@ export default function Stats() {
   </>
 
   return <>
-    <div className="hdr"><SeasonDeco spot="stats-hdr" /><div><h1>{t('Stats')}</h1><div className="sub">{t('Progress & history')}</div></div>
-      <div className="row" style={{ gap: 8 }}>
-        <button className="iconbtn" onClick={reportSheet} aria-label={t('Performance report')} title={t('Performance report')}><Icon name="note" /></button>
-        <button className="iconbtn" data-tour="stats-history" onClick={() => nav('/history')} aria-label={t('History')}><Icon name="history" /></button>
-      </div></div>
+    <AuraHeader title={t('Progress')} subtitle={t('Small steps. A clearer picture.')}>
+      <button type="button" className="iconbtn" onClick={reportSheet} aria-label={t('Performance report')}><Icon name="note" /></button>
+      <button type="button" className="iconbtn" data-tour="stats-history" onClick={() => nav('/history')} aria-label={t('History')}><Icon name="history" /></button>
+    </AuraHeader>
 
-    {/* The page in four parts (redesign 1.4.5, P5), each with its own heading, and a sticky index
-        that jumps to them and follows the scroll. It is still one page: every card is where a
-        scroll finds it. /stats?section=lifts (and body, effort) opens on that part. */}
-    <StatsIndex sections={sections} />
+    {/* Keep detailed progress panes accessible through links and the segmented control. */}
+    <nav className="aura-progress-nav" aria-label={t('Progress')}>
+      <Segmented value={sections.some(section => section.value === pane) ? pane : 'overview'} onChange={value => {
+        setPane(value); nav('/stats?section=' + value, { replace: true }); window.scrollTo({ top: 0, behavior: 'instant' })
+      }} options={sections} />
+    </nav>
 
-    <section className="stats-sect" id="stats-overview" data-stats-sect="overview" aria-label={t('Overview')}>
+    <section className="stats-sect" id="stats-overview" data-stats-sect="overview" hidden={(sections.some(section => section.value === pane) ? pane : 'overview') !== 'overview'} aria-label={t('Overview')}>
     {/* The headline numbers as one divided card: three across, the lifetime total under them at
         full width (a few hundred sessions make a long number). The week streak is not a tile any
         more: it is the card right below, once. */}
@@ -920,7 +871,7 @@ export default function Stats() {
 
     </section>
 
-    {bodyOn && <section className="stats-sect" id="stats-body" data-stats-sect="body" aria-labelledby="stats-h-body">
+    {bodyOn && <section className="stats-sect" id="stats-body" data-stats-sect="body" hidden={(sections.some(section => section.value === pane) ? pane : 'overview') !== 'body'} aria-labelledby="stats-h-body">
       <h2 className="stats-sect-h" id="stats-h-body">{t('Body')}</h2>
     <div className="card">
       <div className="row between bw-head" style={{ marginBottom: 8 }}>
@@ -944,7 +895,7 @@ export default function Stats() {
       {statsLinks}
     </section>}
 
-    <section className="stats-sect" id="stats-lifts" data-stats-sect="lifts" aria-labelledby="stats-h-lifts">
+    <section className="stats-sect" id="stats-lifts" data-stats-sect="lifts" hidden={(sections.some(section => section.value === pane) ? pane : 'overview') !== 'lifts'} aria-labelledby="stats-h-lifts">
       <h2 className="stats-sect-h" id="stats-h-lifts">{t('Lifts')}</h2>
     <div className="card" data-tour="stats-records">
       <SeasonDeco spot="stats-peek" />
@@ -1019,7 +970,7 @@ export default function Stats() {
     {!bodyOn && statsLinks}
     </section>
 
-    {hasEffortSect && <section className="stats-sect" id="stats-effort" data-stats-sect="effort" aria-labelledby="stats-h-effort">
+    {hasEffortSect && <section className="stats-sect" id="stats-effort" data-stats-sect="effort" hidden={(sections.some(section => section.value === pane) ? pane : 'overview') !== 'effort'} aria-labelledby="stats-h-effort">
       <h2 className="stats-sect-h" id="stats-h-effort">{t('Effort')}</h2>
     {effortCard && <EffortCard S={S} />}
     {timeCard && <ExerciseTimeCard S={S} />}

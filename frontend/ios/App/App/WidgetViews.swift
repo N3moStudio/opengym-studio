@@ -5,8 +5,8 @@ import WidgetKit
 
 /*
  * What the Home Screen and Lock Screen widgets and the workout's Live Activity look like.
- * Compiled into the widget extension, which shows them (OpenGymWidgets), and into the app, which
- * only draws them into pictures for CI when started with -OpenGymWidgetPreview
+ * Compiled into the widget extension, which shows them (GymauraWidgets), and into the app, which
+ * only draws them into pictures for CI when started with -GymauraWidgetPreview
  * (WidgetPreview.swift). Text and SF Symbols only: no exercise animations or pictures (Gym visual
  * licence). The words come from the page in the app's language (lib/widgets.js).
  */
@@ -77,7 +77,7 @@ struct WidgetSnapshot: Codable {
     var challenges: Challenges?
 
     static func load() -> WidgetSnapshot? {
-        guard let url = OpenGymGroup.container?.appendingPathComponent("widget.json"),
+        guard let url = GymauraGroup.container?.appendingPathComponent("widget.json"),
               let data = try? Data(contentsOf: url) else { return nil }
         return try? JSONDecoder().decode(WidgetSnapshot.self, from: data)
     }
@@ -254,7 +254,7 @@ struct WidgetEmpty: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             Image(systemName: "dumbbell.fill").font(.title3).foregroundStyle(.secondary)
-            Text("Open openGym once to see your plan here.").font(.caption).foregroundStyle(.secondary)
+            Text("Open Gymaura once to see your plan here.").font(.caption).foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
@@ -398,24 +398,24 @@ struct NextInlineView: View {
     }
 }
 
-// MARK: - the configurable widget ("openGym": what to show, OpenGymWidgets.swift)
+// MARK: - the configurable widget ("Gymaura": what to show, GymauraWidgets.swift)
 
-/// What the configurable widget can show. The menu's words are in OpenGymWidgets.swift (AppEnum).
+/// What the configurable widget can show. The menu's words are in GymauraWidgets.swift (AppEnum).
 enum GymWidgetKind: String, CaseIterable, Codable {
     case streak, weight, week, next, records, volume, challenges
 }
 
 /// The links a tap opens (lib/widget-links.js reads them; Android builds the same ones).
 enum GymLink {
-    static let home = URL(string: "opengym://home")!
-    static let stats = URL(string: "opengym://stats")!
-    static let weighIn = URL(string: "opengym://weigh-in")!
+    static let home = URL(string: "gymaura://home")!
+    static let stats = URL(string: "gymaura://stats")!
+    static let weighIn = URL(string: "gymaura://weigh-in")!
     /// The workout already running (a start with no routines goes back to it).
-    static let workout = URL(string: "opengym://start")!
+    static let workout = URL(string: "gymaura://start")!
     static func start(_ ids: [String]?) -> URL {
         let ok = (ids ?? []).filter { $0.range(of: "^[A-Za-z0-9_.:-]{1,64}$", options: .regularExpression) != nil }.prefix(8)
         if ok.isEmpty { return home }
-        return URL(string: "opengym://start?r=" + ok.joined(separator: ",")) ?? home
+        return URL(string: "gymaura://start?r=" + ok.joined(separator: ",")) ?? home
     }
 }
 
@@ -670,7 +670,7 @@ extension WorkoutActivityAttributes {
     /// The line with no set to show: all done, or sets left that the activity does not carry
     /// (many taps with the page asleep), where "All sets done" was simply wrong (Discord).
     func noSetText(_ state: ContentState) -> String {
-        state.done < state.total ? (labels.openApp ?? "Open openGym for the next set") : labels.allDone
+        state.done < state.total ? (labels.openApp ?? "Open Gymaura for the next set") : labels.allDone
     }
 
     /// The word over the clock: the count-in, the hold, or the rest.

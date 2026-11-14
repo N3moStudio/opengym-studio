@@ -18,7 +18,7 @@ const apiOrigin = process.env.API_ORIGIN || 'http://localhost:8080'
 // proxied to a server of your choice with MEDIA_TARGET.
 const media = process.env.MEDIA_TARGET
 const catalogueMedia = {
-  name: 'opengym-catalogue-media',
+  name: 'gymaura-catalogue-media',
   configureServer(server) {
     if (media) return
     const dirs = { '/exercise-media/still/': ['still', '.webp'], '/exercise-media/clip/': ['clip', '.mp4'] }
@@ -43,7 +43,7 @@ const umamiSrc = process.env.VITE_UMAMI_SRC
 const umamiId = process.env.VITE_UMAMI_ID
 
 const umami = {
-  name: 'opengym-umami',
+  name: 'gymaura-umami',
   transformIndexHtml() {
     if (!umamiSrc || !umamiId) return
     return [{
@@ -65,7 +65,7 @@ const umami = {
 let outDir = fileURLToPath(new URL('./dist/', import.meta.url))
 let lazy = []
 const swStamp = {
-  name: 'opengym-sw-stamp',
+  name: 'gymaura-sw-stamp',
   apply: 'build',
   configResolved(config) { outDir = resolve(config.root, config.build.outDir) },
   generateBundle(_, bundle) { lazy = lazyAssets(bundle) },
@@ -84,10 +84,10 @@ const swStamp = {
 // The phone flavour also keeps zooming off (src/lib/viewport-zoom.js): the web build lets people
 // pinch, the Capacitor apps stay as they were.
 const flavor = {
-  name: 'opengym-flavor',
+  name: 'gymaura-flavor',
   transformIndexHtml(html) {
     if (process.env.VITE_MOBILE !== '1') return
-    return { html: mobileViewport(html), tags: [{ tag: 'meta', attrs: { name: 'opengym-flavor', content: 'mobile' }, injectTo: 'head' }] }
+    return { html: mobileViewport(html), tags: [{ tag: 'meta', attrs: { name: 'gymaura-flavor', content: 'mobile' }, injectTo: 'head' }] }
   }
 }
 

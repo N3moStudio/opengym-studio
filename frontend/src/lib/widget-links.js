@@ -10,7 +10,7 @@
 //
 // iOS: the widget's widgetURL / Link (ios/App/App/WidgetViews.swift), the scheme registered in
 // Info.plist. Android: the widget's PendingIntent, an explicit intent to MainActivity carrying the
-// same link as its data (OpenGymWidgetProvider.java). Capacitor's App plugin hands it to the page
+// same link as its data (GymauraWidgetProvider.java). Capacitor's App plugin hands it to the page
 // as appUrlOpen, or as the launch URL when the tap started the app.
 //
 // Any app could open such a link too. None of them does more than a tap in the app would: a
@@ -19,12 +19,12 @@
 import { MOBILE } from './mobile.js'
 import { parseSpokenWeight, convertWeight, weightInRange } from './voice.js'
 
-export const WIDGET_SCHEME = 'opengym'
+export const WIDGET_SCHEME = 'gymaura'
 
 /** What a link asks for, or null for anything that is not one of ours. */
 export function parseWidgetLink (url) {
   if (typeof url !== 'string') return null
-  const m = /^opengym:\/\/([a-z-]+)\/?(?:\?(.*))?$/i.exec(url.trim())
+  const m = /^(?:gymaura|opengym):\/\/([a-z-]+)\/?(?:\?(.*))?$/i.exec(url.trim())
   if (!m) return null
   const what = m[1].toLowerCase()
   const q = new URLSearchParams(m[2] || '')

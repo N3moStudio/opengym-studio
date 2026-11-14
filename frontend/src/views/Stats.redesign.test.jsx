@@ -21,7 +21,7 @@ vi.mock('../store/useStore.js', async importOriginal => {
   useStore.getState = () => ({ S: mocks.S, update: () => {} })
   return { ...actual, useStore }
 })
-vi.mock('react-router-dom', () => ({ useNavigate: () => mocks.nav }))
+vi.mock('react-router-dom', () => ({ useNavigate: () => mocks.nav, useLocation: () => ({ search: '' }) }))
 vi.mock('../sheets.jsx', () => ({
   bwSheet: vi.fn(), goalSheet: vi.fn(), calendarSheet: vi.fn(), workoutDetailSheet: vi.fn(), dayOverrideSheet: vi.fn(),
   exerciseHistorySheet: (...a) => mocks.history(...a), weighInsSheet: vi.fn(), bwDeltaColor: () => '',

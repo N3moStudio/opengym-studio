@@ -1,6 +1,6 @@
 {
   "appId": "org.opengymstudio.app",
-  "appName": "OpenGym Studio",
+  "appName": "Gymaura",
   "webDir": "dist",
   "backgroundColor": "#0c0e12",
   "android": {

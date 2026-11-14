@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { parseWidgetLink, runWidgetLink } from './widget-links.js'
 
 // What a tap on a widget opens (the links are built in ios/App/App/WidgetViews.swift and
-// android/.../OpenGymWidgetProvider.java: keep the three in step).
+// android/.../GymauraWidgetProvider.java: keep the three in step).
 describe('parseWidgetLink', () => {
   it('reads the four links', () => {
     expect(parseWidgetLink('opengym://home')).toEqual({ to: '/' })

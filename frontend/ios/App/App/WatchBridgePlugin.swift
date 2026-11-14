@@ -82,7 +82,7 @@ public class WatchBridgePlugin: CAPPlugin, CAPBridgedPlugin, WCSessionDelegate {
 
     /// A workout started on the phone: the watch app opens with it (Settings → Apple Watch, "Open on
     /// the watch"). HealthKit wakes the watch app with the workout's planned type (the page's
-    /// `type`, else strength training), and the watch starts its workout session (OpenGymWatchApp's
+    /// `type`, else strength training), and the watch starts its workout session (GymauraWatchApp's
     /// delegate). Only with a paired watch that has the app; anything else resolves { ok: false }
     /// and nothing happens.
     @objc func openOnWatch(_ call: CAPPluginCall) {

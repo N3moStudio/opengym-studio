@@ -25,7 +25,7 @@ struct WidgetState: Codable, Equatable {
     /// The app's language (the phone's), so the complications speak it too.
     var lang: String?
 
-    static let idle = WidgetState(mode: "idle", title: "openGym", detail: "", restEndsAt: nil)
+    static let idle = WidgetState(mode: "idle", title: "Gymaura", detail: "", restEndsAt: nil)
     static let groupId = "group.org.opengymstudio.app"
     private static let key = "widgetState"
 
@@ -62,24 +62,18 @@ extension WidgetState {
     }
 }
 
-/// openGym's mark, the app icon's barbell (frontend/public/icon-512.png), drawn as one shape so it
-/// takes the watch face's tint and stays sharp at every complication size.
-struct OpenGymLogo: Shape {
+/// Gymaura's orbit mark, tinted by the Watch face.
+struct GymauraLogo: Shape {
     func path(in rect: CGRect) -> Path {
-        // The icon's own coordinates (512 × 512); the barbell spans x 80…432, y 170…342.
-        let boxes: [(CGFloat, CGFloat, CGFloat, CGFloat)] = [
-            (80, 200, 36, 112), (116, 242, 16, 28), (132, 170, 46, 172),
-            (178, 242, 156, 28),
-            (334, 170, 46, 172), (380, 242, 16, 28), (396, 200, 36, 112),
-        ]
-        let minX: CGFloat = 80, minY: CGFloat = 170, w: CGFloat = 352, h: CGFloat = 172
-        let scale = min(rect.width / w, rect.height / h)
-        let ox = rect.midX - w * scale / 2, oy = rect.midY - h * scale / 2
-        var p = Path()
-        for (x, y, bw, bh) in boxes {
-            p.addRect(CGRect(x: ox + (x - minX) * scale, y: oy + (y - minY) * scale, width: bw * scale, height: bh * scale))
-        }
-        return p
+        let side = min(rect.width, rect.height)
+        let center = CGPoint(x: rect.midX, y: rect.midY)
+        let radius = side * 0.36
+        var line = Path()
+        line.addArc(center: center, radius: radius, startAngle: .degrees(-42), endAngle: .degrees(360), clockwise: true)
+        line.addLine(to: CGPoint(x: center.x + radius, y: center.y))
+        line.addLine(to: CGPoint(x: center.x + side * 0.04, y: center.y))
+        var mark = line.strokedPath(StrokeStyle(lineWidth: side * 0.085, lineCap: .round, lineJoin: .round))
+        mark.addEllipse(in: CGRect(x: center.x + radius * 0.70, y: center.y - radius * 0.85, width: side * 0.10, height: side * 0.10))
+        return mark
     }
 }
-

@@ -7,7 +7,7 @@ import UserNotifications
  * The running workout's Live Activity: what it carries, and its buttons (Log set, and Next exercise
  * or Skip rest beside it). Compiled into both
  * the app and the widget extension (ios/ci/add-widgets.rb): the extension draws it
- * (OpenGymWidgets/LiveActivityWidget.swift), the app starts and updates it for the page
+ * (GymauraWidgets/LiveActivityWidget.swift), the app starts and updates it for the page
  * (LiveActivityPlugin.swift, lib/live-activity.js) and runs the buttons' intents.
  *
  * The page sends both halves as JSON; the field names are lib/live-activity.js buildLiveActivity's.
@@ -15,7 +15,7 @@ import UserNotifications
  */
 
 /// The App Group the app, the widget extension and the asset pack downloader share.
-enum OpenGymGroup {
+enum GymauraGroup {
     static let id = "group.org.opengymstudio.app"
     static var defaults: UserDefaults { UserDefaults(suiteName: id) ?? .standard }
     static var container: URL? { FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: id) }
@@ -132,12 +132,12 @@ struct WorkoutActivityAttributes: ActivityAttributes {
  */
 enum LiveActivityQueue {
     static let key = "liveActivityEvents"
-    static let didChange = Notification.Name("OpenGymLiveActivityEvent")
+    static let didChange = Notification.Name("GymauraLiveActivityEvent")
     /// Skip rest was tapped: RestAlertPlugin forgets the alert it would post on leaving the front.
-    static let restSkipped = Notification.Name("OpenGymLiveActivityRestSkipped")
+    static let restSkipped = Notification.Name("GymauraLiveActivityRestSkipped")
     /// Stop auto was tapped, or a set logged that changes the chain's timing: RestAlertPlugin drops
     /// the alerts of the chain of holds after the one booked now (the page books again when it wakes).
-    static let autoStopped = Notification.Name("OpenGymLiveActivityAutoStopped")
+    static let autoStopped = Notification.Name("GymauraLiveActivityAutoStopped")
     private static let lock = NSLock()
 
     static func all() -> [[String: Any]] {
@@ -160,14 +160,14 @@ enum LiveActivityQueue {
     }
 
     private static func read() -> [[String: Any]] {
-        guard let data = OpenGymGroup.defaults.data(forKey: key),
+        guard let data = GymauraGroup.defaults.data(forKey: key),
               let list = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else { return [] }
         return list
     }
 
     private static func write(_ list: [[String: Any]]) {
         if let data = try? JSONSerialization.data(withJSONObject: list) {
-            OpenGymGroup.defaults.set(data, forKey: key)
+            GymauraGroup.defaults.set(data, forKey: key)
         }
     }
 }

@@ -25,7 +25,7 @@ PROFILE=${4:?App Store provisioning profile}
 ROOT=$(cd "$(dirname "$0")/../.." && pwd)
 FRONT="$ROOT/frontend"
 VERSION=$(node -p "require('$FRONT/package.json').version")
-OUT=${5:-"$PWD/openGym-$VERSION.ipa"}
+OUT=${5:-"$PWD/Gymaura-$VERSION.ipa"}
 RCODESIGN=${RCODESIGN:-rcodesign}
 WORK=$(mktemp -d "${TMPDIR:-/tmp}/finish-ipa.XXXXXX")
 trap 'rm -rf "$WORK"' EXIT
@@ -107,12 +107,12 @@ PY
   EXT_SIGN=(--entitlements-xml-file "Extensions/AnimationPacksDownloader.appex/AnimationPacksDownloader:$WORK/ext-entitlements.plist")
 fi
 
-# The widget extension (the widgets and the workout's Live Activity, ios/App/OpenGymWidgets): its
+# The widget extension (the widgets and the workout's Live Activity, ios/App/GymauraWidgets): its
 # own App Store profile, given as WIDGETS_PROFILE, for ch.opengym.app.widgets with the App Group.
-WIDGETS="$APP/PlugIns/OpenGymWidgets.appex"
+WIDGETS="$APP/PlugIns/GymauraWidgets.appex"
 WIDGETS_SIGN=()
 if [ -d "$WIDGETS" ]; then
-  [ -n "${WIDGETS_PROFILE:-}" ] || { echo "the IPA carries OpenGymWidgets.appex: set WIDGETS_PROFILE to its App Store profile" >&2; exit 1; }
+  [ -n "${WIDGETS_PROFILE:-}" ] || { echo "the IPA carries GymauraWidgets.appex: set WIDGETS_PROFILE to its App Store profile" >&2; exit 1; }
   cp "$WIDGETS_PROFILE" "$WIDGETS/embedded.mobileprovision"
   openssl smime -inform der -verify -noverify -in "$WIDGETS_PROFILE" -out "$WORK/widgets-profile.plist" 2>/dev/null
   python3 - "$WORK/widgets-profile.plist" "$WORK/widgets-entitlements.plist" <<'PY'
@@ -125,13 +125,13 @@ assert 'group.ch.opengym.app' in e.get('com.apple.security.application-groups', 
 plistlib.dump(e, open(sys.argv[2], 'wb'))
 print('widgets profile:', p['Name'], '| expires', p['ExpirationDate'])
 PY
-  WIDGETS_SIGN=(--entitlements-xml-file "PlugIns/OpenGymWidgets.appex/OpenGymWidgets:$WORK/widgets-entitlements.plist")
+  WIDGETS_SIGN=(--entitlements-xml-file "PlugIns/GymauraWidgets.appex/GymauraWidgets:$WORK/widgets-entitlements.plist")
 fi
 
-# The Apple Watch app (App.app/Watch/OpenGymWatch.app) is signed with its own App Store profile,
+# The Apple Watch app (App.app/Watch/GymauraWatch.app) is signed with its own App Store profile,
 # given as WATCH_PROFILE: its bundle id and its entitlements (HealthKit) come from that profile.
 WATCH_SIGN=()
-WATCH="$APP/Watch/OpenGymWatch.app"
+WATCH="$APP/Watch/GymauraWatch.app"
 if [ -d "$WATCH" ]; then
   [ -n "${WATCH_PROFILE:-}" ] || { echo "the IPA carries the watch app: set WATCH_PROFILE to its App Store profile" >&2; exit 1; }
   cp "$WATCH_PROFILE" "$WATCH/embedded.mobileprovision"
@@ -145,9 +145,9 @@ assert e['application-identifier'].endswith('.ch.opengym.app.watchkitapp'), e['a
 plistlib.dump(e, open(sys.argv[2], 'wb'))
 print('watch profile:', p['Name'], '| expires', p['ExpirationDate'])
 PY
-  WATCH_SIGN=(--entitlements-xml-file "Watch/OpenGymWatch.app/OpenGymWatch:$WORK/watch-entitlements.plist")
-  # Its complications / Smart Stack widget (OpenGymWatch.app/PlugIns), with its own profile.
-  WIDGET="$WATCH/PlugIns/OpenGymWatchWidgets.appex"
+  WATCH_SIGN=(--entitlements-xml-file "Watch/GymauraWatch.app/GymauraWatch:$WORK/watch-entitlements.plist")
+  # Its complications / Smart Stack widget (GymauraWatch.app/PlugIns), with its own profile.
+  WIDGET="$WATCH/PlugIns/GymauraWatchWidgets.appex"
   if [ -d "$WIDGET" ]; then
     [ -n "${WATCH_WIDGET_PROFILE:-}" ] || { echo "the watch app carries its widget: set WATCH_WIDGET_PROFILE to its App Store profile" >&2; exit 1; }
     cp "$WATCH_WIDGET_PROFILE" "$WIDGET/embedded.mobileprovision"
@@ -162,7 +162,7 @@ assert 'group.ch.opengym.app' in e.get('com.apple.security.application-groups', 
 plistlib.dump(e, open(sys.argv[2], 'wb'))
 print('watch widget profile:', p['Name'], '| expires', p['ExpirationDate'])
 PY
-    WATCH_SIGN+=(--entitlements-xml-file "Watch/OpenGymWatch.app/PlugIns/OpenGymWatchWidgets.appex/OpenGymWatchWidgets:$WORK/widget-entitlements.plist")
+    WATCH_SIGN+=(--entitlements-xml-file "Watch/GymauraWatch.app/PlugIns/GymauraWatchWidgets.appex/GymauraWatchWidgets:$WORK/widget-entitlements.plist")
   fi
 fi
 

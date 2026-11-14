@@ -4,7 +4,7 @@ import WidgetKit
 
 /**
  * Hands the Home Screen and Lock Screen widgets what they show (lib/widgets.js builds it): a small
- * JSON file in the App Group, which the widget extension reads (OpenGymWidgets), and a nudge to
+ * JSON file in the App Group, which the widget extension reads (GymauraWidgets), and a nudge to
  * WidgetKit to draw them again. The page only writes when something the widgets show changed.
  */
 @objc(WidgetBridgePlugin)
@@ -22,7 +22,7 @@ public class WidgetBridgePlugin: CAPPlugin, CAPBridgedPlugin {
             call.reject("json is required")
             return
         }
-        guard let dir = OpenGymGroup.container else {
+        guard let dir = GymauraGroup.container else {
             call.reject("no App Group")
             return
         }

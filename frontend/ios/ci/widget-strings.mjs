@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Writes the widget extension's own strings (ios/App/OpenGymWidgets/<lang>.lproj/
+// Writes the widget extension's own strings (ios/App/GymauraWidgets/<lang>.lproj/
 // Localizable.strings) in every language the app speaks: the names and descriptions iOS shows in
 // its widget gallery, and the line a widget shows before the app ever wrote anything. Everything
 // else a widget says comes from the app, in the app's language (lib/widgets.js). Run it after
@@ -10,7 +10,7 @@ import { writeFileSync, mkdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const out = join(dirname(fileURLToPath(import.meta.url)), '..', 'App', 'OpenGymWidgets')
+const out = join(dirname(fileURLToPath(import.meta.url)), '..', 'App', 'GymauraWidgets')
 const LPROJ = ['de', 'fr', 'es', 'it', 'pt-PT', 'pt-BR', 'pl', 'hu', 'tr', 'ru', 'uk', 'ar', 'hi', 'bn', 'th', 'ko', 'zh-Hans', 'zh-Hant']
 
 // The Swift source's key → its words per .lproj.
@@ -43,18 +43,18 @@ export const STRINGS = {
     hi: 'लगातार हफ़्ते जिनमें वर्कआउट हुआ।', bn: 'টানা যত সপ্তাহে ওয়ার্কআউট হয়েছে।', th: 'จำนวนสัปดาห์ติดต่อกันที่มีการฝึก',
     ko: '운동한 주가 연속으로 이어진 횟수.', 'zh-Hans': '连续有训练的周数。', 'zh-Hant': '連續有訓練的週數。',
   },
-  'Open openGym once to see your plan here.': {
-    de: 'Öffne openGym einmal, dann siehst du hier deinen Plan.', fr: 'Ouvre openGym une fois pour voir ton programme ici.',
-    es: 'Abre openGym una vez para ver aquí tu plan.', it: 'Apri openGym una volta per vedere qui il tuo piano.',
-    'pt-PT': 'Abre o openGym uma vez para veres aqui o teu plano.', 'pt-BR': 'Abra o openGym uma vez para ver seu plano aqui.',
-    pl: 'Otwórz openGym raz, a zobaczysz tu swój plan.', hu: 'Nyisd meg egyszer az openGymet, és itt látod a terved.',
-    tr: 'Planını burada görmek için openGym’i bir kez aç.', ru: 'Откройте openGym один раз, и здесь появится ваш план.',
-    uk: 'Відкрий openGym один раз, і тут з’явиться твій план.', ar: 'افتح openGym مرة واحدة لترى خطتك هنا.',
-    hi: 'अपना प्लान यहाँ देखने के लिए openGym एक बार खोलें।', bn: 'আপনার প্ল্যান এখানে দেখতে openGym একবার খুলুন।',
-    th: 'เปิด openGym สักครั้งเพื่อดูแผนของคุณที่นี่', ko: 'openGym을 한 번 열면 여기에서 계획을 볼 수 있어요.',
-    'zh-Hans': '打开一次 openGym，就能在这里看到你的计划。', 'zh-Hant': '打開一次 openGym，就能在這裡看到你的計畫。',
+  'Open Gymaura once to see your plan here.': {
+    de: 'Öffne Gymaura einmal, dann siehst du hier deinen Plan.', fr: 'Ouvre Gymaura une fois pour voir ton programme ici.',
+    es: 'Abre Gymaura una vez para ver aquí tu plan.', it: 'Apri Gymaura una volta per vedere qui il tuo piano.',
+    'pt-PT': 'Abre o Gymaura uma vez para veres aqui o teu plano.', 'pt-BR': 'Abra o Gymaura uma vez para ver seu plano aqui.',
+    pl: 'Otwórz Gymaura raz, a zobaczysz tu swój plan.', hu: 'Nyisd meg egyszer az openGymet, és itt látod a terved.',
+    tr: 'Planını burada görmek için Gymaura’i bir kez aç.', ru: 'Откройте Gymaura один раз, и здесь появится ваш план.',
+    uk: 'Відкрий Gymaura один раз, і тут з’явиться твій план.', ar: 'افتح Gymaura مرة واحدة لترى خطتك هنا.',
+    hi: 'अपना प्लान यहाँ देखने के लिए Gymaura एक बार खोलें।', bn: 'আপনার প্ল্যান এখানে দেখতে Gymaura একবার খুলুন।',
+    th: 'เปิด Gymaura สักครั้งเพื่อดูแผนของคุณที่นี่', ko: 'Gymaura을 한 번 열면 여기에서 계획을 볼 수 있어요.',
+    'zh-Hans': '打开一次 Gymaura，就能在这里看到你的计划。', 'zh-Hant': '打開一次 Gymaura，就能在這裡看到你的計畫。',
   },
-  // v1.4.4: the configurable "openGym" widget, its Edit screen and its choices.
+  // v1.4.4: the configurable "Gymaura" widget, its Edit screen and its choices.
   "What to show": {
     de: "Was anzeigen",
     fr: "Quoi afficher",
