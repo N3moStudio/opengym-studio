@@ -12,7 +12,7 @@ import { useUI } from '../store/useUI.js'
 import Plan from './Plan.jsx'
 
 const nav = vi.fn()
-vi.mock('react-router-dom', () => ({ useNavigate: () => nav }))
+vi.mock('react-router-dom', () => ({ useLocation: () => ({ pathname: (window.location.hash || '#/home').slice(1).split('?')[0], search: '?' + ((window.location.hash || '').split('?')[1] || '') }), useNavigate: () => nav }))
 vi.mock('../sheets.jsx', () => ({
   dayAssignSheet: vi.fn(), starterPlanSheet: vi.fn(), confirmSheet: vi.fn(), menuSheet: vi.fn(),
   planHasRoutines: () => true, exportPlanFile: vi.fn(), printWholePlan: vi.fn(), importPlanFile: vi.fn(),

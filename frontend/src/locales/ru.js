@@ -1372,7 +1372,7 @@ export default {
   'Back online and synced with the server.': 'Снова онлайн и синхронизировано с сервером.',
   'This phone is not connected to a server.': 'Этот телефон не подключён ни к одному серверу.',
   'The server did not answer in time.': 'Сервер не ответил вовремя.',
-  'The server answered with something other tha Gymaura data.': 'Сервер ответил чем-то, что не является данными Gymaura.',
+  'The server answered with something other than Gymaura data.': 'Сервер ответил чем-то, что не является данными Gymaura.',
   // --- combine-routines sheet + custom-exercise equipment (v1.3.6) ---
   '{0} added ({1})': '{0} добавлено ({1})',
   'already added': 'уже добавлено',
@@ -1383,7 +1383,7 @@ export default {
   'Waiting to sync': 'Ожидает синхронизации',
   'Offline. The server can’t be reached': 'Офлайн. Сервер недоступен',
   'Not a Gymaura answer (HTTP {0})': 'Это не ответ Gymaura (HTTP {0})',
-  'Your server’s address answered with something other tha Gymaura (HTTP {0}). Your changes are kept here.': 'Адрес вашего сервера ответил не как Gymaura (HTTP {0}). Ваши изменения остаются здесь.',
+  'Your server’s address answered with something other than Gymaura (HTTP {0}). Your changes are kept here.': 'Адрес вашего сервера ответил не как Gymaura (HTTP {0}). Ваши изменения остаются здесь.',
   'Server error (HTTP {0})': 'Ошибка сервера (HTTP {0})',
   'Your server answered with an error (HTTP {0}). Your changes are kept here.': 'Ваш сервер ответил ошибкой (HTTP {0}). Ваши изменения остаются здесь.',
   'The server refuses this browser': 'Сервер отклоняет этот браузер',

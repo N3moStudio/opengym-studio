@@ -10,7 +10,7 @@ import { buildDemoState } from '../lib/demoSeed.js'
 import { TEMPLATE_LIST } from '../lib/structuralBalanceTemplates.js'
 
 const navSpy = vi.fn()
-vi.mock('react-router-dom', () => ({ useNavigate: () => navSpy }))
+vi.mock('react-router-dom', () => ({ useLocation: () => ({ pathname: (window.location.hash || '#/home').slice(1).split('?')[0], search: '?' + ((window.location.hash || '').split('?')[1] || '') }), useNavigate: () => navSpy }))
 
 const clone = value => JSON.parse(JSON.stringify(value))
 globalThis.IS_REACT_ACT_ENVIRONMENT = true

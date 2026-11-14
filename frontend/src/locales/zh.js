@@ -1401,7 +1401,7 @@ export default {
   'Back online and synced with the server.': '已恢复联网，并已与服务器同步。',
   'This phone is not connected to a server.': '这部手机没有连接到任何服务器。',
   'The server did not answer in time.': '服务器没有及时响应。',
-  'The server answered with something other tha Gymaura data.': '服务器返回的不是 Gymaura 数据。',
+  'The server answered with something other than Gymaura data.': '服务器返回的不是 Gymaura 数据。',
   // --- combine-routines sheet + custom-exercise equipment (v1.3.6) ---
   '{0} added ({1})': '已添加 {0}（{1}）',
   'already added': '已添加',
@@ -1412,7 +1412,7 @@ export default {
   'Waiting to sync': '等待同步',
   'Offline. The server can’t be reached': '离线。无法连接服务器',
   'Not a Gymaura answer (HTTP {0})': '不是 Gymaura 的响应（HTTP {0}）',
-  'Your server’s address answered with something other tha Gymaura (HTTP {0}). Your changes are kept here.': '你的服务器地址返回了不属于 Gymaura 的内容（HTTP {0}）。你的更改保留在这里。',
+  'Your server’s address answered with something other than Gymaura (HTTP {0}). Your changes are kept here.': '你的服务器地址返回了不属于 Gymaura 的内容（HTTP {0}）。你的更改保留在这里。',
   'Server error (HTTP {0})': '服务器错误（HTTP {0}）',
   'Your server answered with an error (HTTP {0}). Your changes are kept here.': '你的服务器返回了错误（HTTP {0}）。你的更改保留在这里。',
   'The server refuses this browser': '服务器拒绝了此浏览器',

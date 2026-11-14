@@ -1401,7 +1401,7 @@ export default {
   'Back online and synced with the server.': 'Yeniden çevrimiçi ve sunucuyla eşitlendi.',
   'This phone is not connected to a server.': 'Bu telefon hiçbir sunucuya bağlı değil.',
   'The server did not answer in time.': 'Sunucu zamanında yanıt vermedi.',
-  'The server answered with something other tha Gymaura data.': 'Sunucu Gymaura verisi dışında bir şeyle yanıt verdi.',
+  'The server answered with something other than Gymaura data.': 'Sunucu Gymaura verisi dışında bir şeyle yanıt verdi.',
   // --- combine-routines sheet + custom-exercise equipment (v1.3.6) ---
   '{0} added ({1})': '{0} eklendi ({1})',
   'already added': 'zaten ekli',
@@ -1412,7 +1412,7 @@ export default {
   'Waiting to sync': 'Eşitlenmeyi bekliyor',
   'Offline. The server can’t be reached': 'Çevrimdışı. Sunucuya ulaşılamıyor',
   'Not a Gymaura answer (HTTP {0})': 'Gymaura yanıtı değil (HTTP {0})',
-  'Your server’s address answered with something other tha Gymaura (HTTP {0}). Your changes are kept here.': 'Sunucunun adresi Gymaura dışında bir şeyle yanıt verdi (HTTP {0}). Değişikliklerin burada kalıyor.',
+  'Your server’s address answered with something other than Gymaura (HTTP {0}). Your changes are kept here.': 'Sunucunun adresi Gymaura dışında bir şeyle yanıt verdi (HTTP {0}). Değişikliklerin burada kalıyor.',
   'Server error (HTTP {0})': 'Sunucu hatası (HTTP {0})',
   'Your server answered with an error (HTTP {0}). Your changes are kept here.': 'Sunucun bir hatayla yanıt verdi (HTTP {0}). Değişikliklerin burada kalıyor.',
   'The server refuses this browser': 'Sunucu bu tarayıcıyı reddediyor',

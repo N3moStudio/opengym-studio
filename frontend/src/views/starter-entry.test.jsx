@@ -10,7 +10,7 @@ import { starterPlanSheet } from '../sheets.jsx'
 import Home from './Home.jsx'
 import Plan from './Plan.jsx'
 
-vi.mock('react-router-dom', () => ({ useNavigate: () => () => {} }))
+vi.mock('react-router-dom', () => ({ useLocation: () => ({ pathname: (window.location.hash || '#/home').slice(1).split('?')[0], search: '?' + ((window.location.hash || '').split('?')[1] || '') }), useNavigate: () => () => {} }))
 vi.mock('../sheets.jsx', () => ({
   starterPlanSheet: vi.fn(), bwSheet: vi.fn(), goalSheet: vi.fn(), dayOverrideSheet: vi.fn(),
   calendarSheet: vi.fn(), startFlow: vi.fn(), bwDeltaColor: () => '', weighInsSheet: vi.fn(),

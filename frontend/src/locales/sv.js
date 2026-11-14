@@ -1422,7 +1422,7 @@ export default {
   'Back online and synced with the server.': 'Ansluten igen och synkad med servern.',
   'This phone is not connected to a server.': 'Den här telefonen är inte ansluten till någon server.',
   'The server did not answer in time.': 'Servern svarade inte i tid.',
-  'The server answered with something other tha Gymaura data.': 'Servern svarade med något annat än Gymaura-data.',
+  'The server answered with something other than Gymaura data.': 'Servern svarade med något annat än Gymaura-data.',
   // --- combine-routines sheet + custom-exercise equipment (v1.3.6) ---
   '{0} added ({1})': '{0} tillagd ({1})',
   'already added': 'redan tillagd',
@@ -1433,7 +1433,7 @@ export default {
   'Waiting to sync': 'Väntar på synk',
   'Offline. The server can’t be reached': 'Offline. Servern går inte att nå',
   'Not a Gymaura answer (HTTP {0})': 'Inte ett svar från Gymaura (HTTP {0})',
-  'Your server’s address answered with something other tha Gymaura (HTTP {0}). Your changes are kept here.': 'Din servers adress svarade med något annat än Gymaura (HTTP {0}). Dina ändringar sparas här.',
+  'Your server’s address answered with something other than Gymaura (HTTP {0}). Your changes are kept here.': 'Din servers adress svarade med något annat än Gymaura (HTTP {0}). Dina ändringar sparas här.',
   'Server error (HTTP {0})': 'Serverfel (HTTP {0})',
   'Your server answered with an error (HTTP {0}). Your changes are kept here.': 'Din server svarade med ett fel (HTTP {0}). Dina ändringar sparas här.',
   'The server refuses this browser': 'Servern avvisar den här webbläsaren',

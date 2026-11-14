@@ -1401,7 +1401,7 @@ export default {
   'Back online and synced with the server.': 'फिर से ऑनलाइन और सर्वर से सिंक हो गया।',
   'This phone is not connected to a server.': 'यह फ़ोन किसी सर्वर से कनेक्ट नहीं है।',
   'The server did not answer in time.': 'सर्वर ने समय पर जवाब नहीं दिया।',
-  'The server answered with something other tha Gymaura data.': 'सर्वर ने Gymaura डेटा के बजाय कुछ और भेजा।',
+  'The server answered with something other than Gymaura data.': 'सर्वर ने Gymaura डेटा के बजाय कुछ और भेजा।',
   // --- combine-routines sheet + custom-exercise equipment (v1.3.6) ---
   '{0} added ({1})': '{0} जोड़ा गया ({1})',
   'already added': 'पहले से जोड़ा हुआ',
@@ -1412,7 +1412,7 @@ export default {
   'Waiting to sync': 'सिंक होने की प्रतीक्षा',
   'Offline. The server can’t be reached': 'ऑफ़लाइन। सर्वर तक नहीं पहुँचा जा सकता',
   'Not a Gymaura answer (HTTP {0})': 'Gymaura का जवाब नहीं (HTTP {0})',
-  'Your server’s address answered with something other tha Gymaura (HTTP {0}). Your changes are kept here.': 'आपके सर्वर के पते ने Gymaura के बजाय कुछ और जवाब दिया (HTTP {0})। आपके बदलाव यहीं रखे हैं।',
+  'Your server’s address answered with something other than Gymaura (HTTP {0}). Your changes are kept here.': 'आपके सर्वर के पते ने Gymaura के बजाय कुछ और जवाब दिया (HTTP {0})। आपके बदलाव यहीं रखे हैं।',
   'Server error (HTTP {0})': 'सर्वर त्रुटि (HTTP {0})',
   'Your server answered with an error (HTTP {0}). Your changes are kept here.': 'आपके सर्वर ने त्रुटि के साथ जवाब दिया (HTTP {0})। आपके बदलाव यहीं रखे हैं।',
   'The server refuses this browser': 'सर्वर इस ब्राउज़र को अस्वीकार कर रहा है',

@@ -1401,7 +1401,7 @@ export default {
   'Back online and synced with the server.': '다시 온라인 상태이며 서버와 동기화되었습니다.',
   'This phone is not connected to a server.': '이 휴대폰은 서버에 연결되어 있지 않습니다.',
   'The server did not answer in time.': '서버가 제시간에 응답하지 않았습니다.',
-  'The server answered with something other tha Gymaura data.': '서버가 Gymaura 데이터가 아닌 응답을 보냈습니다.',
+  'The server answered with something other than Gymaura data.': '서버가 Gymaura 데이터가 아닌 응답을 보냈습니다.',
   // --- combine-routines sheet + custom-exercise equipment (v1.3.6) ---
   '{0} added ({1})': '{0} 추가됨({1})',
   'already added': '이미 추가됨',
@@ -1412,7 +1412,7 @@ export default {
   'Waiting to sync': '동기화 대기 중',
   'Offline. The server can’t be reached': '오프라인. 서버에 연결할 수 없음',
   'Not a Gymaura answer (HTTP {0})': 'Gymaura 응답이 아님 (HTTP {0})',
-  'Your server’s address answered with something other tha Gymaura (HTTP {0}). Your changes are kept here.': '서버 주소가 Gymaura이 아닌 다른 응답을 보냈습니다 (HTTP {0}). 변경 사항은 이 기기에 보관됩니다.',
+  'Your server’s address answered with something other than Gymaura (HTTP {0}). Your changes are kept here.': '서버 주소가 Gymaura이 아닌 다른 응답을 보냈습니다 (HTTP {0}). 변경 사항은 이 기기에 보관됩니다.',
   'Server error (HTTP {0})': '서버 오류 (HTTP {0})',
   'Your server answered with an error (HTTP {0}). Your changes are kept here.': '서버가 오류로 응답했습니다 (HTTP {0}). 변경 사항은 이 기기에 보관됩니다.',
   'The server refuses this browser': '서버가 이 브라우저를 거부합니다',

@@ -1401,7 +1401,7 @@ export default {
   'Back online and synced with the server.': 'Di nuovo online e sincronizzato con il server.',
   'This phone is not connected to a server.': 'Questo telefono non è collegato a nessun server.',
   'The server did not answer in time.': 'Il server non ha risposto in tempo.',
-  'The server answered with something other tha Gymaura data.': 'Il server ha risposto con qualcosa che non sono dati di Gymaura.',
+  'The server answered with something other than Gymaura data.': 'Il server ha risposto con qualcosa che non sono dati di Gymaura.',
   // --- combine-routines sheet + custom-exercise equipment (v1.3.6) ---
   '{0} added ({1})': '{0} aggiunto ({1})',
   'already added': 'già aggiunto',
@@ -1412,7 +1412,7 @@ export default {
   'Waiting to sync': 'In attesa di sincronizzazione',
   'Offline. The server can’t be reached': 'Offline. Il server non è raggiungibile',
   'Not a Gymaura answer (HTTP {0})': 'Non è una risposta di Gymaura (HTTP {0})',
-  'Your server’s address answered with something other tha Gymaura (HTTP {0}). Your changes are kept here.': 'L\'indirizzo del tuo server ha risposto con qualcosa che non è Gymaura (HTTP {0}). Le tue modifiche restano qui.',
+  'Your server’s address answered with something other than Gymaura (HTTP {0}). Your changes are kept here.': 'L\'indirizzo del tuo server ha risposto con qualcosa che non è Gymaura (HTTP {0}). Le tue modifiche restano qui.',
   'Server error (HTTP {0})': 'Errore del server (HTTP {0})',
   'Your server answered with an error (HTTP {0}). Your changes are kept here.': 'Il tuo server ha risposto con un errore (HTTP {0}). Le tue modifiche restano qui.',
   'The server refuses this browser': 'Il server rifiuta questo browser',

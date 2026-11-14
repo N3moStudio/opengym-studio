@@ -32,7 +32,7 @@ trap 'rm -rf "$WORK"' EXIT
 
 PUBLIC="$FRONT/ios/App/App/public"
 [ -f "$PUBLIC/index.html" ] || { echo "no phone build in $PUBLIC: run npm run build:mobile first" >&2; exit 1; }
-grep -q 'name="opengym-flavor" content="mobile"' "$PUBLIC/index.html" || { echo "$PUBLIC is not the phone build" >&2; exit 1; }
+grep -q 'name="gymaura-flavor" content="mobile"' "$PUBLIC/index.html" || { echo "$PUBLIC is not the phone build" >&2; exit 1; }
 CLIPS=$(find "$PUBLIC/exercise-media" -name '*.webp' 2>/dev/null | wc -l)
 [ "$CLIPS" -gt 6000 ] || { echo "$PUBLIC has $CLIPS WebP animations: build with VITE_CLIP_EXT=webp and APP_MEDIA_DIR" >&2; exit 1; }
 

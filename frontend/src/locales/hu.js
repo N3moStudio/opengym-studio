@@ -1404,7 +1404,7 @@ export default {
   'Back online and synced with the server.': 'Újra online és szinkronizálva a szerverrel.',
   'This phone is not connected to a server.': 'Ez a telefon nem csatlakozik szerverhez.',
   'The server did not answer in time.': 'A szerver nem válaszolt időben.',
-  'The server answered with something other tha Gymaura data.': 'A szerver nem Gymaura-adatokkal válaszolt.',
+  'The server answered with something other than Gymaura data.': 'A szerver nem Gymaura-adatokkal válaszolt.',
   // --- combine-routines sheet + custom-exercise equipment (v1.3.6) ---
   '{0} added ({1})': '{0} hozzáadva ({1})',
   'already added': 'már hozzáadva',
@@ -1415,7 +1415,7 @@ export default {
   'Waiting to sync': 'Szinkronizálásra vár',
   'Offline. The server can’t be reached': 'Offline. A szerver nem érhető el',
   'Not a Gymaura answer (HTTP {0})': 'Nem Gymaura-válasz (HTTP {0})',
-  'Your server’s address answered with something other tha Gymaura (HTTP {0}). Your changes are kept here.': 'A szervered címe nem Gymaura-válasszal felelt (HTTP {0}). A módosításaid itt maradnak.',
+  'Your server’s address answered with something other than Gymaura (HTTP {0}). Your changes are kept here.': 'A szervered címe nem Gymaura-válasszal felelt (HTTP {0}). A módosításaid itt maradnak.',
   'Server error (HTTP {0})': 'Szerverhiba (HTTP {0})',
   'Your server answered with an error (HTTP {0}). Your changes are kept here.': 'A szervered hibával válaszolt (HTTP {0}). A módosításaid itt maradnak.',
   'The server refuses this browser': 'A szerver elutasítja ezt a böngészőt',
