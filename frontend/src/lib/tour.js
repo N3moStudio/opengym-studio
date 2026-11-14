@@ -48,6 +48,7 @@ export const STEPS = [
   { id: 'go-library', route: '/plan', anchor: 'tab-library', go: '/library' },
   { id: 'lib-search', route: '/library', anchor: 'lib-search' },
   { id: 'lib-filters', route: '/library', anchor: 'lib-filters' },
+  { id: 'go-start-home', route: '/library', anchor: 'tab-home', go: '/home' },
   { id: 'start', route: '/home', anchor: 'today', intercept: true },
   { id: 'set', route: '/workout', anchor: 'set', sandbox: 'practice' },
   { id: 'tick', route: '/workout', anchor: 'tick', sandbox: 'practice', tap: true },

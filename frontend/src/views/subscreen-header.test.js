@@ -17,6 +17,14 @@ const titleAfterBack = name => {
 
 describe('the title beside a page back button', () => {
   for (const name of PAGES) {
+    if (name === 'History') {
+      it('History uses the shared Gymaura header and preserves its Progress back action', () => {
+        const src = readFileSync(fileURLToPath(new URL('./History.jsx', import.meta.url)), 'utf8')
+        expect(src).toContain("<AuraHeader title={t('History')}")
+        expect(src).toContain('data-back="/stats"')
+      })
+      continue
+    }
     it(`${name}: 12 px from the button, at the shared title size`, () => {
       const head = titleAfterBack(name)
       expect(head).toMatch(/<div style=\{\{ flex: 1, marginInlineStart: 12 \}\}>/)

@@ -28,7 +28,7 @@ function harness() {
   const calls = { closed: [], toasts: [], back: 0, exit: 0 }
   let sheets = []
   let now = 1000
-  let location = { pathname: '/settings', key: 'initial' }
+  let location = { pathname: '/settings/workout', key: 'initial' }
   const handler = makeBackHandler({
     getSheets: () => sheets,
     getLocation: () => location,
@@ -113,7 +113,7 @@ describe('back from a root tab', () => {
       expect(decideBack({ pathname, canGoBack: true, exitArmed: true })).toBe('exit')
     })
 
-  it.each(['/plan/r/one', '/settings', '/settings/workout', '/history', '/workout', '/coach'])(
+  it.each(['/plan/r/one', '/settings/workout', '/history', '/workout', '/coach'])(
     'still goes back from the child or workout page %s', pathname => {
       expect(decideBack({ pathname, canGoBack: true, exitArmed: false })).toBe('history')
     })

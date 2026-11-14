@@ -1,6 +1,5 @@
 // @vitest-environment happy-dom
-// Stats in four parts with a sticky index (redesign 1.4.5, P5): one page, each part with its
-// heading, an index that jumps there and writes the part into the address.
+// Progress preserves deep links while showing one selected pane at a time.
 import React, { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { afterEach, describe, expect, it, vi } from 'vitest'
@@ -8,7 +7,7 @@ import Stats from './Stats.jsx'
 
 const mocks = vi.hoisted(() => ({ S: null }))
 vi.mock('../store/useStore.js', () => ({ useStore: selector => selector({ S: mocks.S }) }))
-vi.mock('react-router-dom', () => ({ useLocation: () => ({ pathname: (window.location.hash || '#/home').slice(1).split('?')[0], search: '?' + ((window.location.hash || '').split('?')[1] || '') }), useNavigate: () => () => {} }))
+vi.mock('react-router-dom', () => ({ useLocation: () => ({ pathname: (window.location.hash || '#/home').slice(1).split('?')[0], search: '?' + ((window.location.hash || '').split('?')[1] || '') }), useNavigate: () => path => window.history.replaceState(null, '', '#' + path) }))
 vi.mock('../sheets.jsx', () => ({
   bwSheet: () => {}, goalSheet: () => {}, calendarSheet: () => {}, workoutDetailSheet: () => {}, exerciseHistorySheet: () => {},
   WorkoutRow: () => null, bwDeltaColor: () => 'inherit',
@@ -29,7 +28,7 @@ function mount() {
   root = createRoot(host)
   act(() => root.render(<Stats />))
 }
-const index = () => [...host.querySelectorAll('.stats-index .seg button')]
+const index = () => [...host.querySelectorAll('.aura-progress-nav .seg button')]
 
 describe('Stats sections (P5)', () => {
   it('groups the cards into parts with headings, the tour anchors inside them', () => {
@@ -43,17 +42,18 @@ describe('Stats sections (P5)', () => {
     expect(host.querySelector('#stats-lifts [data-tour="stats-records"]')).toBeTruthy()
     expect(host.querySelector('#stats-body [data-tour="stats-measure"]')).toBeTruthy()
   })
-  it('a tap marks the part, scrolls to it and puts it in the address', () => {
+  it('a tap shows only the selected pane and puts it in the address', () => {
     window.history.replaceState(null, '', '#/stats')
     mount()
-    const into = vi.fn()
-    host.querySelector('#stats-lifts').scrollIntoView = into
     act(() => index()[2].click())
     expect(index()[2].getAttribute('aria-pressed')).toBe('true')
-    expect(into).toHaveBeenCalled()
+    expect(host.querySelector('#stats-lifts').hidden).toBe(false)
+    expect(host.querySelector('#stats-overview').hidden).toBe(true)
+    expect(host.querySelector('#stats-body').hidden).toBe(true)
     expect(window.location.hash).toBe('#/stats?section=lifts')
     act(() => index()[0].click())
-    expect(window.location.hash).toBe('#/stats')
+    expect(window.location.hash).toBe('#/stats?section=overview')
+    expect(host.querySelector('#stats-overview').hidden).toBe(false)
   })
   it('opens on the part the address names', () => {
     window.history.replaceState(null, '', '#/stats?section=body')
@@ -68,7 +68,7 @@ describe('Stats sections (P5)', () => {
     expect(index()[0].getAttribute('aria-pressed')).toBe('true')
     document.body.style.position = ''
     await act(async () => { window.dispatchEvent(new Event('scroll')); await new Promise(r => setTimeout(r, 60)) })
-    // unpinned, the spy reads the page again (here every part sits at the top, so the last wins)
-    expect(index().at(-1).getAttribute('aria-pressed')).toBe('true')
+    // Scrolling cannot change the user's selected pane.
+    expect(index()[0].getAttribute('aria-pressed')).toBe('true')
   })
 })

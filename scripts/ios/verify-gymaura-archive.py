@@ -21,14 +21,14 @@ def verify(app: Path) -> None:
             raise ValueError(f"Incorrect bundle identifier: {relative}")
         if info.get("CFBundleDisplayName") != "Gymaura" and "AnimationPacksDownloader" not in relative:
             raise ValueError(f"Incorrect app display name: {relative}")
+        executable = (app / relative).parent / info["CFBundleExecutable"]
+        if not executable.is_file() or not executable.stat().st_size:
+            raise ValueError(f"Bundle executable is missing: {relative}")
         if relative == "Info.plist":
             if "iPhoneOS" not in info.get("CFBundleSupportedPlatforms", []):
                 raise ValueError("Archive is not an iPhone device build")
             if not info.get("NSSupportsLiveActivities"):
                 raise ValueError("Live Activities are not enabled")
-            executable = app / info["CFBundleExecutable"]
-            if not executable.is_file() or not executable.stat().st_size:
-                raise ValueError("App executable is missing")
     public = app / "public"
     if not (public / "index.html").is_file():
         raise ValueError("Frontend bundle is missing")

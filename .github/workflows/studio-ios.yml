@@ -35,9 +35,15 @@ jobs:
           npm test --
           src/components/StudioAppearance.test.jsx
           src/components/TabBar.navigation.test.jsx
+          src/components/TabBar.test.jsx
           src/components/TabBar.retap.test.jsx
           src/views/Home.startdoor.test.jsx
           src/views/Stats.redesign.test.jsx
+          src/views/Stats.sections.test.jsx
+          src/components/Tour.test.jsx
+          src/lib/tour.test.js
+          src/views/Library.test.jsx
+          src/views/Plan.day-rows.test.jsx
           src/lib/widget-links.test.js
           src/views/Home.modules.test.jsx
           src/views/Home.weight-card.test.jsx

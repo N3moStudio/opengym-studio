@@ -65,14 +65,14 @@ const modeButtons = () => [...host.querySelectorAll('.plan-mode .seg button')]
 const pickMode = label => click(modeButtons().find(b => b.textContent === label))
 const selectedMode = () => modeButtons().find(b => b.className.includes('on'))?.textContent
 const headings = () => [...host.querySelectorAll('h4.sec')].map(h => h.firstChild.textContent)
-const subtitle = () => host.querySelector('.hdr .sub').textContent
+const subtitle = () => host.querySelector('.aura-heading p').textContent
 
 describe('Plan — How you train', () => {
   it('nothing saved: Fixed Week with the weekdays, and no rotation buttons of its own', () => {
     mount()
     expect(selectedMode()).toBe('Fixed Week')
     expect(headings()).toContain('This week')
-    expect(subtitle()).toBe('Your weekly routine')
+    expect(subtitle()).toBe('A little structure. More room to grow.')
     expect(rows()).toEqual([])
     // the old duplicate controls are gone: the mode control is the one way in and out
     expect(byLabel('Build a rotation instead')).toBeUndefined()
@@ -90,7 +90,7 @@ describe('Plan — How you train', () => {
     expect(headings()).not.toContain('This week')
     expect(host.textContent).toContain('No rotation yet.')
     // the subtitle stops saying "weekly" once you train in a loop
-    expect(subtitle()).toBe('Your routines in a loop')
+    expect(subtitle()).toBe('A little structure. More room to grow.')
   })
 
   it('the loop header can wrap so Add never runs off a 320 px screen', async () => {

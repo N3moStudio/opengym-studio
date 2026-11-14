@@ -113,7 +113,7 @@ describe('Library exercise-name casing per language', () => {
 // request for v1.3.10): "1324 animated exercises + 5 of your own". It has to stay one line on a
 // phone, so it runs under the title row at full width, never wraps, and ellipsizes as a last resort.
 describe('Library header count', () => {
-  const sub = host => host.querySelector('.hdr .sub').textContent
+  const sub = host => host.querySelector('.lib-count').textContent
   const own = n => Array.from({ length: n }, (_, i) => ({ id: 'c' + i, n: 'my move ' + i, bp: 'chest', eq: '', custom: true }))
   afterEach(() => _setLangState('en', {}, null, null))
 

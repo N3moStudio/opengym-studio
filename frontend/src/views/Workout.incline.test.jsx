@@ -18,7 +18,7 @@ let root, container
 
 function mount(id, sets, more = {}) {
   if (root) unmount()
-  const S = JSON.parse(JSON.stringify(DEF))
+  const S = { ...JSON.parse(JSON.stringify(DEF)), workoutView: 'cards' }
   S.active = {
     id: 'incline-test', d: '2026-10-09', start: Date.now(), routineId: null, name: 'Cardio', bw: null, cur: 0, ...more,
     entries: [{ id, target: { sets: 1, min: 20, speed: 5 }, sets }],

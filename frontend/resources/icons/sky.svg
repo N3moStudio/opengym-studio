@@ -1,11 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 512 512">
-  <!-- openGym app icon "sky", written by scripts/app-icons.mjs (the glyph of resources/icon.svg). -->
-  <rect width="512" height="512" fill="#0a84ff"/>
-  <g fill="#ffffff">
-    <rect x="80" y="242" width="352" height="28"/>
-    <rect x="80" y="199" width="36" height="114"/>
-    <rect x="131" y="169" width="47" height="174"/>
-    <rect x="334" y="169" width="47" height="174"/>
-    <rect x="396" y="199" width="36" height="114"/>
-  </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" fill="#0a84ff"/><circle cx="250" cy="256" r="146" fill="#ffffff"/><circle cx="250" cy="256" r="110" fill="#0a84ff"/><rect x="290" y="90" width="160" height="165" fill="#0a84ff"/><line x1="259" y1="269" x2="389" y2="269" stroke="#ffffff" stroke-width="36"/><circle cx="376" cy="158" r="22" fill="#ffffff"/></svg>

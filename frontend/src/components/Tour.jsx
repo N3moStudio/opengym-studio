@@ -33,7 +33,7 @@ import './Tour.css'
 // What each stop says. Literal t() calls, so check-source-strings sees every one.
 const COPY = {
   today: () => [t('Today at a glance'), t('Today’s session lives here. One tap and you’re lifting. On a rest day it says so, no guilt trip.')],
-  'go-plan': () => [t('Off to Plan'), t('Your routines live behind this tab. Tap Plan.')],
+  'go-plan': () => [t('Train'), t('Your routines live behind this tab. Tap Train.')],
   'plan-mode': () => [t('Week or rotation'), t('Train on fixed weekdays, or run your routines in a loop where the next one waits for you.')],
   'plan-views': () => [t('Your routines'), t('Schedule says when, Routines says what. Build your own or grab a starter plan.')],
   'plan-body': () => [t('Muscles at a glance'), t('The little body shows what each day works, so leg day can’t hide.')],
@@ -48,19 +48,20 @@ const COPY = {
   swipe: () => [t('Swipe a set'), t('Swipe a set sideways to copy or remove it. Its number opens even more.')],
   more: () => [t('The ⋯ menu'), t('Workout settings, layouts, notes and extra exercises hide in here.')],
   finish: () => [t('Finish line'), t('Finish saves the session and moves your weights along. This practice one just quietly disappears.')],
-  'go-stats': () => [t('Your progress'), t('Back home, practice over. Stats is where the gains pile up. Tap it.')],
+  'go-stats': () => [t('Your progress'), t('Practice is over. Tap Progress to see your training history and results.')],
   stats: () => [t('Your numbers'), t('Workouts, streaks and everything you’ve lifted. It fills up as you train.')],
   'stats-body': () => [t('Body map'), t('See which muscles got the work and which still need rest. Tap one for details.')],
   'stats-records': () => [t('Records'), t('Pick an exercise to see its best sets, estimated max and where it’s heading.')],
-  'go-home': () => [t('Settings are on Home'), t('Head back to Home first. Tap it.')],
-  'go-settings': () => [t('The gear'), t('Everything you can tweak hides behind this little gear. Tap it.')],
+  'go-start-home': () => [t('Today'), t('Return to Today to begin a practice session.')],
+  'go-home': () => [t('Today'), t('Return to Today before exploring your settings.')],
+  'go-settings': () => [t('You'), t('Your appearance, preferences and backups live here. Tap You.')],
   look: () => [t('Make it yours'), t('Theme, accent colour and what Home shows.')],
   units: () => [t('Units & language'), t('Kilos or pounds, and the language you like best.')],
   data: () => [t('Your data, your backups'), t('Backups, imports and syncing with your own server.')],
   done: () => [t('You’re set'), t('Want more? Each of these is a short guided run. You’ll find them again in Settings → About & updates.')],
 
   'p-intro': () => [t('Build your first plan'), t('This one is for real: we build a routine together and it lands in your plan when you tap Save. Bail before that and nothing stays behind.')],
-  'p-go': () => [t('Off to Plan'), t('Routines are made in Plan. Tap it.')],
+  'p-go': () => [t('Train'), t('Routines are made in Train. Tap it.')],
   'p-views': () => [t('Routines'), t('New routines start on the Routines side. Tap Routines.')],
   'p-new': () => [t('A new routine'), t('Tap New routine. It stays a draft until you save it.')],
   'p-name': () => [t('Name it'), t('Push Day, Legs, Monday Misery. Tap the name and type your own.')],
@@ -105,7 +106,7 @@ const COPY = {
   'b-intro': () => [t('Export & import'), t('Where your data goes in and out. We only point, nothing runs until you tap it yourself.')],
   'b-up': () => [t('Up one level'), t('Tap back to Settings.')],
   'b-go-home': () => [t('Settings are on Home'), t('Head back to Home first. Tap it.')],
-  'b-go-settings': () => [t('The gear'), t('Everything you can tweak hides behind this little gear. Tap it.')],
+  'b-go-settings': () => [t('You'), t('Your appearance, preferences and backups live here. Tap You.')],
   'b-data': () => [t('Data & backup'), t('Tap it.')],
   'b-export': () => [t('Back it all up'), t('One file with everything. Keep it somewhere safe, Import backup brings it back.')],
   'b-csv': () => [t('Spreadsheet'), t('Your sets, weigh-ins and measurements as CSV. Our importer reads it back too.')],
@@ -399,6 +400,9 @@ function Run({ at, flow = 'tour' }) {
       // The screen first (a navigation can land a frame or two later): an element of the same
       // name on the screen being left is not the one this stop means.
       if (route && pathRef.current !== route && Date.now() - started < anchorWait) { tm = setTimeout(look, 30); return }
+      // Expand a settings group before measuring a step inside it.
+      const raw = step.anchor && document.querySelector('[data-tour="' + step.anchor + '"]')
+      for (let group = raw?.closest('details'); group; group = group.parentElement?.closest('details')) group.open = true
       const el = findAnchor(step.anchor)
       if (!el && step.anchor && Date.now() - started < anchorWait) { tm = setTimeout(look, 60); return }
       if (step.skip && passOver(step, ctxNow())) { go(dirRef.current); return }

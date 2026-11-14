@@ -89,7 +89,7 @@ const run = async (at, flow, path) => {
 beforeEach(() => {
   localStorage.clear()
   _setAnchorWait(120)
-  useStore.setState({ S: clone(DEF), user: null, ready: true })
+  useStore.setState({ S: { ...clone(DEF), workoutView: 'cards' }, user: null, ready: true })
   useUI.getState().closeAll()
   // Every stand-in anchor sits somewhere on screen; a test moves one by giving it a box of its own.
   vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function () {
@@ -212,7 +212,7 @@ describe('the stops', () => {
     expect(touch.defaultPrevented).toBe(true)
   })
   it('a missing optional stop is passed over in the direction of travel', async () => {
-    useStore.setState({ S: { ...clone(DEF), restSec: 90 } })
+    useStore.setState({ S: { ...clone(DEF), workoutView: 'cards', restSec: 90 } })
     await run('tick')
     expect(step()).toBe('tick')
     await click(btn('Next'))   // no tick, so no rest timer: the rest stop has nothing to show
@@ -248,7 +248,7 @@ describe('the ways between screens', () => {
   it('points at the real tab and waits for the tap, then goes on on the new screen', async () => {
     await run('go-plan')
     expect(where).toBe('/home')
-    expect(card().textContent).toContain('Tap Plan')
+    expect(card().textContent).toContain('Tap Train')
     expect(btn('Next')).toBeUndefined()
     expect(btn('Show me')).toBeTruthy()
     // the hole lets the tap through: no pane over it
@@ -328,9 +328,9 @@ describe('the practice workout', () => {
     useStore.getState().update(s => { s.routines = [{ id: 'mine', name: 'Mine', ex: [] }] }, false)
     const real = useStore.getState().S
     const saved = localStorage.getItem('gym_state_v1')
-    await run('start', null, '/library')
+    await run('start', null, '/home')
     expect(card().textContent).toContain('Tap it for a practice run')
-    await click(anchor('start'))
+    await click(anchor('today'))
     expect(tapped).toBe(null)   // the app's own Start never heard of it
     expect(step()).toBe('set')
     expect(beginWorkout).toHaveBeenCalledWith([SAMPLE_ROUTINE_ID], null)

@@ -58,7 +58,7 @@ afterEach(() => {
 describe('on a long page', () => {
   it('the button comes in far down, and a tap glides to the top', async () => {
     await start('#/stats')
-    await appear('#app .hdr button[aria-label="History"]')
+    await appear('#app .aura-header button[aria-label="History"]')
     expect(document.querySelector('#totop.on')).toBeNull()
     await scrolledTo(2400)
     expect(document.querySelector('#totop.on')).toBeTruthy()
@@ -69,18 +69,18 @@ describe('on a long page', () => {
 
   it('the tab you are on, tapped again, glides to the top too', async () => {
     await start('#/stats')
-    await appear('#app .hdr button[aria-label="History"]')
+    await appear('#app .aura-header button[aria-label="History"]')
     await scrolledTo(1500)
-    await tap([...document.querySelectorAll('#tabbar button')].find(b => b.textContent === 'Stats'))
+    await tap([...document.querySelectorAll('#tabbar button')].find(b => b.textContent === 'Progress'))
     expect(window.location.hash).toBe('#/stats')
     expect(scrolls.at(-1)).toEqual({ top: 0, left: 0, behavior: 'smooth' })
   })
 
   it('leaves the remembered position alone: back from History lands where Stats was', async () => {
     await start('#/stats')
-    await appear('#app .hdr button[aria-label="History"]')
+    await appear('#app .aura-header button[aria-label="History"]')
     await scrolledTo(3000)
-    await tap(document.querySelector('#app .hdr button[aria-label="History"]'))
+    await tap(document.querySelector('#app .aura-header button[aria-label="History"]'))
     expect(window.location.hash).toBe('#/history')
     expect(scrolls.at(-1)).toEqual([0, 0])
     await tap(await appear('#app [data-back]'))

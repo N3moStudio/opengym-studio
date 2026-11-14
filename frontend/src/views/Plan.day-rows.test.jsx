@@ -92,7 +92,7 @@ describe('Plan — the menu', () => {
     return menuSheet.mock.calls.at(-1)[0]
   }
 
-  const coachButton = () => [...host.querySelectorAll('.hdr button')].find(b => b.textContent === 'Coach')
+  const coachButton = () => [...host.querySelectorAll('.aura-plan-intro button')].find(b => b.textContent === 'Coach')
 
   it('has its own Coach button in the header when the Coach is available, not a menu entry', () => {
     mocks.coach = true

@@ -24,7 +24,7 @@ let root
 let container
 
 function setActive(entries, { cur = 0, wc, hints = { swipeSets: true }, editing = false } = {}) {
-  const S = clone(DEF)
+  const S = { ...clone(DEF), workoutView: 'cards' }
   if (wc) S.wc = { ...S.wc, ...wc }
   S.hints = hints
   S.active = {
@@ -76,7 +76,7 @@ beforeEach(() => {
   useUI.getState().stopRest()
   useUI.getState().stopWork()
   useUI.setState({ sheets: [], toastMsg: '', toastAction: null, timer: null, work: null, swipeHint: null, setFlash: null })
-  useStore.setState({ S: clone(DEF), user: null })
+  useStore.setState({ S: { ...clone(DEF), workoutView: 'cards' }, user: null })
   root = null
   container = null
 })

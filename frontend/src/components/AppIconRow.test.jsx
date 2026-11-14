@@ -91,7 +91,7 @@ describe('App icon row', () => {
 
   it('a tap on the icon in use asks the phone nothing', async () => {
     await mount()
-    await tap('Original')
+    await tap('Gymaura')
     expect(m.calls).toEqual([])
   })
 
@@ -99,7 +99,7 @@ describe('App icon row', () => {
     m.fail = true
     await mount()
     await tap('Light')
-    expect(chosen()).toEqual(['Original'])
+    expect(chosen()).toEqual(['Gymaura'])
     expect(m.toast).toHaveBeenCalledWith('The icon could not be changed.')
   })
 

@@ -31,7 +31,7 @@ function mount(modules) {
   root = createRoot(host)
   act(() => root.render(<Stats />))
 }
-const parts = () => [...host.querySelectorAll('.stats-index .seg button')].map(b => b.textContent)
+const parts = () => [...host.querySelectorAll('.aura-progress-nav .seg button')].map(b => b.textContent)
 const kpis = () => [...host.querySelectorAll('.kpis .tile .l')].map(e => e.textContent)
 const links = () => [...host.querySelectorAll('[data-stats-links] .lrow-t')].map(e => e.textContent)
 
