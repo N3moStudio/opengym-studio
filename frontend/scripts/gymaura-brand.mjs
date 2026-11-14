@@ -16,6 +16,9 @@ const main=APP_ICON_VARIANTS[0]
 save('resources/gymaura.svg',gymauraSVG(main.bg,main.fg))
 for(const size of [192,512]) save('public/icon-'+size+'.png',image(main,size))
 save('public/apple-touch-icon.png',image(main,180))
+save('public/icon-180.png',image(main,180))
+save('ios/App/App/Assets.xcassets/LaunchMark.imageset/mark.png',image(main,512))
+save('ios/App/App/Assets.xcassets/LaunchMark.imageset/Contents.json',JSON.stringify({images:[{idiom:'universal',filename:'mark.png'}],info:{version:1,author:'xcode'}},null,2)+'\n')
 for(const v of APP_ICON_VARIANTS) {
   save('public/app-icons/'+v.id+'.png',image(v,112))
   if(v.ios) save('ios/App/App/Assets.xcassets/'+v.ios+'.appiconset/icon-1024.png',image(v,1024))

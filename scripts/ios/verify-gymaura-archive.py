@@ -32,6 +32,8 @@ def verify(app: Path) -> None:
     public = app / "public"
     if not (public / "index.html").is_file():
         raise ValueError("Frontend bundle is missing")
+    if "aura-boot-mark" not in (public / "index.html").read_text():
+        raise ValueError("Gymaura launch branding is missing")
     media = public / "exercise-media"
     if not (media / "NOTICE.md").is_file():
         raise ValueError("Exercise media notice is missing")
