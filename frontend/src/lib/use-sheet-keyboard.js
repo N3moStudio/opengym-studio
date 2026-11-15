@@ -86,11 +86,15 @@ export function revealChip(strip, chip, pad = 16) {
   const s = strip.getBoundingClientRect(), c = chip.getBoundingClientRect()
   const width = strip.clientWidth || s.width || 0
   if (!width) return false
+  // Modern WebKit/Chromium use negative scrollLeft in RTL. Clamping to zero hid
+  // the current set after advancing beyond the right-to-left strip's first page.
+  const rtl = strip.ownerDocument?.defaultView?.getComputedStyle?.(strip).direction === 'rtl'
+  const minimum = rtl ? -Math.max(0, strip.scrollWidth - width) : 0
   const left = c.left - s.left + (strip.scrollLeft || 0)   // chip's offset inside the strip's content
   const right = left + c.width
   let next = strip.scrollLeft || 0
-  if (left - pad < next) next = Math.max(0, left - pad)
-  else if (right + pad > next + width) next = right + pad - width
+  if (left - pad < next) next = Math.max(minimum, left - pad)
+  else if (right + pad > next + width) next = rtl ? Math.min(0, right + pad - width) : right + pad - width
   if (next === (strip.scrollLeft || 0)) return false
   strip.scrollLeft = next
   return true

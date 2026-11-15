@@ -946,7 +946,7 @@ export default function Settings({ page = null, find = null, via = null, entryKe
 
     look: () => <>
       <GymauraAppearance update={update} />
-      <Section><Row icon="house" title={t('Customize Home')} accessory="chevron" onClick={customizeHome} /></Section>
+      <Section><Row icon="house" title={t('Training overview')} accessory="chevron" onClick={customizeHome} /></Section>
       <Section footer={DEMO || MOBILE || !user ? undefined : t('synced with your profile')}>
         <Row icon="moon" iconTint="var(--indigo)" title={t('Theme')}>
           <Segmented
@@ -959,6 +959,9 @@ export default function Settings({ page = null, find = null, via = null, entryKe
             value={S.theme || 'dark'}
             onChange={v => update(s => { s.theme = v })}
           />
+        </Row>
+        <Row icon="palette" iconTint="var(--purple)" title={t('Accent color')} value={accentLabel(S)}>
+          <AccentSwatches S={S} update={update} />
         </Row>
         {/* The home-screen icon: the phone's own, not synced; in the phone app only. */}
         {MOBILE && platformNow() && <AppIconRow />}
@@ -1300,7 +1303,7 @@ function SettingsRoot({ ctx, preview, open, user, sync, home, go, entryKey }) {
   const config = useStore(s => s.config)
   const adminCoach = !MOBILE && !DEMO && !!user?.admin && coachAvailable(config, user) && (!ctx.mod || ctx.mod('coach'))
   return <div className="narrow settings-gymaura">
-    <AuraHeader title={t('You')} subtitle={t('Your training. Your space.')} />
+    <AuraHeader title={t('Settings')}><button type="button" className="iconbtn" data-back="/home" aria-label={t('Home')} onClick={home}><Icon name="chevronLeft" /></button></AuraHeader>
     <div className="sp-search">
       <SearchField value={q} onChange={e => set(e.target.value)} onClear={() => set('')}
         placeholder={t('Search…')} aria-label={t('Search settings')} inputMode="search" enterKeyHint="search" autoComplete="off" />
@@ -1320,7 +1323,7 @@ function SettingsRoot({ ctx, preview, open, user, sync, home, go, entryKey }) {
       <GymauraSettingsLink onClick={() => open('look')} />
       {ROOT_GROUPS.map((group, index) => ({ g: group.filter(id => pageVisible(id, ctx)), index })).filter(({ g }) => g.length).map(({ g, index }) => (
         <details className="aura-settings-group" key={g[0]} open={index === 0}>
-          <summary>{t(['Make it yours', 'During a session', 'Training setup', 'Connected experiences', 'Data and support'][index] || 'More settings')}<Icon name="chevronDown" /></summary>
+          <summary><span>{t(['Make it yours', 'During a session', 'Training setup', 'Connected experiences', 'Data and support'][index] || 'More settings')}<small>{g.filter(id => id !== 'look').map(id => t(PAGES[id].title)).join(' · ')}</small></span><Icon name="chevronDown" /></summary>
           <Section>
           {g.map(id => id === 'look' ? null : <Row key={id} icon={PAGES[id].icon} iconTint={PAGES[id].tint} title={t(PAGES[id].title)}
             value={preview[id]?.() || null} accessory="chevron" onClick={() => open(id)} className="sp-root-row" tour={'settings-' + id} />)}

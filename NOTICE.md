@@ -12,6 +12,12 @@ with the AGPL, provided the corresponding source code remains available under th
 the project repository. This permission applies to the distribution channel only and does
 not otherwise limit the license.
 
+## Interface font
+
+Inter Variable 4.1 by Rasmus Andersson is bundled locally under the SIL Open Font License 1.1.
+The complete license is in [frontend/public/licenses/Inter.txt](frontend/public/licenses/Inter.txt)
+and ships with the frontend. Source: [Inter](https://rsms.me/inter/).
+
 ## Body diagram geometry
 
 The muscle outlines the body maps are drawn from (`frontend/src/lib/body-paths.js`) are derived

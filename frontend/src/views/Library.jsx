@@ -83,7 +83,7 @@ export default function Library() {
   }
 
   return <>
-    <AuraHeader title={t('Train')} subtitle={t('Find your next movement.')}>
+    <AuraHeader title={t('Exercises')}>
       <Button size="sm" variant="tinted" icon="figureStrength" onClick={() => nav('/muscles')}>{t('By muscle')}</Button>
     </AuraHeader>
     <TrainNavigation />

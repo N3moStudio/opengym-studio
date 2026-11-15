@@ -255,7 +255,7 @@ const NET_WAIT_MS = 3000
 // The build's own chunks and stylesheets (assets/<name>-<hash>.js|css): the name changes whenever
 // the content does, so a copy in this build's cache is the file, and a start serves them from
 // here instead of asking the network about each of them again (40-odd round trips before Home).
-const isHashedAsset = p => /\/assets\/[^/]+-[A-Za-z0-9_-]{8}\.(?:js|css)$/.test(p)
+const isHashedAsset = p => /\/assets\/[^/]+-[A-Za-z0-9_-]{8}\.(?:js|css|woff2)$/.test(p)
 const cacheFirst = e => caches.match(e.request, { ignoreSearch: true }).then(hit => hit || fetch(e.request).then(res => {
   // Only a real answer is kept: an auth proxy's login page would otherwise stand in for the chunk
   // for the rest of this build.

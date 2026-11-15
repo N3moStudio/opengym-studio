@@ -48,6 +48,7 @@ const baseS = over => ({ routines, week: { 1: ['c'] }, dayPlan: {}, workouts: []
 
 let host, root
 beforeEach(() => {
+  window.location.hash = '#/plan'
   localStorage.removeItem('gym_plan_view')
   host = document.createElement('div'); document.body.appendChild(host); root = createRoot(host)
   menuSheet.mockClear(); confirmSheet.mockClear(); mocks.nav = vi.fn()
@@ -61,18 +62,18 @@ const rows = () => [...host.querySelectorAll('.rotation-row')]
 const names = () => rows().map(r => r.querySelector('.tt').textContent)
 const click = el => act(() => el.dispatchEvent(new MouseEvent('click', { bubbles: true })))
 const byLabel = label => [...host.querySelectorAll('button')].find(b => b.getAttribute('aria-label') === label || b.textContent.trim() === label)
-const modeButtons = () => [...host.querySelectorAll('.plan-mode .seg button')]
-const pickMode = label => click(modeButtons().find(b => b.textContent === label))
-const selectedMode = () => modeButtons().find(b => b.className.includes('on'))?.textContent
-const headings = () => [...host.querySelectorAll('h4.sec')].map(h => h.firstChild.textContent)
-const subtitle = () => host.querySelector('.aura-heading p').textContent
+const modeButtons = () => [...host.querySelectorAll('.plan-mode button')]
+const pickMode = label => { click(modeButtons()[0]); act(() => menuSheet.mock.calls.at(-1)[0].items.find(item => item.label === label).onClick()) }
+const selectedMode = () => modeButtons()[0]?.textContent
+const headings = () => [...host.querySelectorAll('h2.sec')].map(h => h.firstChild.textContent)
+const title = () => host.querySelector('.aura-heading h1').textContent
 
 describe('Plan — How you train', () => {
   it('nothing saved: Fixed Week with the weekdays, and no rotation buttons of its own', () => {
     mount()
     expect(selectedMode()).toBe('Fixed Week')
     expect(headings()).toContain('This week')
-    expect(subtitle()).toBe('A little structure. More room to grow.')
+    expect(title()).toBe('Schedule')
     expect(rows()).toEqual([])
     // the old duplicate controls are gone: the mode control is the one way in and out
     expect(byLabel('Build a rotation instead')).toBeUndefined()
@@ -90,7 +91,7 @@ describe('Plan — How you train', () => {
     expect(headings()).not.toContain('This week')
     expect(host.textContent).toContain('No rotation yet.')
     // the subtitle stops saying "weekly" once you train in a loop
-    expect(subtitle()).toBe('A little structure. More room to grow.')
+    expect(title()).toBe('Schedule')
   })
 
   it('the loop header can wrap so Add never runs off a 320 px screen', async () => {
@@ -340,14 +341,14 @@ describe('Plan — Schedule extras', () => {
 
   it('switches to Routines and remembers it for next time', () => {
     mount()
-    const seg = label => [...host.querySelectorAll('.plan-views button')].find(b => b.textContent === label)
+    const seg = label => [...host.querySelectorAll('.aura-subnav button')].find(b => b.textContent === label)
     click(seg('Routines'))
     expect(localStorage.getItem('gym_plan_view')).toBe('routines')
     expect(host.querySelector('.plan-mode')).toBe(null)
     expect(host.querySelector('.plan-routines')).toBeTruthy()
     act(() => root.unmount()); root = createRoot(host)
     act(() => root.render(<Plan />))
-    expect(seg('Routines').className).toContain('on')
+    expect(seg('Routines').getAttribute('aria-current')).toBe('page')
     click(seg('Schedule'))
     expect(localStorage.getItem('gym_plan_view')).toBe('schedule')
     expect(host.querySelector('.plan-mode')).toBeTruthy()

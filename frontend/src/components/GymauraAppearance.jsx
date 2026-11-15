@@ -18,16 +18,16 @@ export function GymauraMiniature({ palette = 'bloom' }) {
     <span className="sm-hero"><span /><span /><i /></span>
     <span className="sm-days">{Array.from({ length: 7 }, (_, i) => <i key={i} />)}</span>
     <span className="sm-row" /><span className="sm-row" />
-    <span className="sm-dock"><i /><i /><b /><i /></span>
+    <span className="sm-dock"><i /><b /><i /></span>
   </span>
 }
 export function GymauraSettingsLink({ onClick }) {
   const appearance = useAppearance()
   return <button type="button" className="gymaura-settings-link" data-tour="settings-look" onClick={onClick}>
-    <span className="gymaura-settings-copy"><span className="gymaura-eyebrow">GYMAURA</span>
-      <strong>Your space.<br />Your way.</strong><span className="small muted">{GYMAURA_THEMES[appearance.palette][0]} · {t(appearance.surface === 'glass' ? 'Glass' : 'Solid')}</span>
-      <span className="gymaura-look-cta">{t('Look & Home')} <Icon name="chevronRight" /></span></span>
-    <GymauraMiniature palette={appearance.palette} />
+    <span className="gymaura-settings-swatch" style={{ background: GYMAURA_THEMES[appearance.palette][2] }} aria-hidden="true"><Icon name="sparkles" /></span>
+    <span className="gymaura-settings-copy"><strong>{t('Look & Home')}</strong>
+      <span className="small muted">{GYMAURA_THEMES[appearance.palette][0]} · {t(appearance.surface === 'glass' ? 'Glass' : 'Solid')}</span>
+    </span><Icon name="chevronRight" />
   </button>
 }
 export default function GymauraAppearance({ update }) {
@@ -37,7 +37,7 @@ export default function GymauraAppearance({ update }) {
     update(s => { s.accent = 'custom'; s.accentCustom = GYMAURA_THEMES[palette][2] })
   }
   return <section className="gymaura-appearance" aria-label={t('Theme')}>
-    <div className="gymaura-collection-heading"><span className="gymaura-eyebrow">APPEARANCE</span><h2>Make it yours.</h2><p>Eight palettes. One quiet space to train.</p></div>
+    <div className="gymaura-collection-heading"><h2>{t('Theme')}</h2></div>
     <div className="gymaura-surfaces" role="group" aria-label={t('Surface style')}>
       <button type="button" aria-pressed={current.surface === 'solid'} onClick={() => setAppearance({ surface: 'solid' })}><Icon name="grid" />{t('Solid')}</button>
       <button type="button" aria-pressed={current.surface === 'glass'} onClick={() => setAppearance({ surface: 'glass' })}><Icon name="sparkles" />{t('Glass')}</button>

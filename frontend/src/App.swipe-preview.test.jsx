@@ -39,7 +39,7 @@ beforeEach(async () => {
   window.scrollTo = vi.fn((x, y) => { scrolls.push([x, y]); Object.defineProperty(window, 'scrollY', { configurable: true, value: y }) })
   await act(async () => { root.render(<App />) })
   // Settings is its own chunk (App.jsx lazyView); the app fetches it right after the start.
-  await vi.waitFor(() => expect(document.querySelector('#app [data-back], #app .page-in > *')).not.toBeNull())
+  await vi.waitFor(() => expect(document.querySelector('#app .settings-gymaura')).not.toBeNull())
   await act(async () => {})
 })
 afterEach(() => {

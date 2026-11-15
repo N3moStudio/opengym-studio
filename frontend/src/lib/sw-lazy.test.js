@@ -37,6 +37,13 @@ describe('the worker keeps the on-demand code too', () => {
     expect([...cache.keys()]).toEqual(expect.arrayContaining(['./assets/media-ingest-x.js', './assets/jsQR-y.js', 'index.html']))
   })
 
+  it('includes the bundled font in installation so typography is available offline', async () => {
+    const lazy = lazyAssets({ 'assets/InterVariable-12345678.woff2': { type: 'asset' } })
+    expect(lazy).toEqual(['./assets/InterVariable-12345678.woff2'])
+    const cache = await install(stampSw(source, { stamp: 'font', lazy }), async u => ok(String(u) === 'index.html' ? shell : 'font bytes'))
+    expect([...cache.keys()]).toContain('./assets/InterVariable-12345678.woff2')
+  })
+
   it('a chunk that will not come is no reason to fail the install', async () => {
     const sw = stampSw(source, { stamp: 'abc', lazy: ['./assets/media-ingest-x.js', './assets/gone.js'] })
     const cache = await install(sw, async u => {

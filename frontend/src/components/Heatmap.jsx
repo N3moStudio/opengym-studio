@@ -14,6 +14,18 @@ export default function Heatmap({ S, onDay, metric: selectedMetric, onMetricChan
   const [localMetric, setLocalMetric] = useState(() => normalizeMetric(selectedMetric ?? S?.heatmapMetric))
   useEffect(() => { if (wrapRef.current) wrapRef.current.scrollLeft = wrapRef.current.scrollWidth }, [])
 
+  // A month can cross the horizontal viewport edge. Show whole captions rather than
+  // a stray final letter; all dates remain available on the cells themselves.
+  useEffect(() => {
+    const wrap = wrapRef.current
+    if (!wrap || typeof IntersectionObserver === 'undefined') return
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => { entry.target.style.visibility = entry.intersectionRatio >= .99 ? 'visible' : 'hidden' })
+    }, { root: wrap, threshold: [.99] })
+    wrap.querySelectorAll('.hm-month-label').forEach(label => observer.observe(label))
+    return () => observer.disconnect()
+  }, [])
+
   const metric = normalizeMetric(selectedMetric ?? localMetric)
   const metricValue = metric === 'vol' ? 'vol' : 'min'
   const changeMetric = value => {
@@ -53,7 +65,7 @@ export default function Heatmap({ S, onDay, metric: selectedMetric, onMetricChan
     const colStart = new Date(start); colStart.setDate(start.getDate() + wk * 7)
     const mo = colStart.getMonth()
     const showM = mo !== lastMonth && colStart.getDate() <= 7 && wk < 51
-    months.push(<span key={wk}>{showM ? t(MONTHS[mo]) : ''}</span>)
+    months.push(<span key={wk}>{showM && <b className="hm-month-label">{t(MONTHS[mo])}</b>}</span>)
     if (colStart.getDate() <= 7) lastMonth = mo
     const cells = []
     for (let d = 0; d < 7; d++) {

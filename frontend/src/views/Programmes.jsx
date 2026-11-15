@@ -128,7 +128,7 @@ export default function Programmes() {
   }
 
   return <div className="narrow">
-    <AuraHeader title={t('Train')} subtitle={t('Build a rhythm that works for you.')} />
+    <AuraHeader title={t('Programmes')} />
     <TrainNavigation />
     <div className="aura-section-head"><h2>{t('Programmes')}</h2><Button size="sm" icon="plus" onClick={create}>{t('New programme')}</Button></div>
     <RunningCard S={S} nav={nav} />

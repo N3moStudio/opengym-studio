@@ -47,7 +47,7 @@ export default function History() {
   const visibleRows = more ? rows.slice(0, shown) : rows
   const months = visibleRows.reduce((all, r) => { (all[r.d.slice(0, 7)] ||= []).push(r); return all }, {})
   return <div className="narrow aura-history">
-    <AuraHeader title={t('History')} subtitle={tn('{0} workout', '{0} workouts', S.workouts.length)} eyebrow={t('PROGRESS')}>
+    <AuraHeader title={t('History')} subtitle={tn('{0} workout', '{0} workouts', S.workouts.length)}>
       <button className="iconbtn" data-back="/stats" data-tour="history-back" onClick={() => nav('/stats')} aria-label={t('Progress')}><Icon name="chevronLeft" /></button>
       {S.workouts.length > 0 && <button className="iconbtn" onClick={reportSheet} aria-label={t('Performance report')}><Icon name="note" /></button>}
     </AuraHeader>

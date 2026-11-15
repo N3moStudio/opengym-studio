@@ -3,7 +3,7 @@ import React, { act } from 'react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createRoot } from 'react-dom/client'
 import { useStore } from '../store/useStore.js'
-import Home from './Home.jsx'
+import Home from './TrainingOverview.jsx'
 import { setAppearance, HOME_CARDS } from '../lib/studio-appearance.js'
 
 vi.mock('react-router-dom', () => ({ useNavigate: () => vi.fn() }))

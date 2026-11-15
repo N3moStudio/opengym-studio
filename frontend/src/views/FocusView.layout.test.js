@@ -12,17 +12,14 @@ const rule = sel => css.match(new RegExp(sel.replace(/[.*+?^${}()|[\]\\]/g, '\\$
 describe('Focus mode stays on the screen (#655)', () => {
   it('keeps its one column no wider than the screen', () => {
     expect(rule('.focus-view')).toMatch(/grid-template-columns:minmax\(0,1fr\)/)
-    expect(rule('.focus-pager')).toMatch(/grid-template-columns:44px minmax\(0,1fr\) 44px/)
+    expect(rule('.focus-pager')).toMatch(/grid-template-columns:auto 44px minmax\(0,1fr\) 44px/)
   })
 
-  it('squeezes and then wraps the set dots', () => {
-    expect(rule('.focus-dots')).toMatch(/flex-wrap:wrap/)
+  it('scrolls many sets without shrinking their touch targets', () => {
+    expect(rule('.focus-dots')).toMatch(/overflow-x:auto/)
     const dot = rule('.focus-dots button')
-    // a wrapping row breaks at the basis, before anything shrinks: the basis is the floor, and the
-    // dots grow back to 44px (in Chrome at 320px a 44px basis put four sets on two rows)
-    expect(dot).toMatch(/flex:1 1 24px/)
-    expect(dot).toMatch(/max-width:44px/)
-    expect(dot).not.toMatch(/(^|;)width:44px/)
+    expect(dot).toMatch(/flex:0 0 44px/)
+    expect(dot).toMatch(/min-width:44px/)
   })
 
   it('breaks a long exercise or superset name instead of widening the card', () => {

@@ -13,7 +13,7 @@ afterEach(() => { localStorage.clear(); closeTour() })
 describe('steps', () => {
   it('runs Home, Plan, Library, the workout, Stats, Settings and a closing card, in that order', () => {
     const routes = tourSteps({}).map(s => s.route).filter((r, i, all) => r !== all[i - 1])
-    expect(routes).toEqual(['/home', '/plan', '/library', '/home', '/workout', '/home', '/stats', '/home', '/settings', null])
+    expect(routes).toEqual(['/home', '/workout', '/plan', '/library', '/home', '/workout', '/home', '/profile', '/stats', '/home', '/settings', null])
     expect(tourSteps({}).at(-1)).toMatchObject({ id: 'done', anchor: null })
   })
   it('never jumps between screens: each change of screen is a stop on the real control that leads there', () => {
@@ -28,7 +28,7 @@ describe('steps', () => {
       })
     }
     // the tab bar's own buttons, the gear and the back buttons
-    expect(STEPS.filter(s => s.go).map(s => s.anchor)).toEqual(['tab-plan', 'tab-library', 'tab-home', 'tab-stats', 'tab-home', 'settings-gear'])
+    expect(STEPS.filter(s => s.go).map(s => s.anchor)).toEqual(['tab-plan', 'launcher-schedule', 'tab-library', 'tab-home', 'tab-stats', 'profile-statistics', 'tab-home', 'settings-gear'])
     // into the practice workout through the Start button, which the tour takes for itself
     expect(STEPS.find(s => s.id === 'start')).toMatchObject({ anchor: 'today', intercept: true, route: '/home' })
   })
@@ -154,7 +154,7 @@ describe('open or not', () => {
 describe('ways to another screen', () => {
   const step = id => Object.values(FLOWS).flat().find(s => s.id === id)
   it('is reached on its path, or one its pattern matches', () => {
-    expect(reached(step('go-plan'), '/plan')).toBe(true)
+    expect(reached(step('go-plan'), '/workout')).toBe(true)
     expect(reached(step('go-plan'), '/plan/r/x')).toBe(false)
     expect(reached(step('p-new'), '/plan/r/abc')).toBe(true)
     expect(reached(step('p-new'), '/plan')).toBe(false)

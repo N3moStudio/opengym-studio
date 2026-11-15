@@ -40,7 +40,8 @@ const KEY = 'gym_tour_v1'
      tick, a row this device does not have) is passed over rather than shown pointing at nothing. */
 export const STEPS = [
   { id: 'today', route: '/home', anchor: 'today' },
-  { id: 'go-plan', route: '/home', anchor: 'tab-plan', go: '/plan' },
+  { id: 'go-plan', route: '/home', anchor: 'tab-plan', go: '/workout' },
+  { id: 'go-schedule', route: '/workout', anchor: 'launcher-schedule', go: '/plan' },
   { id: 'plan-mode', route: '/plan', anchor: 'plan-mode' },
   { id: 'plan-views', route: '/plan', anchor: 'plan-views' },
   { id: 'plan-body', route: '/plan', anchor: 'plan-body', when: c => c.plannedDays, optional: true },
@@ -56,7 +57,8 @@ export const STEPS = [
   { id: 'swipe', route: '/workout', anchor: 'swipe', sandbox: 'practice', when: c => c.swipe, optional: true },
   { id: 'more', route: '/workout', anchor: 'workout-more', sandbox: 'practice' },
   { id: 'finish', route: '/workout', anchor: 'finish', sandbox: 'practice' },
-  { id: 'go-stats', route: '/home', anchor: 'tab-stats', go: '/stats' },
+  { id: 'go-stats', route: '/home', anchor: 'tab-stats', go: '/profile' },
+  { id: 'go-statistics', route: '/profile', anchor: 'profile-statistics', go: '/stats' },
   { id: 'stats', route: '/stats', anchor: 'stats-tiles' },
   { id: 'stats-body', route: '/stats', anchor: 'stats-body', when: c => c.balance, optional: true },
   { id: 'stats-records', route: '/stats', anchor: 'stats-records', when: c => c.workouts, optional: true },
@@ -76,10 +78,10 @@ const scheduled = c => c.has('plan-week') || c.has('plan-loop-add')
 // leaves nothing behind, and saved into the real plan only by the Save on its card.
 const PLAN = [
   { id: 'p-intro', route: null, anchor: null },
-  { id: 'p-go', route: null, anchor: 'tab-plan', go: '/plan' },
+  { id: 'p-go', route: null, anchor: 'tab-plan', go: '/workout' },
   // "New routine" is on the Routines side of Plan; already there, this one is passed over.
-  { id: 'p-views', route: '/plan', anchor: 'plan-views', open: true, until: c => c.has('plan-new'), skip: c => c.has('plan-new') },
-  { id: 'p-new', route: '/plan', anchor: 'plan-new', go: /^\/plan\/r\/[^/]+$/, sandbox: 'plan' },
+  { id: 'p-views', route: '/workout', anchor: 'plan-views', open: true, until: c => c.has('plan-new'), skip: c => c.has('plan-new') },
+  { id: 'p-new', route: '/workout', anchor: 'plan-new', go: /^\/plan\/r\/[^/]+$/, sandbox: 'plan' },
   { id: 'p-name', route: c => '/plan/r/' + c.made, anchor: 'routine-name', open: true, sandbox: 'plan' },
   { id: 'p-add', route: c => '/plan/r/' + c.made, anchor: 'routine-add', open: true, sandbox: 'plan', until: c => c.sheets > 0 },
   { id: 'p-pick', route: c => '/plan/r/' + c.made, anchor: null, free: true, sheet: true, sandbox: 'plan',
@@ -116,10 +118,11 @@ const CUSTOM = [
 // weigh-in, so poking at them changes nothing of the user's.
 const EDIT = [
   { id: 'e-intro', route: null, anchor: null, sandbox: 'edit' },
-  { id: 'e-go-home', route: null, anchor: 'tab-home', go: '/home', sandbox: 'edit' },
-  { id: 'e-weighins', route: '/home', anchor: 'home-weighins', open: true, sandbox: 'edit', optional: true, until: c => c.sheets > 0 },
-  { id: 'e-weighin', route: '/home', anchor: 'weighin-del', sheet: true, sandbox: 'edit', optional: true },
-  { id: 'e-go-stats', route: '/home', anchor: 'tab-stats', go: '/stats', sandbox: 'edit' },
+  { id: 'e-go-home', route: '/profile', anchor: 'profile-overview', go: '/overview', sandbox: 'edit' },
+  { id: 'e-weighins', route: '/overview', anchor: 'home-weighins', open: true, sandbox: 'edit', optional: true, until: c => c.sheets > 0 },
+  { id: 'e-weighin', route: '/overview', anchor: 'weighin-del', sheet: true, sandbox: 'edit', optional: true },
+  { id: 'e-go-stats', route: '/overview', anchor: 'tab-stats', go: '/profile', sandbox: 'edit' },
+  { id: 'e-go-statistics', route: '/profile', anchor: 'profile-statistics', go: '/stats', sandbox: 'edit' },
   { id: 'e-history', route: '/stats', anchor: 'stats-history', go: '/history', sandbox: 'edit' },
   { id: 'e-past', route: '/history', anchor: 'history-add', sandbox: 'edit' },
   { id: 'e-row', route: '/history', anchor: 'history-row', open: true, sandbox: 'edit', until: c => c.sheets > 0 },

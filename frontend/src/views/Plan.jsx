@@ -1,6 +1,6 @@
 import { AuraHeader, TrainNavigation } from '../components/GymauraUI.jsx'
-import { useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
 import { DAYN, DAYS, weekOrder, weekStartOf, uid, exCount, routineCount, todayISO, fmtDate } from '../lib/format.js'
@@ -140,9 +140,17 @@ export default function Plan() {
   const coachMode = useStore(s => s.coachLocal?.mode)
   const user = useStore(s => s.user)
   const fileRef = useRef(null)
-  const [view, setViewState] = useState(readView)
+  const [savedView, setViewState] = useState(readView)
+  const { search } = useLocation()
+  const requestedView = new URLSearchParams(search).get('view')
+  const view = requestedView === 'schedule' || requestedView === 'routines' ? requestedView : savedView
+  useEffect(() => {
+    setViewState(view)
+    try { localStorage.setItem(PLAN_VIEW_KEY, view) } catch { /* device-local preference */ }
+  }, [view])
   const setView = v => {
     setViewState(v)
+    nav('/plan?view=' + v, { replace: true })
     try { localStorage.setItem(PLAN_VIEW_KEY, v) } catch { /* private mode: the view just isn't remembered */ }
   }
 
@@ -175,16 +183,12 @@ export default function Plan() {
   const progChip = programmeChip(S)
 
   return <div className="narrow plan">
-    <AuraHeader title={t('Train')} subtitle={t('A little structure. More room to grow.')}>
+    <AuraHeader title={t(view === 'routines' ? 'Routines' : 'Schedule')}>
+      {showCoach && <Button size="sm" variant="ghost" icon="sparkles" onClick={() => nav('/coach')}>{t('Coach')}</Button>}
       <button type="button" className="iconbtn" data-tour="plan-menu" onClick={openMenu} aria-label={t('Plan options')}><Icon name="more" /></button>
     </AuraHeader>
-    <TrainNavigation />
-    <div className="aura-plan-intro"><div><h2>{t('Your routines')}</h2><p>{mode === 'rotation' ? t('Your routines in a loop') : t('Your weekly routine')}</p></div>
-      {showCoach && <Button size="sm" variant="tinted" icon="sparkles" onClick={() => nav('/coach')}>{t('Coach')}</Button>}
-    </div>
+    <TrainNavigation planView={view} onPlanView={setView} />
     <input ref={fileRef} type="file" accept="application/json,.json" onChange={pickFile} hidden />
-    <Segmented className="plan-views" tour="plan-views" value={view} onChange={setView}
-      options={[{ value: 'schedule', label: t('Schedule') }, { value: 'routines', label: t('Routines') }]} />
     {progChip && <button type="button" className="prog-strip" onClick={() => nav('/plan/programmes')}>
       <Icon name="calendar" /><span className="grow">{S.programmes?.[S.programme?.id]?.name || t('Programme')}</span><span className="tag acc">{progChip}</span>
     </button>}
@@ -304,19 +308,18 @@ function Schedule({ S, update, nav, mode }) {
   const editing = editLoop && !external
 
   return <>
-    <Section className="plan-mode" tour="plan-mode" footer={mode === 'rotation'
-      ? t('Routines in a loop. Whatever is next stays next until you train it, whatever the day.')
-      : t('The same routines on the same weekdays, every week.')}>
-      <Row icon="repeat" iconTint="var(--orange)" title={t('How you train')}>
-        {/* A planner's own queue is not this app's to switch off: text, not a control. */}
-        {external
-          ? <span className="small dim plan-mode-locked">{t('Rotation')} · {t('Externally managed')}</span>
-          : <Segmented className="seg-inline" value={mode} onChange={setMode}
-              options={[{ value: 'week', label: t('Fixed Week') }, { value: 'rotation', label: t('Rotation') }]} />}
-      </Row>
-      {/* a cobweb in the card's empty top corner, in season (components/Seasonal.jsx) */}
-      <SeasonDeco spot="plan-card" />
-    </Section>
+    <div className="plan-mode" data-tour="plan-mode">
+      <span className="small dim">{t('How you train')}</span>
+      {external
+        ? <span className="small dim plan-mode-locked">{t('Rotation')} · {t('Externally managed')}</span>
+        : <Button size="sm" variant="ghost" trailingIcon="chevronDown" onClick={() => menuSheet({
+            title: t('How you train'),
+            items: [
+              { label: t('Fixed Week'), sub: t('The same routines on the same weekdays, every week.'), on: mode === 'week', onClick: () => setMode('week') },
+              { label: t('Rotation'), sub: t('Routines in a loop. Whatever is next stays next until you train it, whatever the day.'), on: mode === 'rotation', onClick: () => setMode('rotation') },
+            ],
+          })}>{t(mode === 'rotation' ? 'Rotation' : 'Fixed Week')}</Button>}
+    </div>
 
     {!S.routines.length && <EmptyState className="plan-empty" icon="clipboard" title={t('No routines yet.')} text={t('Make one, or grab the starter plan to get going.')}>
       <Button variant="tinted" icon="clipboard" onClick={starterPlanSheet}>{t('Load starter plan')}</Button>
@@ -332,12 +335,12 @@ function Schedule({ S, update, nav, mode }) {
     </div>}
 
     {mode === 'week' ? <>
-      <h4 className="sec">{t('This week')}</h4>
+      <h2 className="sec">{t('This week')}</h2>
       <div className="list plan-week" data-tour="plan-week">{weekOrder(ws).map(d => dayRow(d))}</div>
       <p className="sect-f">{t('Want two routines on one day? Tap the day and pick both.')}</p>
     </> : <div className="rotation">
       <div className="row between plan-sec-h">
-        <h4 className="sec">{t('The loop')}{external && <span className="tag" style={{ marginInlineStart: 8 }}>{t('Externally managed')}</span>}</h4>
+        <h2 className="sec">{t('The loop')}{external && <span className="tag" style={{ marginInlineStart: 8 }}>{t('Externally managed')}</span>}</h2>
         {/* A coach's own queue is read-only here: the one way to change what it holds is to
             adopt it first ("Use this rotation" below), never a tap on one of its rows. */}
         {!external && <div className="row plan-sec-acts" style={{ gap: 6 }}>
@@ -395,7 +398,7 @@ function Schedule({ S, update, nav, mode }) {
           the same tally (weekTally, queue.js), so the days that still add one stay in sight; a
           day whose only routines are in the loop already adds nothing and is left out. */}
       {plannedDays.length > 0 && <>
-        <h4 className="sec">{t('Also on fixed days')}</h4>
+        <h2 className="sec">{t('Also on fixed days')}</h2>
         <div className="list plan-week">{plannedDays.map(d => dayRow(d, extraRoutines(d)))}</div>
         <p className="sect-f">{t('These count on top of the loop. Tap a day to change or clear it.')}</p>
       </>}

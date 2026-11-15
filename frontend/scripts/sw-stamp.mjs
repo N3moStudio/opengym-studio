@@ -14,11 +14,11 @@ const PACK = /[\\/]src[\\/](?:locales|instr|exercise-names)[\\/]/
 const KEEP = /[\\/]src[\\/]instr[\\/]en\.js$/
 
 /** The built files the worker fetches at install besides what index.html names: every chunk and
- *  stylesheet but the packs, as './assets/…' the way index.html writes them. */
+ *  stylesheet and bundled font but the packs, as './assets/…' the way index.html writes them. */
 export function lazyAssets(bundle) {
   const out = []
   for (const [file, item] of Object.entries(bundle)) {
-    if (!/\.(?:js|css)$/.test(file)) continue
+    if (!/\.(?:js|css|woff2)$/.test(file)) continue
     const ids = item.type === 'chunk' ? (item.moduleIds?.length ? item.moduleIds : Object.keys(item.modules || {})) : []
     if (ids.length && ids.every(id => PACK.test(id) && !KEEP.test(id))) continue
     out.push('./' + file)

@@ -6,7 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createRoot } from 'react-dom/client'
 import { useStore } from '../store/useStore.js'
 import { presetModules } from '../lib/modules.js'
-import Home from './Home.jsx'
+import Home from './TrainingOverview.jsx'
 import { setAppearance, HOME_CARDS } from '../lib/studio-appearance.js'
 
 vi.mock('react-router-dom', () => ({ useNavigate: () => vi.fn() }))
@@ -45,7 +45,7 @@ describe('Home follows the modules', () => {
     expect(heads()).not.toContain('Body weight')
     expect(heads()).not.toContain('Check in')
     expect(host.querySelector('[data-tour="today"]')).toBeTruthy()
-    expect(host.textContent).toContain('Customize Home')
+    expect(host.textContent).toContain('Customize')
     act(() => setAppearance({ home: { body: true } }))
     expect(heads()).toContain('Body weight')
     expect(useStore.getState().S).toEqual(before)

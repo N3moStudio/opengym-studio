@@ -41,7 +41,7 @@ describe('the tab bar across a store write', () => {
   it('keeps the very same buttons instead of rebuilding them every tick', () => {
     act(() => { root.render(<TabBar onStart={() => {}} />) })
     const before = tabs()
-    expect(before).toHaveLength(4)
+    expect(before).toHaveLength(3)
 
     // What a rest does once a second: S is replaced, so everything reading it re-renders.
     act(() => { useStore.getState().update(s => { s.restSec = 91 }, false) })
@@ -66,7 +66,7 @@ describe('the tab bar across a store write', () => {
 // Settings → "Show connection status" off (#369, #330): a stuck sync shows as a dot on Home, the
 // tab Settings opens from, and the tab's name says it.
 describe('the connection dot on Home', () => {
-  const home = () => tabs()[3]
+  const home = () => tabs()[0]
   it('is there for a sync problem only while the banner is switched off', () => {
     const original = useStore.getState().sync
     try {
@@ -75,10 +75,10 @@ describe('the connection dot on Home', () => {
       expect(home().querySelector('.tab-dot')).toBeNull()
       act(() => { useStore.getState().update(s => { s.connStatus = false }, false) })
       expect(home().querySelector('.tab-dot')).not.toBeNull()
-      expect(home().getAttribute('aria-label')).toBe('You, Connection problem')
+      expect(home().getAttribute('aria-label')).toBe('Home, Connection problem')
       act(() => { useStore.setState({ sync: { status: 'ok', lastError: null, pending: false } }) })
       expect(home().querySelector('.tab-dot')).toBeNull()
-      expect(home().getAttribute('aria-label')).toBe('You')
+      expect(home().getAttribute('aria-label')).toBe('Home')
     } finally { useStore.setState({ sync: original }) }
   })
 })
@@ -90,8 +90,8 @@ describe('the tab icons and labels', () => {
   const label = el => el.querySelector('span:last-child').textContent
   it('labels every tab and uses one icon per concept', () => {
     act(() => { root.render(<TabBar onStart={() => {}} />) })
-    expect(tabs().map(icon)).toEqual(['house', 'dumbbell', 'chart', 'personCircle'])
-    expect(tabs().map(label)).toEqual(['Today', 'Train', 'Progress', 'You'])
+    expect(tabs().map(icon)).toEqual(['house', 'dumbbell', 'person'])
+    expect(tabs().map(label)).toEqual(['Home', 'Workout', 'Profile'])
 
     act(() => { useStore.getState().update(s => { s.active = { id: 'a', entries: [], cur: 0 } }, false) })
     expect(icon(host.querySelector('.aura-session-dock'))).toBe('play')
@@ -123,8 +123,8 @@ describe('the tab icons and labels', () => {
 describe('the tab a screen without its own lights', () => {
   const lit = () => tabs().filter(b => b.classList.contains('on')).map(b => b.textContent)
   it.each([
-    ['/history', 'Progress'], ['/structural-balance', 'Progress'], ['/progress-photos', 'Progress'], ['/measurements', 'Progress'],
-    ['/settings', 'You'], ['/settings/units', 'You'], ['/checkin', 'You'], ['/muscles', 'Train'],
+    ['/history', 'Profile'], ['/structural-balance', 'Profile'], ['/progress-photos', 'Profile'], ['/measurements', 'Profile'],
+    ['/settings', 'Home'], ['/settings/units', 'Home'], ['/checkin', 'Home'], ['/muscles', 'Workout'],
   ])('%s lights %s', (pathname, tab) => {
     where.loc = { pathname }
     act(() => { root.render(<TabBar onStart={() => {}} />) })
@@ -134,6 +134,6 @@ describe('the tab a screen without its own lights', () => {
   it('Muscles opened from Stats lights Stats, the way its back button goes', () => {
     where.loc = { pathname: '/muscles', state: { from: '/stats' } }
     act(() => { root.render(<TabBar onStart={() => {}} />) })
-    expect(lit()).toEqual(['Progress'])
+    expect(lit()).toEqual(['Profile'])
   })
 })

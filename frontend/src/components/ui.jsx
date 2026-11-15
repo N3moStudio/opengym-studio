@@ -1,3 +1,4 @@
+import { useSelectionSlide } from '../lib/use-selection-slide.js'
 // Gymaura control set.
 //
 // Every input in the app is built here rather than styled on top of a native
@@ -13,7 +14,7 @@
 //   · :active gives a scale/tint response so touch feels acknowledged
 //   · focus-visible draws a ring; pointer interaction never does
 
-import { useRef, useState, useEffect, useCallback, forwardRef } from 'react'
+import { useId, useRef, useState, useEffect, useCallback, forwardRef } from 'react'
 import Icon from './Icon.jsx'
 import { sheetKeyboardInsets } from '../lib/use-sheet-keyboard.js'
 import { NATIVE_KEYBOARD_EVENT } from '../lib/native-keyboard.js'
@@ -124,14 +125,16 @@ export function Switch({ checked, onChange, disabled, ...accessibility }) {
 // `ariaLabelledby` names the choice for a screen reader by its visible label (a group of
 // pressed buttons otherwise reads as three loose words).
 export function Segmented({ options, value, onChange, className = '', tour, ariaLabelledby }) {
+  const { track, thumb } = useSelectionSlide(value)
   const i = Math.max(0, options.findIndex(o => o.value === value))
   return (
-    <div className={'seg ' + className} style={{ '--n': options.length, '--i': i }} data-tour={tour}
+    <div ref={track} className={'seg ' + className} style={{ '--n': options.length, '--i': i }} data-tour={tour}
       role={ariaLabelledby ? 'group' : undefined} aria-labelledby={ariaLabelledby}>
-      <span className="seg-sel" aria-hidden="true" />
+      <span ref={thumb} className="seg-sel" aria-hidden="true" />
       {options.map(o => (
         <button
           key={o.value}
+          type="button" data-selection={o.value}
           className={o.value === value ? 'on' : ''}
           aria-pressed={o.value === value}
           onClick={() => onChange(o.value)}
@@ -150,6 +153,7 @@ export function Segmented({ options, value, onChange, className = '', tour, aria
 // clamped on every keystroke, a field emptied to type a new number snapped to the minimum, and
 // the digits typed next landed after it (a 48 retyped as 75 saved 175).
 export function Stepper({ value, step = 1, min = 0, max = Infinity, onChange, decimal = true, className = '', label, unit, invalid = false, disabled = false, onStep, ariaLabel, display }) {
+  const labelId = useId()
   const clamp = v => Math.min(max, Math.max(min, v))
   const set = v => onChange(clamp(Math.round((v || 0) * 100) / 100))
   // Holding a button repeats the step; the latest value/step live in a ref so
@@ -196,14 +200,14 @@ export function Stepper({ value, step = 1, min = 0, max = Infinity, onChange, de
         {/* `display`: a word instead of the number at a special value ("Bar" for an empty bar), the
             +/- still step from `value`. */}
         {display != null ? <span className="stp-word">{display}</span>
-          : <NumberField value={value} decimal={decimal} step={step} onChange={onChange} disabled={disabled} aria-invalid={invalid ? 'true' : undefined} />}
+          : <NumberField value={value} decimal={decimal} step={step} onChange={onChange} disabled={disabled} aria-labelledby={label ? labelId : undefined} aria-label={!label ? ariaLabel : undefined} aria-invalid={invalid ? 'true' : undefined} />}
         {display == null && unit && <i>{unit}</i>}
       </span>
       <button {...holdProps(1)} aria-label={ariaLabel ? `Increase ${ariaLabel}` : t('Increase')} disabled={disabled}><Icon name="plus" /></button>
     </div>
   )
   if (!label) return inner
-  return <div className="stp-w"><span className="stp-l">{label}</span>{inner}</div>
+  return <div className="stp-w"><span className="stp-l" id={labelId}>{label}</span>{inner}</div>
 }
 
 /* ============================ slider ============================ */

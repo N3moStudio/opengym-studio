@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useOverlayHeight } from '../lib/use-overlay-height.js'
 import { useUI } from '../store/useUI.js'
 import { t } from '../lib/i18n.js'
 import { REST_MAX } from '../lib/duration.js'
@@ -100,6 +101,8 @@ export default function RestTimer() {
   const { addRest, skipRest, pauseRest, resumeRest, finishWorkEarly, stopWork, goNow, stopAuto } = useUI()
   const on = countIn || work || timer
   const actsRef = useRef(null)
+  const timerRef = useRef(null)
+  useOverlayHeight(timerRef, '--timer-height', !!on, countIn ? 'countin' : work ? 'work' : 'rest')
   const skipFits = useSkipFits(actsRef, [!!timer && !work, t('Skip'), t('Dismiss')])
   // The page keeps room at its bottom for the bar (index.css body.resting), so the last set and
   // the Finish button can scroll clear of it.
@@ -118,7 +121,7 @@ export default function RestTimer() {
     const n = countIn.left ?? countIn.total
     const name = countIn.owner?.label || ''
     return <>{say}
-      <div id="timer" className={'countin auto' + (countIn.paused ? ' paused' : '')}>
+      <div id="timer" ref={timerRef} className={'countin auto' + (countIn.paused ? ' paused' : '')}>
         <div className="bar" aria-hidden="true"><i style={{ transform: `scaleX(${pct / 100})` }} /></div>
         <div className="tclock">
           <span className="t" key={n} aria-hidden="true">{n}</span>
@@ -136,7 +139,7 @@ export default function RestTimer() {
 
   // A hold that runs itself trades Cancel for the chain's row: Restart and Stop auto cover it.
   if (work) return <>{say}
-    <div id="timer" className={'working' + (work.auto ? ' auto' : '') + (work.paused ? ' paused' : '')}>
+    <div id="timer" ref={timerRef} className={'working' + (work.auto ? ' auto' : '') + (work.paused ? ' paused' : '')}>
       <div className="bar" aria-hidden="true"><i style={{ transform: `scaleX(${pct / 100})` }} /></div>
       <div className="tclock">
         <span className="t">{work.left <= 0 && work.overtime ? '+' + clock(-work.left) : clock(work.left)}</span>
@@ -161,7 +164,7 @@ export default function RestTimer() {
   // rest's own buttons (which keep their places: Pause, +15 s and Skip are the chain's for a rest).
   const autoNext = !timer.ready && timer.autoNext
   return <>{say}
-    <div id="timer" data-tour="rest" className={'rest' + (timer.paused ? ' paused' : '') + (timer.kind === 'switch' ? ' switch' : '') + (timer.ready ? ' ready' : '') + (autoNext ? ' auto' : '')}>
+    <div id="timer" ref={timerRef} data-tour="rest" className={'rest' + (timer.paused ? ' paused' : '') + (timer.kind === 'switch' ? ' switch' : '') + (timer.ready ? ' ready' : '') + (autoNext ? ' auto' : '')}>
       <div className="bar" aria-hidden="true"><i style={{ transform: `scaleX(${pct / 100})` }} /></div>
       <SeasonDeco spot="rest-timer" workout />
       <button type="button" className="tclock" onClick={adjustRestSheet}

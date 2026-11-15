@@ -6,13 +6,13 @@ it('slides a settings page in from the right and its parent back in from the lef
   expect(pageMotion('/settings/workout', '/settings', 'POP')).toBe('pop')
 })
 
-it('uses shallow directional motion between the four main tabs', () => {
+it('uses shallow directional motion between the three main tabs', () => {
   expect(pageMotion('/home', '/plan', 'REPLACE')).toBe('tab-next')
   expect(pageMotion('/library', '/stats', 'REPLACE')).toBe('tab-next')
-  expect(pageMotion('/home', '/settings', 'PUSH')).toBe('tab-next')
-  expect(pageMotion('/settings', '/home', 'PUSH')).toBe('tab-prev')
+  expect(pageMotion('/home', '/settings', 'PUSH')).toBe('push')
+  expect(pageMotion('/settings', '/home', 'PUSH')).toBe('pop')
   expect(pageMotion('/plan', '/library', 'REPLACE')).toBe('fade')
-  expect(pageMotion('/home', '/workout', 'PUSH')).toBe('fade')
+  expect(pageMotion('/home', '/workout', 'PUSH')).toBe('tab-next')
 })
 
 it('keeps the fade for tabs, fresh loads, siblings and back into a deeper page', () => {

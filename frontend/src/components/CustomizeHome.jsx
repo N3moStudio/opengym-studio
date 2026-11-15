@@ -31,9 +31,8 @@ export function CustomizeHomePanel({ close }) {
     setAppearance({ home: Object.fromEntries(Object.keys(HOME_CARDS).map(key => [key, true])) })
   }
   return <>
-    <h3>{t('Customize Home')}</h3>
-    <p className="gymaura-home-edit-intro">{t('Choose the cards you want on Home. Your features and data stay available in the app.')}</p>
-    <div className="gymaura-surfaces" role="group" aria-label={t('Home layout')}>
+    <h3>{t('Training overview')}</h3>
+    <div className="gymaura-surfaces" role="group" aria-label={t('Training overview')}>
       <button type="button" onClick={() => setAppearance({ home: HOME_CARDS })}>{t('Keep it simple')}</button>
       <button type="button" onClick={showAll}>{t('Show all')}</button>
     </div>

@@ -30,7 +30,7 @@ beforeEach(() => {
   page.innerHTML = '<div class="page"><div class="search"><input class="input"></div></div>'
   document.body.appendChild(page)
   host = document.createElement('div'); document.body.appendChild(host); root = createRoot(host)
-  router = createMemoryRouter([{ path: '*', element: <TabBar onStart={vi.fn()} /> }], { initialEntries: ['/settings'] })
+  router = createMemoryRouter([{ path: '*', element: <TabBar onStart={vi.fn()} /> }], { initialEntries: ['/home'] })
   act(() => root.render(<RouterProvider router={router} />))
 })
 afterEach(() => {
@@ -42,8 +42,8 @@ afterEach(() => {
 })
 
 describe('tapping the tab you are on', () => {
-  it.each(['Today', 'Train', 'Progress', 'You'])('%s scrolls its page to the top, smoothly', async label => {
-    const path = { Today: '/home', Train: '/plan', Progress: '/stats', You: '/settings' }[label]
+  it.each(['Home', 'Workout', 'Profile'])('%s scrolls its page to the top, smoothly', async label => {
+    const path = { Home: '/home', Workout: '/workout', Profile: '/profile' }[label]
     await act(async () => router.navigate(path))
     const key = router.state.location.key
     at(3000)
@@ -55,19 +55,19 @@ describe('tapping the tab you are on', () => {
   it('jumps with Reduce Motion on', async () => {
     reduce = true
     at(3000)
-    await tap('You')
+    await tap('Home')
     expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, left: 0, behavior: 'auto' })
   })
 
-  it('at the top of You does not focus an unrelated search field', async () => {
-    await tap('You')
+  it('at the top of Home does not focus an unrelated search field', async () => {
+    await tap('Home')
     expect(window.scrollTo).not.toHaveBeenCalled()
     expect(document.activeElement).not.toBe(page.querySelector('.search input'))
   })
 
   it('at the top of another tab does nothing', async () => {
-    await act(async () => router.navigate('/plan'))
-    await tap('Train')
+    await act(async () => router.navigate('/workout'))
+    await tap('Workout')
     expect(window.scrollTo).not.toHaveBeenCalled()
     expect(document.activeElement).not.toBe(page.querySelector('.search input'))
   })
@@ -75,22 +75,22 @@ describe('tapping the tab you are on', () => {
   it('leaves the page alone under an open sheet', async () => {
     at(3000)
     document.body.style.position = 'fixed'
-    await tap('You')
+    await tap('Home')
     expect(window.scrollTo).not.toHaveBeenCalled()
   })
 })
 
 it('a tap on another tab switches as before and does not scroll', async () => {
   at(3000)
-  await tap('Progress')
-  expect(router.state.location.pathname).toBe('/stats')
+  await tap('Profile')
+  expect(router.state.location.pathname).toBe('/profile')
   expect(window.scrollTo).not.toHaveBeenCalled()
 })
 
 it('History lights Stats, and a tap there goes to Stats rather than up History', async () => {
   await act(async () => router.navigate('/history'))
   at(3000)
-  await tap('Progress')
-  expect(router.state.location.pathname).toBe('/stats')
+  await tap('Profile')
+  expect(router.state.location.pathname).toBe('/profile')
   expect(window.scrollTo).not.toHaveBeenCalled()
 })

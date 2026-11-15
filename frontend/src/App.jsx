@@ -7,7 +7,7 @@ import { bindUI } from './components/ui.jsx'
 import { setWeightDecimals } from './lib/format.js'
 import { accentValue, applyAccent } from './lib/accent.js'
 import { seasonAccent } from './lib/seasonal.js'
-import { setLang, useLang, baseLang } from './lib/i18n.js'
+import { t, setLang, useLang, baseLang } from './lib/i18n.js'
 import { effectiveLang } from './lib/default-lang.js'
 import { setPlayOnSilent, setVibrate, setAlarmBuzzer, setNativeBuzzer } from './lib/sound.js'
 import { buzzAsAlarm } from './lib/rest-alert.js'
@@ -63,7 +63,7 @@ import Workout from './views/Workout.jsx'
 // balance check) are their own chunks rather than part of the code every start parses: ~200 KB
 // of the main bundle. They are fetched once the app is idle after the start (the service worker
 // and the phone build hold them locally anyway), so by the time one is opened it renders at once,
-// in the same frame, as before; only a tap within the first moments can see one empty frame.
+// in the same frame, as before. A slow first fetch keeps a readable status on screen.
 const views = []
 function lazyView(load) {
   let View = null
@@ -71,7 +71,7 @@ function lazyView(load) {
   const Lazy = lazy(fetchIt)
   views.push(fetchIt)
   return function LazyView(props) {
-    return View ? <View {...props} /> : <Suspense fallback={null}><Lazy {...props} /></Suspense>
+    return View ? <View {...props} /> : <Suspense fallback={<div className="empty" role="status">{t('Loading…')}</div>}><Lazy {...props} /></Suspense>
   }
 }
 const Admin = lazyView(() => import('./views/Admin.jsx'))
@@ -84,10 +84,13 @@ const ProgressPhotos = lazyView(() => import('./views/ProgressPhotos.jsx'))
 // The tabs and screens past Home (Stats, History, the Library, Settings, ...) as well: a start
 // only needs Home, and these are fetched right behind it the same way.
 const CheckIn = lazyView(() => import('./views/CheckIn.jsx'))
+const RoutineOverview = lazyView(() => import('./views/RoutineOverview.jsx'))
 const RoutineEdit = lazyView(() => import('./views/RoutineEdit.jsx'))
 const Programmes = lazyView(() => import('./views/Programmes.jsx'))
 const ProgrammeEdit = lazyView(() => import('./views/Programmes.jsx').then(m => ({ default: m.ProgrammeEdit })))
 const Stats = lazyView(() => import('./views/Stats.jsx'))
+const Profile = lazyView(() => import('./views/Profile.jsx'))
+const TrainingOverview = lazyView(() => import('./views/TrainingOverview.jsx'))
 const History = lazyView(() => import('./views/History.jsx'))
 const Library = lazyView(() => import('./views/Library.jsx'))
 const Muscles = lazyView(() => import('./views/Muscles.jsx'))
@@ -333,6 +336,8 @@ function Shell() {
   const view = l => (!authed ? <Login /> : needsMobileOnboarding ? <MobileOnboarding /> : permSteps ? <PermissionSteps /> : (
     <Routes location={l}>
       <Route path="/home" element={<Home />} />
+      <Route path="/profile" element={<Profile />} />
+      <Route path="/overview" element={<TrainingOverview />} />
       {/* A module switched off (Settings → Modules, lib/modules.js) takes its screens with it: the
           route falls through to the catch-all redirect below. The data stays where it is. */}
       {isOn(S, 'checkin') && <Route path="/checkin" element={<CheckIn />} />}
@@ -341,6 +346,7 @@ function Shell() {
       <Route path="/plan/programmes" element={<Programmes />} />
       <Route path="/plan/prog/:id" element={<ProgrammeEdit />} />
       <Route path="/workout" element={<Workout />} />
+      <Route path="/routine/:id" element={<RoutineOverview />} />
       <Route path="/stats" element={<Stats />} />
       <Route path="/history" element={<History />} />
       <Route path="/library" element={<Library />} />

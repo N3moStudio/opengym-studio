@@ -95,7 +95,7 @@ describe('Focus workout view', () => {
     const plan = summary.querySelector('.focus-badge.plan')
     expect(plan).toBeTruthy()
     expect(plan.textContent).toBe('Plan: 3 × 5')
-    expect(summary.textContent).toContain('8 Reps')
+    expect(summary.textContent).toContain('8 reps')
     expect(summary.textContent).not.toContain('today')
   })
 

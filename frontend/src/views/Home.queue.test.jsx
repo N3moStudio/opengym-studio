@@ -10,7 +10,7 @@ import { createRoot } from 'react-dom/client'
 import { useStore } from '../store/useStore.js'
 import { startFlow } from '../sheets.jsx'
 import { todayISO, isoOf, fmtDate } from '../lib/format.js'
-import Home from './Home.jsx'
+import Home from './TrainingOverview.jsx'
 import { setLang } from '../lib/i18n.js'
 
 vi.mock('react-router-dom', () => ({ useNavigate: () => () => {} }))
@@ -315,7 +315,7 @@ describe('Home — the today row follows today\'s plan, not just the last sessio
     const wd = new Date(today + 'T12:00:00').getDay()
     setS({ queue: null, week: { [wd]: ['own'] }, workouts: [at('own', Date.now() - 3600000)] })
     mount()
-    expect(todayTitle()).toBe('Core (done)')
+    expect(todayTitle()).toBe('Core (Done)')
     expect(tag()).toBe('Done')
   })
 

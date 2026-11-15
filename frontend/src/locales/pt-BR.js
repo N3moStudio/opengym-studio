@@ -2453,4 +2453,37 @@ export const PT_BR_OVERRIDES = {
   "{0} stops syncing while Health is off. Nothing is disconnected, and it catches up once Health is back.": "{0} para de sincronizar enquanto “Saúde” estiver desligado. Nada fica desconectado, e ele se atualiza quando “Saúde” voltar.",
 }
 
-export default { ...pt, ...PT_BR_OVERRIDES }
+export default {
+  // Workout journal, launcher and personal dashboard.
+  "Calendar": "Calendário",
+  "Chart data": "Dados do gráfico",
+  "Dashboard": "Painel",
+  "Date range": "Período",
+  "Edit routine": "Editar rotina",
+  "Exercise library": "Biblioteca de exercícios",
+  "Explore": "Explorar",
+  "Last 6 months": "Últimos 6 meses",
+  "Manage routines": "Gerenciar rotinas",
+  "Measurements": "Medidas",
+  "My routines": "Minhas rotinas",
+  "Profile": "Perfil",
+  "Progress": "Progresso",
+  "See {0} more exercises": "Ver mais {0} exercícios",
+  "Set": "Série",
+  "Start empty workout": "Iniciar treino vazio",
+  "Start routine": "Iniciar rotina",
+  "Start today’s plan": "Iniciar o plano de hoje",
+  "Statistics": "Estatísticas",
+  "Train": "Treinar",
+  "Training overview": "Resumo do treino",
+  "Your session button": "Seu botão de treino",
+  "Choose a routine or start an empty workout.": "Escolha uma rotina ou inicie um treino vazio.",
+  "Create a routine or start an empty workout.": "Crie uma rotina ou inicie um treino vazio.",
+  "Everything else lives behind this little gear. Tap it.": "Todo o resto está nesta engrenagem. Toque nela.",
+  "Open Training overview for your optional tools.": "Abra Resumo do treino para acessar as ferramentas opcionais.",
+  "Return to Home to begin a practice session.": "Volte ao Início para começar uma sessão de prática.",
+  "Your routine is ready in Workout. Schedule it here whenever you like.": "Sua rotina está pronta em Treino. Agende-a aqui quando quiser.",
+  "Your training charts, measurements and history.": "Seus gráficos de treino, medidas e histórico.",
+  "Your workout journal, newest first. Start or resume a session here.": "Seu diário de treino, do mais recente para o mais antigo. Inicie ou retome uma sessão aqui.", ...pt, ...PT_BR_OVERRIDES,
+  'Customize': "Personalizar",
+}

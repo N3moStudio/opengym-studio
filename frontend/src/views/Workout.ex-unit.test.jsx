@@ -33,6 +33,7 @@ afterEach(() => {
 
 function mount(entries, patch = {}) {
   const S = clone(DEF)
+  S.wc.steppers = true // Explicitly exercise the saved stepper preference.
   S.unit = 'kg'
   S.workoutView = 'list'
   Object.assign(S, patch)

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
 import { exOr } from '../lib/exercises.js'
@@ -24,6 +24,7 @@ import { exView } from '../lib/ex-unit.js'
 import Icon from '../components/Icon.jsx'
 import { Button, Stepper } from '../components/ui.jsx'
 import './FocusView.css'
+import { revealChip } from '../lib/use-sheet-keyboard.js'
 import { youtubeSearchUrl } from '../lib/youtube.js'
 import { openExternal } from '../components/CustomMedia.jsx'
 import { isOn } from '../lib/modules.js'
@@ -70,7 +71,7 @@ const addBurstTo = (row, restSec) => {
   return { ...addCluster(row, { r: reps, restSec }), r: (row.r || 0) + reps }
 }
 
-function Prescription({ entry, setIdx, unit, fallbackRest, children }) {
+function Prescription({ entry, unit, fallbackRest, children }) {
   const target = entry.target || {}
   const reps = target.repsMin > 0 ? `${target.repsMin}–${target.reps}` : target.reps > 0 ? String(target.reps) : ''
   const load = target.weight > 0
@@ -80,11 +81,10 @@ function Prescription({ entry, setIdx, unit, fallbackRest, children }) {
     ? `RPE ${fmtNum(target.rpeMin)}${target.rpeMax > target.rpeMin ? `–${fmtNum(target.rpeMax)}` : ''}`
     : ''
   // An exercise on 'No timer' (restOff) shows no rest, whatever the default is.
-  const rest = target.restOff === true ? '' : target.restSec > 0 ? `Rest ${target.restSec}s` : fallbackRest > 0 ? `Rest ${fallbackRest}s` : ''
-  const badges = [reps && `${reps} Reps`, load, rpe, rest, target.tempo].filter(Boolean)
+  const rest = target.restOff === true ? '' : target.restSec > 0 ? t('Rest') + ' ' + target.restSec + 's' : fallbackRest > 0 ? t('Rest') + ' ' + fallbackRest + 's' : ''
+  const badges = [reps && reps + ' ' + t('reps'), load, rpe, rest, target.tempo].filter(Boolean)
 
   return <div className="focus-prescription">
-    <span className="focus-badge focus-progress">{setIdx + 1}/{entry.sets.length}</span>
     {badges.map(label => <span className="focus-badge" key={label}>{label}</span>)}
     {children}
   </div>
@@ -134,6 +134,11 @@ export default function FocusView({
   const pointers = pointerState.epoch === pointerEpoch ? pointerState.pointers : new Map()
   const stored = pointers.get(entryIdx)
   const setIdx = clampSet(entry, Number.isInteger(stored) ? stored : firstIncomplete(entry))
+  const setStrip = useRef(null)
+  useEffect(() => {
+    const strip = setStrip.current
+    revealChip(strip, strip?.querySelector('[aria-current]'))
+  }, [entryIdx, setIdx, entry.sets.length])
   const set = entry.sets[setIdx]
   const firstOpenSet = firstIncomplete(entry)
   const locked = !set.done && setIdx > firstOpenSet
@@ -296,7 +301,7 @@ export default function FocusView({
   })
 
   return <div className="focus-view aura-focus" data-testid="focus-view">
-    <div className="aura-focus-position"><span>{t('Your next set')}</span><strong>{t('Set {0}', setIdx + 1)} <span>/ {entry.sets.length}</span></strong></div>
+    <div className="aura-focus-position"><strong>{t('Set {0}', setIdx + 1)}<span>/{entry.sets.length}</span></strong></div>
     <div className="focus-card">
       {unit.length > 1 && <div className="focus-superset-inline">
         <Icon name="reset" />
@@ -316,20 +321,7 @@ export default function FocusView({
         <button className="iconbtn" aria-label={t('More')} onClick={openExerciseMenu}><Icon name="more" /></button>
       </header>
 
-      <details className="focus-context aura-focus-details"><summary>{t('Exercise notes & guidance')}<Icon name="chevronDown" /></summary>
-        <div className="focus-tags">
-          {mode === 'cardio' && <span className="tag acc">{t('Cardio')}</span>}
-          {isSideSet(set) && <span className="tag acc">{t('Per side')}</span>}
-          {(ex.tg || ex.bp) && <span className="tag">{t(ex.tg || ex.bp)}</span>}
-          {ex.eq && <span className="tag">{t(ex.eq)}</span>}
-        </div>
-        {entry.target?.note && <div className="focus-note">{entry.target.note}</div>}
-        {pinnedNote && <div className="focus-note pinned"><Icon name="flag" />{t('From {0}:', fmtDate(pinnedNote.d, true))} {pinnedNote.note}</div>}
-        {entry.note && <div className="focus-note">{entry.note}</div>}
-        {last && <div className="focus-last">{t('Last time')} · {fmtDate(last.d)}</div>}
-        {guidance && <button className="focus-guidance" onClick={onProgressionSettings}><Icon name="lightbulb" />{t(guidance.policyLabel)}</button>}
-      </details>
-      <Prescription entry={entry} setIdx={setIdx} unit={S.unit} fallbackRest={S.restSec}>
+      <Prescription entry={entry} unit={S.unit} fallbackRest={S.restSec}>
         <PlanBadge entry={entry} mode={mode} />
         <PlateBadge S={S} entry={entry} set={set} />
         {entry.noProg === true && <span className="focus-badge warning"><Icon name="pause" />{t('Not counted for progression')}{onNoProg && <button type="button" className="focus-badge-action" onClick={() => onNoProg(false)}>{t('Undo')}</button>}</span>}
@@ -389,14 +381,28 @@ export default function FocusView({
       </div>
     </div>
 
-    <footer className="focus-pager">
+    <footer className="focus-pager" aria-label={t('Sets')}>
+      <span className="focus-pager-label">{t('Sets')}</span>
       <button aria-label={t('Previous set')} disabled={setIdx === 0} onClick={() => selectSet(setIdx - 1)}><Icon name="chevronLeft" /></button>
-      <div className="focus-dots">
+      <div className="focus-dots" ref={setStrip}>
         {entry.sets.map((row, index) => <button key={index} aria-label={t('Set {0}', index + 1)}
           className={(index === setIdx ? 'active ' : '') + (row.done ? 'done' : '')}
           aria-current={index === setIdx ? 'step' : undefined} onClick={() => selectSet(index)}>{row.done ? <Icon name="check" /> : index + 1}</button>)}
       </div>
       <button aria-label={t('Next set')} disabled={setIdx === entry.sets.length - 1} onClick={() => selectSet(setIdx + 1)}><Icon name="chevronRight" /></button>
     </footer>
+      <details className="focus-context aura-focus-details"><summary>{t('Notes')}<Icon name="chevronDown" /></summary>
+        <div className="focus-tags">
+          {mode === 'cardio' && <span className="tag acc">{t('Cardio')}</span>}
+          {isSideSet(set) && <span className="tag acc">{t('Per side')}</span>}
+          {(ex.tg || ex.bp) && <span className="tag">{t(ex.tg || ex.bp)}</span>}
+          {ex.eq && <span className="tag">{t(ex.eq)}</span>}
+        </div>
+        {entry.target?.note && <div className="focus-note">{entry.target.note}</div>}
+        {pinnedNote && <div className="focus-note pinned"><Icon name="flag" />{t('From {0}:', fmtDate(pinnedNote.d, true))} {pinnedNote.note}</div>}
+        {entry.note && <div className="focus-note">{entry.note}</div>}
+        {last && <div className="focus-last">{t('Last time')} · {fmtDate(last.d)}</div>}
+        {guidance && <button className="focus-guidance" onClick={onProgressionSettings}><Icon name="lightbulb" />{t(guidance.policyLabel)}</button>}
+      </details>
   </div>
 }

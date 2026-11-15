@@ -16,6 +16,13 @@
       140–220ms on an ease-out curve. Nothing bounces or slides for decoration.
    ========================================================================== */
 
+/* Inter 4.1, bundled under SIL OFL (public/licenses/Inter.txt).
+   No font CDN is contacted at runtime; unsupported scripts use the system fallback. */
+@font-face{
+  font-family:'Inter Variable';font-style:normal;font-weight:100 900;font-display:swap;
+  src:url('./assets/fonts/InterVariable.woff2') format('woff2');
+}
+
 /* ---------------------------------------------------------------- tokens -- */
 :root {
   /* surfaces — dark is the default */
@@ -80,7 +87,7 @@
   --fs-title2:1.375rem;    /* 22: a lead line */
   --fs-large:2.125rem;     /* 34: the page title (30 on a narrow phone, below) */
   --lh-tight:1.06; --lh-title:1.2; --lh-body:1.29; --lh-small:1.38;
-  --ls-large:-.028em; --ls-title:-.021em; --ls-body:-.01em; --ls-small:-.004em;
+  --ls-large:-.035em; --ls-title:-.025em; --ls-body:-.012em; --ls-small:0;
 
   /* motion */
   --ease:cubic-bezier(.32,.72,0,1);
@@ -211,7 +218,8 @@ html{
 }
 body{
   background:var(--bg);color:var(--label);
-  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Segoe UI',Roboto,system-ui,sans-serif;
+  font-family:-apple-system,BlinkMacSystemFont,'Inter Variable','Segoe UI',Roboto,system-ui,sans-serif;
+  font-optical-sizing:auto;
   font-size:var(--fs-body);line-height:var(--lh-body);letter-spacing:var(--ls-body);
   min-height:100vh;min-height:100dvh;overscroll-behavior-y:none;overflow-x:clip;
   -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
@@ -276,7 +284,7 @@ button,.chip,.tile,.item,.wday,.cal-d,.swatch,.hm-c,.lrow,.seg button,.stp butto
 
 /* ---------------------------------------------------------------- layout -- */
 #app{
-  padding:calc(var(--sat) + var(--conn) + 8px) var(--pad) calc(88px + var(--sab));
+  padding:calc(var(--sat) + var(--conn) + 8px) var(--pad) calc(var(--navigation-height,64px) + 24px + var(--sab));
   max-width:560px;margin:0 auto;
 }
 /* Android 15 with the keyboard up: room to scroll the last field on a page above the keys.
@@ -284,11 +292,14 @@ button,.chip,.tile,.item,.wday,.cal-d,.swatch,.hm-c,.lrow,.seg button,.stp butto
 :root[data-native-kb] #app,:root[data-native-kb] body.resting #app,:root[data-native-kb] body.no-tabbar.resting #app{padding-bottom:calc(88px + var(--native-kb))}
 /* Keep the last workout controls clear of the mobile overlays without adding a second
    screenful of blank scroll space. The stacked rest timer needs the larger reserve. */
-body.resting #app{padding-bottom:calc(166px + var(--sab))}
+body.resting #app{padding-bottom:calc(var(--navigation-height,64px) + var(--timer-height,78px) + 36px + var(--sab))}
 /* The workout screen has no tab bar (App.jsx): only the docked rest bar, when it is there. */
 body.no-tabbar #app{padding-bottom:calc(24px + var(--sab))}
-body.no-tabbar.resting #app{padding-bottom:calc(96px + var(--sab))}
+body.no-tabbar.resting #app{padding-bottom:calc(var(--timer-height,78px) + 24px + var(--sab))}
 .workout-end-spacer{height:0}
+.workout-exercise-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:center;gap:4px 12px}
+.workout-exercise-nav>.btn{min-width:44px;padding-inline:6px}
+.workout-exercise-nav>span{grid-column:1/-1;grid-row:1;text-align:center;color:var(--label-2);font-size:var(--fs-caption);line-height:1.3}
 /* The end of a workout (Workout.jsx, P3): Add exercise and the session note as one inset list. */
 .wk-end{margin-top:2px}
 .wk-end-row{min-height:46px}
@@ -376,7 +387,7 @@ button.conn:active{filter:brightness(1.12)}
 .hdr>div{min-width:0}
 .hdr>.btn{flex:none}
 .hdr>.hdr-actions{display:flex;align-items:center;gap:8px;flex:none}
-.hdr h1{font-size:var(--fs-large);line-height:var(--lh-tight);font-weight:700;letter-spacing:var(--ls-large);overflow-wrap:break-word}
+.hdr h1{font-size:var(--fs-large);line-height:var(--lh-tight);font-weight:600;letter-spacing:var(--ls-large);overflow-wrap:break-word}
 /* the page title drops a step on phone widths (the Library's header leaves it the least room) */
 @media (max-width:420px){:root{--fs-large:1.875rem}}
 .hdr .sub{color:var(--label-2);font-size:var(--fs-subhead);letter-spacing:-.006em;margin-top:4px}
@@ -405,7 +416,7 @@ button.conn:active{filter:brightness(1.12)}
 .iconbtn.on-ss{background:var(--acc-soft);color:var(--acc-ink)}
 .iconbtn:disabled{opacity:.32}
 
-h4.sec{
+.sec{
   font-size:var(--fs-footnote);font-weight:400;letter-spacing:-.004em;color:var(--label-2);
   text-transform:none;margin:22px 0 8px;padding:0 4px;
 }
@@ -903,7 +914,7 @@ body.chips-dragging *{cursor:inherit}
   padding:13px 15px;font-size:var(--fs-body);letter-spacing:-.012em;outline:none;
   transition:box-shadow var(--fast);
 }
-.field::placeholder,.input::placeholder{color:var(--label-3)}
+.field::placeholder,.input::placeholder{color:var(--label-2);opacity:1}
 .field:focus,.input:focus{box-shadow:inset 0 0 0 2px var(--acc)}
 .field.area,textarea.input{min-height:92px;resize:vertical;line-height:1.42}
 .measure-date{display:block;margin-bottom:14px}
@@ -1002,62 +1013,24 @@ body.chips-dragging *{cursor:inherit}
    into a grid area, so the sliding thumb resolved top/bottom against the wrong
    box and overflowed the track. A flex container leaves abspos children on the
    padding box, which is what the thumb needs. */
-.seg{
-  position:relative;display:flex;
-  background:var(--surface-3);border-radius:9px;padding:2px;isolation:isolate;
-}
+/* A single measured thumb prevents offset shadows and duplicate selected surfaces. */
+.seg{position:relative;display:flex;background:var(--surface);border-radius:10px;padding:3px;isolation:isolate;gap:0}
 .seg>button{flex:1 1 0;min-width:0}
-:root[data-theme="light"] .seg{background:rgba(118,118,128,.12)}
-.seg-sel{
-  position:absolute;z-index:0;top:2px;bottom:2px;inset-inline-start:2px;
-  width:calc((100% - 4px)/var(--n));
-  transform:translateX(calc(100% * var(--i)));
-  background:var(--surface);border-radius:7px;
-  box-shadow:0 3px 8px rgba(0,0,0,.12),0 1px 1px rgba(0,0,0,.06);
-  transition:transform var(--med) var(--ease);
-}
-:root[data-theme="light"] .seg-sel{background:#fff}
-/* Dark: the chosen segment is raised, a step lighter than its track, as on the iPhone. It used to
-   be --surface on a --surface-3 track, darker than the track, so the choice read as a dent pressed
-   into the control rather than the piece standing on it (design review 1.4.5). */
-:root:not([data-theme="light"]) .seg{background:rgba(118,118,128,.24)}
-:root:not([data-theme="light"]) .seg-sel{background:#636366;box-shadow:0 3px 8px rgba(0,0,0,.24),0 1px 1px rgba(0,0,0,.12)}
-.seg button{
-  position:relative;z-index:1;padding:6px 8px;font-size:14px;font-weight:500;
-  letter-spacing:-.006em;color:var(--label);display:flex;align-items:center;
-  justify-content:center;gap:5px;min-height:32px;transition:opacity var(--fast),transform var(--fast) var(--ease);
-}
+.seg-sel{position:absolute;z-index:0;left:0;visibility:hidden;pointer-events:none;border-radius:7px;background:var(--surface-3);transition:transform 260ms cubic-bezier(.22,1,.36,1);box-shadow:none}
+.seg button{position:relative;z-index:1;min-height:38px;padding:7px 10px;font-size:var(--fs-footnote);font-weight:500;letter-spacing:0;color:var(--label-2);display:flex;align-items:center;justify-content:center;gap:5px;background:transparent;border-radius:7px}
+.seg button.on{color:var(--label)}
 .seg button .icn{font-size:var(--fs-callout)}
-.seg button:not(.on){color:var(--label-2);font-weight:400}
-.seg button:active{transform:scale(var(--press-scale))}
-/* sitting in a list row: shrink to content instead of filling the row. The control never
-   shrinks below its labels, so a row whose title and control do not both fit — most translated
-   packs at 390px: "Übungs-Animationen" against "Voll · Klein · Aus" — wraps the control onto its
-   own line under the title instead of painting it over the title. */
-.seg-inline{flex:none;min-width:132px;max-width:100%;margin-inline-start:auto}
+.seg-inline{flex:none;min-width:132px;max-width:100%;margin-inline-start:auto;display:grid;grid-auto-flow:column;grid-auto-columns:1fr}
 .lrow:has(.seg-inline){flex-wrap:wrap}
 .lrow:has(.seg-inline) .lrow-m{min-width:min(150px,100%)}
+.seg-inline button{padding:5px 10px;min-height:38px}
+.seg-inline button span{white-space:nowrap}
 .seg-range{margin-bottom:10px}
-/* More choices than a phone row holds (Stats → Exercise progress can offer five): each segment as
-   wide as its label, the row scrolling sideways inside its track, the chosen one lifted in place.
-   Squeezed into fifths, "Top set" broke onto two lines and "Bodyweight" ran out of the track.
-   Where the row does fit, the segments still share it out evenly (design review 1.4.5). */
 .seg.seg-scroll{overflow-x:auto;scrollbar-width:none;touch-action:pan-x;overscroll-behavior-x:contain}
 .seg.seg-scroll::-webkit-scrollbar{display:none}
-.seg.seg-scroll>button{flex:1 0 auto;padding-inline:12px;white-space:nowrap;border-radius:7px;transition:background var(--fast),opacity var(--fast)}
-.seg.seg-scroll>.seg-sel{display:none}
-.seg.seg-scroll>button.on{background:var(--surface);box-shadow:0 3px 8px rgba(0,0,0,.12),0 1px 1px rgba(0,0,0,.06)}
-:root[data-theme="light"] .seg.seg-scroll>button.on{background:#fff}
-:root:not([data-theme="light"]) .seg.seg-scroll>button.on{background:#636366}
-/* Every segment as wide as the widest label (QA 10-05: with flex:1 1 0 the track was sized by the
-   labels' sum but split evenly, so "Compact" / "Versteckt" got less than its own width and
-   touched the segment's edge). A grid of equal 1fr columns sizes each to the widest one, so the
-   thumb (100%/n) still lines up; the sliding thumb is absolutely positioned with no grid
-   placement, so its box is the track's padding box, as in the flex version. */
-.seg-inline{display:grid;grid-auto-flow:column;grid-auto-columns:1fr}
-.seg-inline button{padding:5px 12px;font-size:var(--fs-footnote);min-height:28px}
-.seg-inline button span{white-space:nowrap}
-.seg-inline button .icn{font-size:14px}
+.seg.seg-scroll>button{flex:1 0 auto;padding-inline:12px;white-space:nowrap}
+@media(prefers-reduced-motion:reduce){.seg-sel{transition:none}}
+:root[data-motion="reduce"] .seg-sel{transition:none}
 
 /* native time input, restyled to sit in a row like a value label */
 .timef{
@@ -1171,12 +1144,14 @@ body.chips-dragging *{cursor:inherit}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
   .whdr.stick{background:var(--bg)}
 }
-/* The workout's own header (v1.3.11): ⌄ (or the editor's ✕), the name with the clock and set
-   count, ⋯, and a labelled Finish pill. The name block takes what is left and truncates; the pill
-   never shrinks. */
-.hdr.whdr-bar{align-items:center;gap:8px;margin:4px 0 12px}
-.whdr-mid{flex:1;min-width:0;text-align:center}
-.whdr-name{font-weight:600;font-size:var(--fs-callout);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* Keep the session context together. Relative flex basis lets actions move to a second
+   row on a narrow phone or at large text, without squeezing the title and timer. */
+.whdr .iconbtn{width:44px;height:44px;min-width:44px}
+.hdr.whdr-bar{align-items:center;gap:8px;flex-wrap:wrap;margin:4px 0 12px}
+.whdr-context{display:flex;align-items:center;gap:8px;flex:1 1 8rem;min-width:0}
+.whdr-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;max-width:100%;margin-inline-start:auto}
+.whdr-mid{flex:1;min-width:0;text-align:start}
+.whdr-name{font-weight:600;font-size:var(--fs-callout);overflow-wrap:anywhere;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden}
 /* The clock and set count may take a second line: in ru/uk the count is the long half and a
    one-line ellipsis cut exactly the 0/19 the line is there for. */
 .whdr-mid .sub{font-size:var(--fs-footnote);margin-top:1px;font-variant-numeric:tabular-nums;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;overflow-wrap:anywhere;text-wrap:balance}
@@ -1185,7 +1160,7 @@ body.chips-dragging *{cursor:inherit}
 button.whdr-gym{color:var(--acc-ink);cursor:pointer}
 .whdr-gym .icon,.whdr-gym svg{width:13px;height:13px;flex:none}
 .gym-of-list .icon,.gym-of-list svg{width:13px;height:13px;vertical-align:-2px}
-.btn.pill.whdr-finish{width:auto;flex:none;padding:8px 16px;border-radius:99px;font-size:var(--fs-subhead);max-width:40%}
+.btn.pill.whdr-finish{min-height:44px;width:auto;flex:none;padding:8px 16px;border-radius:99px;font-size:var(--fs-subhead);max-width:calc(100% - 52px)}
 /* Animations set to Small: the picture beside the exercise name, with an expand badge. */
 .wthumb{position:relative;flex:none;width:48px;height:48px;border-radius:10px;overflow:hidden;padding:0}
 .wthumb .thumb{width:48px;height:48px;border-radius:10px}
@@ -1197,7 +1172,8 @@ button.whdr-gym{color:var(--acc-ink);cursor:pointer}
 }
 .exhd{align-items:center}
 .wprog{height:4px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin-bottom:16px}
-.wprog i{display:block;height:100%;background:var(--acc);border-radius:99px;transition:width var(--med) var(--ease)}
+.wprog i{display:block;width:100%;height:100%;background:var(--acc);border-radius:99px;transform-origin:left center;transition:transform var(--med) var(--ease)}
+[dir="rtl"] .wprog i{transform-origin:right center}
 /* The bar with the session's volume at its end (#774): 12 px tall where the bar is 4, so it takes
    8 px less margin and the header keeps the exact height it has without it. */
 .wprog-row{display:flex;align-items:center;gap:8px;height:12px;margin-bottom:8px}
@@ -1826,13 +1802,13 @@ button.whdr-gym{color:var(--acc-ink);cursor:pointer}
    no tab bar (body.no-tabbar, App.jsx), the bar is docked to the bottom edge; anywhere else it
    sits just above the tab bar. */
 #timer{
-  position:fixed;inset-inline-start:12px;inset-inline-end:12px;bottom:calc(88px + var(--sab));z-index:60;
+  position:fixed;inset-inline-start:12px;inset-inline-end:12px;bottom:calc(var(--navigation-height,64px) + 16px + var(--sab));z-index:95;
   /* nearly opaque: the set rows underneath were reading through the old 82% and made the
      clock hard to pick out mid-set. The blur stays, so it still sits above the page. */
   background:var(--surface-raised);background:color-mix(in srgb,var(--surface-raised) 97%,transparent);
   -webkit-backdrop-filter:saturate(180%) blur(10px);backdrop-filter:saturate(180%) blur(10px);
   border-radius:var(--r-lg);padding:12px 12px 10px;overflow:hidden;
-  display:flex;align-items:center;gap:10px;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
   box-shadow:inset 0 0 0 var(--hair) var(--raised-line),0 12px 34px -8px rgba(0,0,0,.55);
   animation:slideup var(--med) var(--ease);
 }
@@ -1844,7 +1820,7 @@ button.whdr-gym{color:var(--acc-ink);cursor:pointer}
    gives: in a long language on a narrow phone it becomes an icon, RestTimer.jsx useSkipFits). The label under the
    clock fills the clock's width but does not widen it. */
 #timer .tclock{flex:none;min-width:0;display:flex;flex-direction:column;align-items:flex-start;text-align:start;padding:2px 0}
-#timer .t{font-size:28px;font-weight:600;line-height:1.1;letter-spacing:-.026em;font-variant-numeric:tabular-nums;white-space:nowrap}
+#timer .t{font-size:1.75rem;font-weight:600;line-height:1.1;letter-spacing:-.026em;font-variant-numeric:tabular-nums;white-space:nowrap}
 /* The rest clock is as wide as the wider of its two faces, the time and Ready: the face not
    showing sits in a hidden zero-height line (data-alt), so turning Ready does not move the
    buttons beside it. */
@@ -1855,7 +1831,7 @@ button.whdr-gym{color:var(--acc-ink);cursor:pointer}
   display:inline-flex;align-items:center;gap:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 #timer .lbl .icn{font-size:10px;flex:none;opacity:.8}
-#timer .acts{display:flex;align-items:center;justify-content:flex-end;gap:6px;flex:1 1 auto;min-width:0}
+#timer .acts{display:flex;align-items:center;justify-content:flex-end;gap:6px;flex:1 1 12rem;min-width:0;flex-wrap:wrap}
 #timer .acts .btn{padding-top:11px;padding-bottom:11px}   /* sweaty hands, mid-set */
 #timer .acts .adj{padding-inline:9px;gap:2px}
 #timer .acts .btn.plain{background:var(--surface-2);color:var(--label)}
@@ -2070,7 +2046,8 @@ body.no-tabbar #timer.countin{box-shadow:inset 0 var(--hair) 0 var(--acc),0 -10p
 .hm-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px}
 .hm-wrap::-webkit-scrollbar{display:none}
 .hm-months{display:flex;margin-inline-start:28px;margin-bottom:5px}
-.hm-months span{flex:none;width:14px;font-size:var(--fs-caption2);color:var(--label-3);white-space:nowrap;overflow:visible}
+.hm-months span{flex:none;width:14px;font-size:var(--fs-caption2);color:var(--label-2);white-space:nowrap;overflow:visible}
+.hm-month-label{display:inline-block;font-weight:400}
 .hm-body{display:flex}
 .hm-days{display:flex;flex-direction:column;gap:3px;flex:none;width:28px}
 .hm-days span{height:11px;font-size:10px;color:var(--label-2);line-height:11px}
@@ -2086,7 +2063,7 @@ body.no-tabbar #timer.countin{box-shadow:inset 0 var(--hair) 0 var(--acc),0 -10p
 .hm-c.noted{box-shadow:inset 0 0 0 1.5px var(--indigo)}
 .hm-legend{
   display:flex;align-items:center;gap:4px;justify-content:flex-end;margin-top:9px;
-  font-size:var(--fs-caption2);color:var(--label-3);
+  font-size:var(--fs-caption2);color:var(--label-2);
 }
 .hm-legend .hm-c{width:10px;height:10px}
 
@@ -2124,8 +2101,9 @@ body.no-tabbar #timer.countin{box-shadow:inset 0 var(--hair) 0 var(--acc),0 -10p
 .bodymap.bm-mini .bm-v path{stroke-width:3}
 /* The live session's body (#670, components/SessionMuscles.jsx): at the end of the exercise
    chips, and no taller than their 37px row, so it moves nothing in any layout. */
-.iconbtn.whdr-map{width:auto;height:32px;padding:0 2px;border-radius:10px}
-.wchips-row{display:flex;align-items:center;gap:4px}
+.iconbtn.whdr-map{width:auto;height:44px;min-width:44px;padding:0 2px;border-radius:10px}
+.wchips-row{display:flex;align-items:center;gap:8px}
+.wchips-label{flex:none;color:var(--label-2);font-size:var(--fs-caption)}
 .wchips-row>.wchips{flex:1;min-width:0}
 .whdr-map .bodymap.bm-mini{gap:1px}
 .whdr-map .bodymap.bm-mini .bm-v{height:30px}
@@ -2532,7 +2510,7 @@ body.totop-on.resting #app{padding-bottom:calc(232px + var(--sab))}
 
 /* --- accent swatches --- */
 .swatches{display:flex;gap:12px;flex-wrap:wrap}
-.swatch{width:32px;height:32px;border-radius:50%;flex:none;position:relative;transition:transform var(--fast)}
+.swatch{width:44px;height:44px;border-radius:50%;flex:none;position:relative;transition:transform var(--fast)}
 .swatch:active{transform:scale(var(--press-scale-sm))}
 /* The ring takes no taps: over the own colour it lay on the colour input, so the picker never opened. */
 .swatch.on::after{content:'';position:absolute;inset:-4px;border-radius:50%;box-shadow:0 0 0 2px var(--label);pointer-events:none}
@@ -2625,11 +2603,8 @@ body.totop-on.resting #app{padding-bottom:calc(232px + var(--sab))}
 /* minmax(0, …): a grid's default `auto` track is at least as wide as its widest content, so a set
    row whose cells have floors (see .setrow .stp) would widen the whole unit past the screen and
    push the ticks off it. Capped, a row that does not fit overflows its own card instead. */
-.workout-list{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
-.wl-unit{
-  border-radius:var(--r-lg);padding:14px 14px 4px;
-  background:var(--surface-2);
-}
+.workout-list{display:grid;grid-template-columns:minmax(0,1fr);gap:26px}
+.wl-unit{padding:0 0 18px;border-bottom:1px solid var(--sep)}
 /* scrolled to when the list opens (#224): clear the sticky header above it. Workout.jsx
    measures the header (--whdr-h on .workout-list, safe area included) because it grows when
    the session name wraps; the fallback is the height of a one-line header. */
@@ -2639,7 +2614,7 @@ body.totop-on.resting #app{padding-bottom:calc(232px + var(--sab))}
    since scroll-margin does not inherit from the .wl-unit around it. Scoped to the list so Cards,
    which has no pinned header, is untouched. */
 .workout-list .ss-ex,.workout-list .setrow,.workout-list .setrow-side{scroll-margin-top:calc(var(--whdr-h, var(--sat) + var(--conn) + 80px) + 16px)}
-.wl-unit.cur{box-shadow:inset 0 0 0 1.5px var(--acc-line)}
+.wl-unit.cur{box-shadow:none}
 .wl-hd{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
 .wl-summary{display:grid;gap:8px;padding-bottom:10px}
 /* the folded unit is a button (a tap opens it again): full width, text where it always sat */
@@ -2649,12 +2624,11 @@ button.wl-summary{width:100%;padding:0 0 10px;text-align:start;border-radius:var
 /* One numbered chip per unit, filled as far as it is done: an outline waiting, half full started,
    full when every work set is ticked, so the state reads without the colour. The current one has
    the accent ring. Every chip is the same height whatever its state, and the row scrolls sideways
-   (.chips), so nothing here can move the page while you type. 28px chips with the strip's own
-   padding keep the row at about the height of the line it replaces. */
+   (.chips), so nothing here can move the page while you type. 44px targets remain usable while the strip scrolls horizontally. */
 .chips.wchips{gap:6px;padding:4px 5px 5px;margin-bottom:2px}   /* room for the current chip's ring: the strip clips */
 .wchip{
   flex:none;position:relative;display:inline-flex;align-items:center;justify-content:center;gap:2px;
-  min-width:28px;height:28px;padding:0 8px;border-radius:99px;
+  min-width:44px;height:44px;padding:0 8px;border-radius:99px;
   font-size:var(--fs-footnote);font-weight:600;font-variant-numeric:tabular-nums;color:var(--label-2);
   background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--sep);
 }
@@ -2706,9 +2680,9 @@ button.wl-summary{width:100%;padding:0 0 10px;text-align:start;border-radius:var
 @media (min-width:1000px){
   #app{max-width:1080px;padding-top:calc(var(--conn) + 32px);padding-bottom:calc(128px + var(--sab))}
   .conn-row{max-width:640px}   /* the width of the .narrow pages below it */
-  body.resting #app{padding-bottom:calc(220px + var(--sab))}
+  body.resting #app{padding-bottom:calc(var(--navigation-height,64px) + var(--timer-height,78px) + 40px + var(--sab))}
   body.no-tabbar #app{padding-bottom:calc(40px + var(--sab))}
-  body.no-tabbar.resting #app{padding-bottom:calc(130px + var(--sab))}
+  body.no-tabbar.resting #app{padding-bottom:calc(var(--timer-height,78px) + 40px + var(--sab))}
   .workout-end-spacer{height:40px}
   .cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
   .cols>*{min-width:0}
@@ -2807,7 +2781,7 @@ button.wl-summary{width:100%;padding:0 0 10px;text-align:start;border-radius:var
 /* Long words (German "Hinzufügen") push the loop's buttons off a 320 px screen; they drop
    to their own line instead and stay on the trailing edge. */
 .plan-sec-h>.plan-sec-acts{margin-inline-start:auto}
-.plan-sec-h h4.sec{margin:0}
+.plan-sec-h .sec{margin:0}
 .plan-routines-bar{margin-top:0}
 .plan-textbtn{color:var(--acc-ink);font-size:var(--fs-callout);padding:6px 4px;position:relative}
 .plan-textbtn::before{content:'';position:absolute;inset:-6px}
@@ -3229,7 +3203,8 @@ button.wl-summary{width:100%;padding:0 0 10px;text-align:start;border-radius:var
 .kpis.two{grid-template-columns:repeat(2,minmax(0,1fr))}
 .kpis .tile{background:none;border-radius:0;padding:12px 14px;min-width:0;position:relative}
 .kpis .tile+.tile{border-inline-start:var(--hair) solid var(--sep)}
-.kpis .tile.wide{grid-column:1 / -1;border-inline-start:0;border-top:var(--hair) solid var(--sep)}
+.kpis .tile.wide{grid-column:1 / -1;border-inline-start:0;border-top:var(--hair) solid var(--sep);display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.kpis .tile.wide .v{font-size:var(--fs-subhead);font-weight:500}
 .kpis .tile .l{font-size:var(--fs-footnote);line-height:var(--lh-small);color:var(--label-2);overflow-wrap:break-word}
 .kpis .tile .v{font-size:var(--fs-title2);margin-top:2px;overflow-wrap:anywhere}
 /* A card folded to one line (Challenges on Stats): the whole line is the button, 44px or more. */

@@ -1668,7 +1668,7 @@ describe('workout focus view', () => {
     expect(container.querySelector('[data-testid="focus-view"]')).toBeTruthy()
     expect(container.querySelectorAll('[data-testid="focus-set"]').length).toBe(1)
     expect(container.textContent).toContain('2/3')
-    expect(container.textContent).toContain('3–5 Reps')
+    expect(container.textContent).toContain('3–5 reps')
     expect(container.textContent).toContain('@ 60 kg')
     expect(container.textContent).toContain('Rest 120s')
     expect(buttonNamed('Previous set').disabled).toBe(false)

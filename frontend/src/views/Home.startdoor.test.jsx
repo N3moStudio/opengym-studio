@@ -15,7 +15,7 @@ const nav = vi.fn()
 vi.mock('react-router-dom', () => ({ useNavigate: () => nav }))
 vi.mock('../sheets.jsx', () => ({
   starterPlanSheet: vi.fn(), bwSheet: vi.fn(), goalSheet: vi.fn(), dayOverrideSheet: vi.fn(),
-  calendarSheet: vi.fn(), startFlow: vi.fn(), bwDeltaColor: () => '', weighInsSheet: vi.fn(),
+  calendarSheet: vi.fn(), startFlow: vi.fn(), bwDeltaColor: () => '', weighInsSheet: vi.fn(), logPastWorkoutSheet: vi.fn(), workoutDetailSheet: vi.fn(),
 }))
 
 const routines = [{ id: 'r1', name: 'Push', emoji: null, ex: [{ id: '0025' }] }]
@@ -40,7 +40,7 @@ const setS = (over = {}) => useStore.setState(s => ({
   user: null,
 }))
 const mount = () => act(() => root.render(<Home />))
-const door = () => [...host.querySelectorAll('button')].find(b => b.textContent.includes('Choose a different workout'))
+const door = () => host.querySelector('.journal-start')
 
 describe('Home — the way to the Start screen when a plan already owns today', () => {
   it('offers the door on a planned day, where the Start button would start the plan', () => {
@@ -60,17 +60,16 @@ describe('Home — the way to the Start screen when a plan already owns today', 
     expect(door()).toBeTruthy()
   })
 
-  it('goes away once a session is running — that screen resumes it, it does not choose', () => {
+  it('becomes Resume once a session is running', () => {
     setS({ active: { id: 'a', name: 'Push', start: Date.now(), cur: 0, entries: [] } })
     mount()
-    expect(door()).toBeFalsy()
+    expect(door().textContent).toBe('Resume workout')
   })
 
   it('reads an open editor on a saved workout as an edit, not as a session in progress', () => {
     setS({ active: { id: 'w', name: 'Push', start: 1000, cur: 0, entries: [], editingWorkoutId: 'w' } })
     mount()
-    const row = host.querySelector('.aura-hero')
-    expect(row.querySelector('h2').textContent).toBe('Push')
+    const row = host
     expect(row.querySelector('[data-tour="today"]').textContent).toBe('Edit workout')
     act(() => { row.querySelector('[data-tour="today"]').dispatchEvent(new MouseEvent('click', { bubbles: true })) })
     expect(nav).toHaveBeenCalledWith('/workout')
@@ -79,8 +78,7 @@ describe('Home — the way to the Start screen when a plan already owns today', 
   it('still reads a running session as in progress', () => {
     setS({ active: { id: 'a', name: 'Push', start: Date.now(), cur: 0, entries: [] } })
     mount()
-    const row = host.querySelector('.aura-hero')
-    expect(row.querySelector('h2').textContent).toBe('Push')
+    const row = host
     expect(row.querySelector('[data-tour="today"]').textContent).toBe('Resume workout')
   })
 })

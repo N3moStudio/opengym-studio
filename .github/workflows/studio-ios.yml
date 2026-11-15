@@ -29,11 +29,20 @@ jobs:
       - name: Install frontend dependencies
         run: npm ci
         working-directory: frontend
-      - name: Check navigation and Home customization
+      - name: Check navigation, workout UI and appearance
         working-directory: frontend
         run: >-
           npm test --
           src/components/StudioAppearance.test.jsx
+          src/components/GymauraUI.navigation.test.jsx
+          src/components/TrainingChart.test.jsx
+          src/components/WorkoutFeed.test.jsx
+          src/lib/use-selection-slide.test.jsx
+          src/lib/use-overlay-height.test.jsx
+          src/lib/use-sheet-keyboard.test.js
+          src/lib/sw-lazy.test.js
+          src/views/Workout.test.jsx
+          src/views/Workout.superset-list-scroll.test.jsx
           src/components/TabBar.navigation.test.jsx
           src/components/TabBar.test.jsx
           src/components/TabBar.retap.test.jsx

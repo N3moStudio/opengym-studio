@@ -49,6 +49,14 @@ const chipAt = (contentX, strip) => ({
 })
 
 describe('revealChip', () => {
+  it('reveals later RTL sets and returns to the first without scrolling the page', () => {
+    const s = Object.assign(strip(), { scrollWidth: 900,
+      ownerDocument: { defaultView: { getComputedStyle: () => ({ direction: 'rtl' }) } } })
+    expect(revealChip(s, chipAt(-500, s))).toBe(true)
+    expect(s.scrollLeft).toBe(-516)
+    expect(revealChip(s, chipAt(220, s))).toBe(true)
+    expect(s.scrollLeft).toBe(0)
+  })
   it('scrolls the strip, and only the strip, until the active chip is inside it', () => {
     const s = strip(0)
     expect(revealChip(s, chipAt(500, s))).toBe(true)

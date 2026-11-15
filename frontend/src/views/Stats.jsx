@@ -821,9 +821,9 @@ export default function Stats() {
   </>
 
   return <>
-    <AuraHeader title={t('Progress')} subtitle={t('Small steps. A clearer picture.')}>
+    <AuraHeader title={t('Statistics')}><button type="button" className="iconbtn" data-back="/profile" aria-label={t('Profile')} onClick={() => nav('/profile')}><Icon name="chevronLeft" /></button>
       <button type="button" className="iconbtn" onClick={reportSheet} aria-label={t('Performance report')}><Icon name="note" /></button>
-      <button type="button" className="iconbtn" data-tour="stats-history" onClick={() => nav('/history')} aria-label={t('History')}><Icon name="history" /></button>
+      <Button size="sm" variant="ghost" aria-label={t('History')} data-tour="stats-history" icon="history" onClick={() => nav('/history')}>{t('History')}</Button>
     </AuraHeader>
 
     {/* Keep detailed progress panes accessible through links and the segmented control. */}
@@ -846,9 +846,6 @@ export default function Stats() {
       {lifetime > 0 && <div className="tile wide" data-lifetime-volume><SeasonDeco spot="stats-tile" /><div className="l">{t('Lifted in total')}</div><div className="v">{fmtVol(Math.round(lifetime), S.unit)}</div></div>}
     </div>
 
-    {workouts.length > 0 && motivationOn && <StreakCard info={streak} />}
-    {/* The month's challenges and the trophy shelf (lib/challenges.js), folded to one line. */}
-    {workouts.length > 0 && motivationOn && <ChallengesStatsCard S={S} />}
 
     <div className="card">
       <SeasonDeco spot="stats-heatmap" />
@@ -863,12 +860,15 @@ export default function Stats() {
 
     {workouts.length > 0 && <>
       <div className="row between stats-list-h">
-        <h4 className="sec" style={{ margin: 0 }}>{t('Recent workouts')}</h4>
+        <h2 className="sec" style={{ margin: 0 }}>{t('Recent workouts')}</h2>
         <Button size="sm" variant="ghost" trailingIcon="chevronRight" onClick={() => nav('/history')}>{t('All')} {workouts.length}</Button>
       </div>
       <div className="list">{recent.map(w => <WorkoutRow key={w.id} w={w} onClick={() => workoutDetailSheet(w)} />)}</div>
     </>}
 
+    {workouts.length > 0 && motivationOn && <StreakCard info={streak} />}
+    {/* The month's challenges and the trophy shelf (lib/challenges.js), folded to one line. */}
+    {workouts.length > 0 && motivationOn && <ChallengesStatsCard S={S} />}
     </section>
 
     {bodyOn && <section className="stats-sect" id="stats-body" data-stats-sect="body" hidden={(sections.some(section => section.value === pane) ? pane : 'overview') !== 'body'} aria-labelledby="stats-h-body">

@@ -10,20 +10,30 @@ export function AuraMark() {
     <circle cx="37" cy="15" r="3" fill="currentColor" />
   </svg>
 }
-export function AuraHeader({ title, subtitle, eyebrow = 'GYMAURA', children }) {
+export function AuraHeader({ title, subtitle, eyebrow, children }) {
   return <header className="aura-header"><div className="aura-heading">
-    <span className="aura-eyebrow">{eyebrow}</span><h1>{title}</h1>
+    {eyebrow && <span className="aura-eyebrow">{eyebrow}</span>}<h1>{title}</h1>
     {subtitle && <p>{subtitle}</p>}
   </div>{children && <div className="aura-header-actions">{children}</div>}</header>
 }
-export function TrainNavigation() {
+export function TrainNavigation({ planView, onPlanView } = {}) {
   const nav = useNavigate(), { pathname } = useLocation()
-  const items = [['/plan', 'calendar', 'Routines'], ['/library', 'dumbbell', 'Exercises'], ['/plan/programmes', 'clipboard', 'Programmes']]
-  return <nav className="aura-subnav" aria-label={t('Train')}>
-    {items.map(([path, icon, title]) => <button type="button" key={path}
-      data-tour={path === '/library' ? 'tab-library' : undefined} aria-current={pathname === path ? 'page' : undefined} onClick={() => pathname === path ? retapTab(path) : nav(path, { replace: true })}>
-      <Icon name={icon} /><span>{t(title)}</span>
-    </button>)}
+  const items = [
+    ['/plan?view=schedule', 'Schedule', 'schedule'],
+    ['/plan?view=routines', 'Routines', 'routines'],
+    ['/library', 'Exercises'],
+    ['/plan/programmes', 'Programmes'],
+  ]
+  return <nav className="aura-subnav" aria-label={t('Train')} data-tour="plan-views">
+    {items.map(([path, title, view]) => {
+      const selected = view ? pathname === '/plan' && planView === view : pathname === path
+      return <button type="button" key={path}
+        data-tour={path === '/library' ? 'tab-library' : undefined}
+        aria-current={selected ? 'page' : undefined}
+        onClick={() => selected ? retapTab(pathname) : view && onPlanView ? onPlanView(view) : nav(path, { replace: true })}>
+        {t(title)}
+      </button>
+    })}
   </nav>
 }
 export function AuraStat({ label, value, detail }) {

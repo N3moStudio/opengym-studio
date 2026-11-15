@@ -28,9 +28,9 @@ import { openTour, closeTour, tourState, readTour, noteStep, SAMPLE_ROUTINE_ID, 
 import Tour, { _setAnchorWait } from './Tour.jsx'
 
 const clone = o => JSON.parse(JSON.stringify(o))
-const ANCHORS = ['today', 'start', 'plan-mode', 'plan-views', 'plan-menu', 'lib-search', 'lib-filters', 'set', 'tick', 'swipe', 'workout-more', 'finish', 'stats-tiles',
+const ANCHORS = ['launcher-schedule', 'profile-statistics', 'profile-overview', 'today', 'start', 'plan-mode', 'plan-views', 'plan-menu', 'lib-search', 'lib-filters', 'set', 'tick', 'swipe', 'workout-more', 'finish', 'stats-tiles',
   'settings-look', 'settings-units', 'settings-data', 'tab-home', 'tab-plan', 'tab-stats', 'tab-library', 'settings-gear']
-const TABS = { 'tab-home': '/home', 'tab-plan': '/plan', 'tab-stats': '/stats', 'tab-library': '/library', 'settings-gear': '/settings' }
+const TABS = { 'tab-home': '/home', 'tab-plan': '/workout', 'tab-stats': '/profile', 'launcher-schedule': '/plan', 'profile-statistics': '/stats', 'profile-overview': '/overview', 'tab-library': '/library', 'settings-gear': '/settings' }
 let root, host, where, tapped, made
 function Screens({ skip = [] }) {
   const nav = useNavigate()
@@ -46,7 +46,7 @@ function Screens({ skip = [] }) {
   return <div>
     {ANCHORS.filter(a => !skip.includes(a)).map(a => <button key={a} data-tour={a} aria-label={'the ' + a}
       onClick={() => { tapped = a; if (TABS[a]) nav(TABS[a], { replace: true }) }}>{a}</button>)}
-    {where === '/plan' && <button data-tour="plan-new" onClick={newRoutine}>new routine</button>}
+    {(where === '/plan' || where === '/workout') && <button data-tour="plan-new" onClick={newRoutine}>new routine</button>}
     {where === '/library' && <button data-tour="lib-new" onClick={() => useUI.getState().openSheet(() => <ExForm />)}>create</button>}
     {r && <>
       <input data-tour="routine-name" aria-label="Routine name" />
@@ -248,7 +248,7 @@ describe('the ways between screens', () => {
   it('points at the real tab and waits for the tap, then goes on on the new screen', async () => {
     await run('go-plan')
     expect(where).toBe('/home')
-    expect(card().textContent).toContain('Tap Train')
+    expect(card().textContent).toContain('Choose a routine')
     expect(btn('Next')).toBeUndefined()
     expect(btn('Show me')).toBeTruthy()
     // the hole lets the tap through: no pane over it
@@ -257,9 +257,15 @@ describe('the ways between screens', () => {
     expect(step()).toBe('go-plan')   // it waits
     await click(anchor('tab-plan'))
     expect(tapped).toBe('tab-plan')
+    expect(where).toBe('/workout')
+    expect(step()).toBe('go-schedule')
+    await click(anchor('launcher-schedule'))
     expect(where).toBe('/plan')
     expect(step()).toBe('plan-mode')
     // Back takes the tour to the screen the way started from, to be shown again
+    await click(btn('Back'))
+    expect(step()).toBe('go-schedule')
+    expect(where).toBe('/workout')
     await click(btn('Back'))
     expect(step()).toBe('go-plan')
     expect(where).toBe('/home')
@@ -268,6 +274,9 @@ describe('the ways between screens', () => {
     await run('go-stats')
     await click(btn('Show me'))
     expect(tapped).toBe('tab-stats')
+    expect(where).toBe('/profile')
+    expect(step()).toBe('go-statistics')
+    await click(anchor('profile-statistics'))
     expect(where).toBe('/stats')
     expect(step()).toBe('stats')
   })
@@ -465,7 +474,9 @@ describe('Edit your data', () => {
     // poking at the copy
     await act(async () => { useStore.getState().update(s => { s.workouts = [] }) })
     await click(btn('Next'))
-    // already Home, and no weigh-in card in this stand-in: on to Stats (polled: the skip past a
+    expect(step()).toBe('e-go-home')
+    await click(anchor('profile-overview'))
+    // No weigh-in card in this stand-in: on to Stats (polled: the skip past a
     // missing anchor takes longer than 400 ms on a slow CI runner)
     await vi.waitFor(async () => { await settle(50); expect(step()).toBe('e-go-stats') }, { timeout: 5000 })
     expect(localStorage.getItem('gym_state_v1')).toBe(saved)

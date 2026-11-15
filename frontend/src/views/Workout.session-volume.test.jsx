@@ -68,8 +68,8 @@ describe('session volume in the workout header', () => {
     expect(shown()).toBe('675 lb')
   })
 
-  it('stays out of a session with nothing to weigh', () => {
+  it('keeps the list summary stable with zero volume for bodyweight work', () => {
     mount([entry(PUSHUP, [work(0, 10, true)])])
-    expect(shown()).toBeNull()
+    expect(shown()).toBe('0 kg')
   })
 })

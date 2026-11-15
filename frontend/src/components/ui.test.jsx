@@ -113,6 +113,14 @@ describe('Slider under dir=rtl', () => {
 })
 
 describe('Stepper', () => {
+  it('associates each editable value with its visible label', () => {
+    act(() => root.render(<><Stepper label="Load (kg)" value={75} onChange={() => {}} /><Stepper label="Reps" value={8} onChange={() => {}} /></>))
+    const fields = [...host.querySelectorAll('input')]
+    const ids = fields.map(input => input.getAttribute('aria-labelledby'))
+    expect(new Set(ids).size).toBe(2)
+    expect(ids.map(id => document.getElementById(id).textContent)).toEqual(['Load (kg)', 'Reps'])
+  })
+
   // controlled like every real caller: the parent re-renders with the new value
   function Host({ initial, onChange, step, ...props }) {
     const [v, setV] = React.useState(initial)
