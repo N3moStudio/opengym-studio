@@ -123,7 +123,7 @@ export default function TrainingOverview() {
 
   return <div className="narrow gymaura-home">
     <AuraHeader title={t('Training overview')}>
-      <button type="button" className="iconbtn" onClick={() => nav('/profile')} aria-label={t('Back')}><Icon name="chevronLeft" /></button>
+      <button type="button" className="iconbtn" data-back="/profile" onClick={() => nav('/profile')} aria-label={t('Back')}><Icon name="chevronLeft" /></button>
     </AuraHeader>
     <button type="button" className="today-row overview-today" data-tour="today" onClick={doneToday && !S.active ? () => nav('/history') : onToday}>
       <span><strong className="ttl">{S.active ? S.active.name : doneToday ? doneToday.name + ' (' + t('Done') + ')' : routine ? todayName + (todayOvr ? ' · ' + t('rescheduled') : '') : t('Rest day')}</strong>
